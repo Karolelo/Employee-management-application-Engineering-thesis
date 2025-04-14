@@ -1,0 +1,32 @@
+{
+  "name": "employee-management-application-engineering-thesis",
+  "version": "1.0.0",
+  "description": "Project created for using husky",
+  "homepage": "https://github.com/Karolelo/Employee-management-application-Engineering-thesis#readme",
+  "bugs": {
+    "url": "https://github.com/Karolelo/Employee-management-application-Engineering-thesis/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Karolelo/Employee-management-application-Engineering-thesis.git"
+  },
+  "license": "UNLICENSED",
+  "author": "Karol Niekrasz, Jakub Mrozowski",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run",
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "19.8.0",
+    "@commitlint/config-conventional": "19.8.0",
+    "commitizen": "^4.3.1",
+    "husky": "^9.1.7"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}
