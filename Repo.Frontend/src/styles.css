@@ -1,34 +1,27 @@
 /* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css?family=Raleway:400,700');
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Raleway, sans-serif;
+}
 
-.my-card-login {
-  width: 300px;
-  margin: 0 auto;
-  background-color: #cfe2ff;
-  padding: 10px;
-  border: 3px solid #000000;
-  border-radius: 25px;
+/* Tło dla całej aplikacji */
+body {
+  background: linear-gradient(90deg, #C7C5F4, #776BCC);
 }
-.my-card-header {
-  text-align: center;
-  font-size: 20px;
-}
-.my-card-body {
-  padding: 10px;
-  font-size: 10px;
+
+/* Uniwersalny kontener */
+.container {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  background-color: #ffffff;
+  min-height: 100vh;
 }
-.button[type="submit"] {
-  color: #9933FF;
-  font-size: 15px;
-  font-weight: bold;
-  background-color: #ffffff;
-  border: 2px solid #9933FF;
-  border-radius: 10px;
-  padding: 10px;
-  width: 100%;
+
+/* Style buttona - mogą być opcjonalnie przeniesione, jeśli używane globalnie */
+button {
+  cursor: pointer;
+  transition: 0.2s;
 }

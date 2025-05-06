@@ -1,1 +1,20 @@
-<p>auth works!</p>
+<div class="container">
+    <div class="login_screen">
+        <div class="login_screen_content">
+            <form  (ngSubmit)="onSubmit()" class="login_form">
+                <div class="login_field">
+                    <i class="login icon fas fa user"></i>
+                    <input type="text" placeholder="Username/Email" class="login_input">
+                </div>
+                <div class="login_field">
+                    <i class="login icon fas fa lock"></i>
+                    <input type="password" placeholder="Password" class="login_input">
+                </div>
+                <button class="button login_button">
+                    <span class="button_text">Log in</span>
+                    <i class="button_icon fas fa-chevron-right"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
