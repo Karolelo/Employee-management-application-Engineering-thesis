@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-    .AddEntityFrameworkStores<MyDbContext>()
+    .AddEntityFrameworkStores<IdentityContext>()
     .AddDefaultTokenProviders();
 
 // Ensure the ApplicationDbContext is registered as a service
@@ -16,7 +16,10 @@ builder.Services.AddDbContext<MyDbContext>(conf=> conf
     .UseSqlServer(builder
         .Configuration
         .GetConnectionString("DefaultConnection")));
-
+builder.Services.AddDbContext<IdentityContext>(conf => conf
+    .UseSqlServer(builder
+        .Configuration
+        .GetConnectionString("DefaultConnection")));
 // Adding Authentication
 builder.Services.AddAuthentication(options =>
     {

@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Repo.Core.Models;
-
+using Task = Repo.Core.Models.Task;
+using Type = Repo.Core.Models.Type;
 namespace Repo.Core.Infrastructure;
 
 public partial class MyDbContext : DbContext
@@ -59,10 +59,7 @@ public partial class MyDbContext : DbContext
     public virtual DbSet<WorkTable> WorkTables { get; set; }
 
     public virtual DbSet<WorkTask> WorkTasks { get; set; }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=localhost,1433;Database=Tmp;User=sa;Password=Haslo1234*;TrustServerCertificate=True;");
+    
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -473,11 +470,11 @@ public partial class MyDbContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.ID).HasName("User_pk");
+            entity.HasKey(e => e.Id).HasName("User_pk");
 
             entity.ToTable("User");
 
-            entity.Property(e => e.ID).ValueGeneratedNever();
+            entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.Email).HasMaxLength(1);
             entity.Property(e => e.Login).HasMaxLength(1);
             entity.Property(e => e.Name).HasMaxLength(1);
