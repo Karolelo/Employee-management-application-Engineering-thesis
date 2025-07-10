@@ -1,0 +1,9 @@
+.task-form {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: var(--secondary-color);
+  display: flex;
+  flex-direction: column;
+}

@@ -1,0 +1,14 @@
+<br>
+@for(task of tasksList;track task.id){
+  <mat-card >
+    <mat-card-header>
+      <mat-card-title>{{task.Name}}</mat-card-title>
+      <mat-card-subtitle>{{task.Description}}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-actions>
+      <button mat-button [routerLink]="['/details-task', task.id]">SEE DETAILS</button>
+      <button mat-button>MARK AS DONE</button>
+    </mat-card-actions>
+  </mat-card>
+  <br>
+}
