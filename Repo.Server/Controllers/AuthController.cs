@@ -4,6 +4,8 @@ using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Repo.Core.Models;
+using Repo.Core.Models.api;
 using Repo.Core.Models.auth;
 
 namespace Repo.Server.Controllers;
@@ -12,11 +14,11 @@ namespace Repo.Server.Controllers;
 [ApiController]
 public class AuthController : ControllerBase
 {
-    private readonly UserManager<IdentityUser> _userManager;
+    private readonly UserManager<User> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IConfiguration _configuration;
     
-    public AuthController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration) 
+    public AuthController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration) 
     {
         _userManager = userManager;
         _roleManager = roleManager;
@@ -54,6 +56,27 @@ public class AuthController : ControllerBase
             });
         }
         return Unauthorized();
+    }
+    
+    [HttpPost]
+    [Route("register")]
+    public async Task<IActionResult> Register([FromBody] RegistrationModel model)
+    {
+        var userExists = await _userManager.FindByNameAsync(model.Username);
+        if (userExists != null)
+            return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User already exists!" });
+
+        User user = new()
+        {
+            Email = model.Email,
+            SecurityStamp = Guid.NewGuid().ToString(),
+            UserName = model.Username
+        };
+        var result = await _userManager.CreateAsync(user, _userManager.PasswordHasher.HashPassword(user,model.Password));
+        if (!result.Succeeded)
+            return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
+
+        return Ok(new Response { Status = "Success", Message = "User created successfully!" });
     }
     
     private JwtSecurityToken GetToken(List<Claim> authClaims)
