@@ -1,6 +1,0 @@
-﻿services:
-  mnożenie:
-    image: mnożenie
-    build:
-      context: .
-      dockerfile: Mnożenie/Dockerfile
