@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Identity;
 
 namespace Repo.Core.Models;
-//Mroziu dziedziczym z identity user, żeby nie było duplikacji
-public partial class User : IdentityUser
+
+public partial class User
 {
+    public int ID { get; set; }
+
     public string Nickname { get; set; } = null!;
 
     public string Name { get; set; } = null!;

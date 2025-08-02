@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Repo.Core.Models;
 using Task = Repo.Core.Models.Task;
 using Type = Repo.Core.Models.Type;
+
 namespace Repo.Core.Infrastructure;
 
 public partial class MyDbContext : DbContext
@@ -59,7 +61,6 @@ public partial class MyDbContext : DbContext
     public virtual DbSet<WorkTable> WorkTables { get; set; }
 
     public virtual DbSet<WorkTask> WorkTasks { get; set; }
-    
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -470,11 +471,11 @@ public partial class MyDbContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("User_pk");
+            entity.HasKey(e => e.ID).HasName("User_pk");
 
             entity.ToTable("User");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.ID).ValueGeneratedNever();
             entity.Property(e => e.Email).HasMaxLength(1);
             entity.Property(e => e.Login).HasMaxLength(1);
             entity.Property(e => e.Name).HasMaxLength(1);
