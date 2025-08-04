@@ -10,11 +10,12 @@ namespace Repo.Server.Controllers;
 
 public class AuthUserService : IAuthUserService
 {
-    private readonly DbContext _context;
-
-    public AuthUserService(DbContext context)
+    private readonly MyDbContext _context;
+    private readonly AuthenticationHelpers _authenticationHelpers;
+    public AuthUserService(MyDbContext context, AuthenticationHelpers auth)
     {
         _context = context;
+        _authenticationHelpers = auth;
     }
 
     public async Task<Response<User>> CreateUser(RegistrationModel model)
@@ -30,7 +31,7 @@ public class AuthUserService : IAuthUserService
             {
                 return Response<User>.Fail("User with this nickname already exists");
             }
-            
+
             byte[] salt = AuthenticationHelpers.GenerateSalt(64);
 
             User user = new()
@@ -43,13 +44,39 @@ public class AuthUserService : IAuthUserService
                 Name = model.Name,
                 Surname = model.Surname
             };
-            
+
             _context.Set<User>().Add(user);
             await _context.SaveChangesAsync();
+            return Response<User>.Ok(user);
         }
         catch (Exception e)
         {
             return Response<User>.Fail($"Error during creating of user: {e.Message}");
+        }
+    }
+
+    public async Task<Response<string>> Login(LoginModel model)
+    {
+        try
+        {
+            var user = await _context.Set<User>().FirstOrDefaultAsync(e => e.Nickname == model.Nickname);
+
+            if (user == null)
+            {
+                return Response<string>.Fail("User with this nickname does not exist");
+            }
+
+            if (!AuthenticationHelpers.ComparerPasswordHash(model.Password, user.Password))
+            {
+                return Response<string>.Fail("Wrong password");
+            }
+
+            var token = _authenticationHelpers.GenerateToken(user.Nickname);
+            
+            return Response<string>.Ok(token);
+        }catch (Exception e)
+        {
+            return Response<string>.Fail($"Error during login: {e.Message}");
         }
     }
 }

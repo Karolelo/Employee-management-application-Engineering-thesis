@@ -17,9 +17,9 @@ public partial class User
 
     public string Password { get; set; } = null!;
 
-    public string Email { get; set; } = null!;
+    public byte[] Salt { get; set; } = null!;
 
-    public byte AdminPrivileges { get; set; }
+    public string Email { get; set; } = null!;
 
     public int Deleted { get; set; }
 
@@ -40,6 +40,8 @@ public partial class User
     public virtual ICollection<Grade> Grades { get; set; } = new List<Grade>();
 
     public virtual ICollection<Group> Groups { get; set; } = new List<Group>();
+
+    public virtual ICollection<Role> Roles { get; set; } = new List<Role>();
 
     public virtual ICollection<Skill> Skills { get; set; } = new List<Skill>();
 

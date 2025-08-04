@@ -26,13 +26,17 @@ public class AuthController : ControllerBase
    [HttpPost( "register")]
    public async Task<IActionResult> Register(RegistrationModel model)
    {
-      try{
-     
-      return Ok(new { Message = "Użytkownik został zarejestrowany pomyślnie" });
+      try
+      {
+         var response = await _authService.CreateUser(model);
+         if(response.Success)
+            return Ok(new { Message = "User registered successfully" });
+         else 
+            return StatusCode(500, new { Message = response.Error });
       }
       catch (Exception ex)
       {
-         return StatusCode(500, new { Message = "Wystąpił błąd podczas rejestracji", Error = ex.Message });
+         return StatusCode(500, new { Message = "Error during creating user", Error = ex.Message });
       }
    }
     

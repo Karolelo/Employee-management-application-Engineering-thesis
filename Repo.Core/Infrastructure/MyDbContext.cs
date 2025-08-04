@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Repo.Core.Models;
-using Task = Repo.Core.Models.Task;
 using Type = Repo.Core.Models.Type;
-
+using User = Repo.Core.Models.User;
+using Task = Repo.Core.Models.Task;
 namespace Repo.Core.Infrastructure;
 
 public partial class MyDbContext : DbContext
@@ -44,6 +44,8 @@ public partial class MyDbContext : DbContext
 
     public virtual DbSet<RelatedTask> RelatedTasks { get; set; }
 
+    public virtual DbSet<Role> Roles { get; set; }
+
     public virtual DbSet<Skill> Skills { get; set; }
 
     public virtual DbSet<Status> Statuses { get; set; }
@@ -61,6 +63,10 @@ public partial class MyDbContext : DbContext
     public virtual DbSet<WorkTable> WorkTables { get; set; }
 
     public virtual DbSet<WorkTask> WorkTasks { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Server=localhost,1433;Database=Tmp;User=sa;Password=Haslo1234*;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -85,8 +91,7 @@ public partial class MyDbContext : DbContext
             entity.ToTable("Application");
 
             entity.Property(e => e.ID).ValueGeneratedNever();
-            entity.Property(e => e.Description).HasMaxLength(1);
-            entity.Property(e => e.Name).HasMaxLength(1);
+            entity.Property(e => e.Name).HasMaxLength(100);
             entity.Property(e => e.Template).HasColumnType("xml");
 
             entity.HasOne(d => d.DocumentType).WithMany(p => p.Applications)
@@ -120,8 +125,7 @@ public partial class MyDbContext : DbContext
 
             entity.Property(e => e.ID).ValueGeneratedNever();
             entity.Property(e => e.Cost).HasColumnType("decimal(5, 2)");
-            entity.Property(e => e.Description).HasMaxLength(1);
-            entity.Property(e => e.Name).HasMaxLength(1);
+            entity.Property(e => e.Name).HasMaxLength(100);
 
             entity.HasOne(d => d.BenefitType).WithMany(p => p.Benefits)
                 .HasForeignKey(d => d.BenefitType_ID)
@@ -153,7 +157,7 @@ public partial class MyDbContext : DbContext
             entity.ToTable("BenefitType");
 
             entity.Property(e => e.ID).ValueGeneratedNever();
-            entity.Property(e => e.Type).HasMaxLength(1);
+            entity.Property(e => e.Type).HasMaxLength(100);
         });
 
         modelBuilder.Entity<Contribution>(entity =>
@@ -161,7 +165,7 @@ public partial class MyDbContext : DbContext
             entity.HasKey(e => e.ID).HasName("Contributions_pk");
 
             entity.Property(e => e.ID).ValueGeneratedNever();
-            entity.Property(e => e.Name).HasMaxLength(1);
+            entity.Property(e => e.Name).HasMaxLength(100);
             entity.Property(e => e.Value).HasColumnType("decimal(5, 2)");
         });
 
@@ -172,8 +176,7 @@ public partial class MyDbContext : DbContext
             entity.ToTable("Course");
 
             entity.Property(e => e.ID).ValueGeneratedNever();
-            entity.Property(e => e.Description).HasMaxLength(1);
-            entity.Property(e => e.Name).HasMaxLength(1);
+            entity.Property(e => e.Name).HasMaxLength(100);
 
             entity.HasMany(d => d.Users).WithMany(p => p.Courses)
                 .UsingEntity<Dictionary<string, object>>(
@@ -200,9 +203,7 @@ public partial class MyDbContext : DbContext
             entity.ToTable("Document");
 
             entity.Property(e => e.ID).ValueGeneratedNever();
-            entity.Property(e => e.Description).HasMaxLength(1);
-            entity.Property(e => e.Document_Path).HasMaxLength(1);
-            entity.Property(e => e.Title).HasMaxLength(1);
+            entity.Property(e => e.Title).HasMaxLength(100);
 
             entity.HasOne(d => d.DocumentType).WithMany(p => p.Documents)
                 .HasForeignKey(d => d.DocumentType_ID)
@@ -222,7 +223,7 @@ public partial class MyDbContext : DbContext
             entity.ToTable("DocumentType");
 
             entity.Property(e => e.ID).ValueGeneratedNever();
-            entity.Property(e => e.Type).HasMaxLength(1);
+            entity.Property(e => e.Type).HasMaxLength(100);
         });
 
         modelBuilder.Entity<Grade>(entity =>
@@ -232,7 +233,6 @@ public partial class MyDbContext : DbContext
             entity.ToTable("Grade");
 
             entity.Property(e => e.ID).ValueGeneratedNever();
-            entity.Property(e => e.Description).HasMaxLength(1);
             entity.Property(e => e.Grade1)
                 .HasColumnType("decimal(2, 2)")
                 .HasColumnName("Grade");
@@ -262,7 +262,7 @@ public partial class MyDbContext : DbContext
             entity.ToTable("Group");
 
             entity.Property(e => e.ID).ValueGeneratedNever();
-            entity.Property(e => e.Name).HasMaxLength(1);
+            entity.Property(e => e.Name).HasMaxLength(100);
 
             entity.HasMany(d => d.Tasks).WithMany(p => p.Groups)
                 .UsingEntity<Dictionary<string, object>>(
@@ -340,7 +340,7 @@ public partial class MyDbContext : DbContext
 
             entity.Property(e => e.ID).ValueGeneratedNever();
             entity.Property(e => e.Priority1)
-                .HasMaxLength(1)
+                .HasMaxLength(100)
                 .HasColumnName("Priority");
         });
 
@@ -359,13 +359,22 @@ public partial class MyDbContext : DbContext
                 .HasConstraintName("RelatedTasks_RelatedTask");
         });
 
+        modelBuilder.Entity<Role>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("Role_pk");
+
+            entity.ToTable("Role");
+
+            entity.Property(e => e.ID).ValueGeneratedNever();
+            entity.Property(e => e.Role_Name).HasMaxLength(100);
+        });
+
         modelBuilder.Entity<Skill>(entity =>
         {
             entity.HasKey(e => e.ID).HasName("Skills_pk");
 
             entity.Property(e => e.ID).ValueGeneratedNever();
-            entity.Property(e => e.Description).HasMaxLength(1);
-            entity.Property(e => e.Name).HasMaxLength(1);
+            entity.Property(e => e.Name).HasMaxLength(100);
 
             entity.HasOne(d => d.Type).WithMany(p => p.Skills)
                 .HasForeignKey(d => d.Type_ID)
@@ -398,7 +407,7 @@ public partial class MyDbContext : DbContext
 
             entity.Property(e => e.ID).ValueGeneratedNever();
             entity.Property(e => e.Status1)
-                .HasMaxLength(1)
+                .HasMaxLength(100)
                 .HasColumnName("Status");
         });
 
@@ -409,7 +418,7 @@ public partial class MyDbContext : DbContext
             entity.ToTable("Tag");
 
             entity.Property(e => e.ID).ValueGeneratedNever();
-            entity.Property(e => e.Name).HasMaxLength(1);
+            entity.Property(e => e.Name).HasMaxLength(15);
         });
 
         modelBuilder.Entity<Target>(entity =>
@@ -419,9 +428,8 @@ public partial class MyDbContext : DbContext
             entity.ToTable("Target");
 
             entity.Property(e => e.ID).ValueGeneratedNever();
-            entity.Property(e => e.Description).HasMaxLength(1);
             entity.Property(e => e.Finish_Time).HasColumnType("datetime");
-            entity.Property(e => e.Name).HasMaxLength(1);
+            entity.Property(e => e.Name).HasMaxLength(100);
             entity.Property(e => e.Start_Time).HasColumnType("datetime");
 
             entity.HasOne(d => d.Tag).WithMany(p => p.Targets)
@@ -441,9 +449,8 @@ public partial class MyDbContext : DbContext
             entity.ToTable("Task");
 
             entity.Property(e => e.ID).ValueGeneratedNever();
-            entity.Property(e => e.Description).HasMaxLength(1);
             entity.Property(e => e.Estimated_Time).HasColumnType("datetime");
-            entity.Property(e => e.Name).HasMaxLength(1);
+            entity.Property(e => e.Name).HasMaxLength(100);
             entity.Property(e => e.Start_Time).HasColumnType("datetime");
 
             entity.HasOne(d => d.Priority).WithMany(p => p.Tasks)
@@ -465,7 +472,7 @@ public partial class MyDbContext : DbContext
 
             entity.Property(e => e.ID).ValueGeneratedNever();
             entity.Property(e => e.Type1)
-                .HasMaxLength(1)
+                .HasMaxLength(100)
                 .HasColumnName("Type");
         });
 
@@ -476,12 +483,32 @@ public partial class MyDbContext : DbContext
             entity.ToTable("User");
 
             entity.Property(e => e.ID).ValueGeneratedNever();
-            entity.Property(e => e.Email).HasMaxLength(1);
-            entity.Property(e => e.Login).HasMaxLength(1);
-            entity.Property(e => e.Name).HasMaxLength(1);
-            entity.Property(e => e.Nickname).HasMaxLength(1);
-            entity.Property(e => e.Password).HasMaxLength(1);
-            entity.Property(e => e.Surname).HasMaxLength(1);
+            entity.Property(e => e.Email).HasMaxLength(50);
+            entity.Property(e => e.Login).HasMaxLength(15);
+            entity.Property(e => e.Name).HasMaxLength(100);
+            entity.Property(e => e.Nickname).HasMaxLength(20);
+            entity.Property(e => e.Password).HasMaxLength(300);
+            entity.Property(e => e.Salt)
+                .HasMaxLength(64)
+                .IsFixedLength();
+            entity.Property(e => e.Surname).HasMaxLength(100);
+
+            entity.HasMany(d => d.Roles).WithMany(p => p.Users)
+                .UsingEntity<Dictionary<string, object>>(
+                    "UserRole",
+                    r => r.HasOne<Role>().WithMany()
+                        .HasForeignKey("Role_ID")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("UserRole_Role"),
+                    l => l.HasOne<User>().WithMany()
+                        .HasForeignKey("User_ID")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("UserRole_User"),
+                    j =>
+                    {
+                        j.HasKey("User_ID", "Role_ID").HasName("UserRole_pk");
+                        j.ToTable("UserRole");
+                    });
 
             entity.HasMany(d => d.Tasks).WithMany(p => p.Users)
                 .UsingEntity<Dictionary<string, object>>(
@@ -508,7 +535,7 @@ public partial class MyDbContext : DbContext
             entity.ToTable("WorkTable");
 
             entity.Property(e => e.ID).ValueGeneratedNever();
-            entity.Property(e => e.Account_Number).HasMaxLength(1);
+            entity.Property(e => e.Account_Number).HasMaxLength(28);
             entity.Property(e => e.Hourly_Rate).HasColumnType("decimal(5, 2)");
 
             entity.HasOne(d => d.User).WithMany(p => p.WorkTables)

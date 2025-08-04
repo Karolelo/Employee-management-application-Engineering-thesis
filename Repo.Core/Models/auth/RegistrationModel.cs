@@ -16,13 +16,7 @@ public class RegistrationModel
 
     [Required(ErrorMessage = "Password is required")]
     public string? Password { get; set; }
-    /*[Required(ErrorMessage = "Password is required")]
-    public string? HashPassword { get; set; }*/
-    
     public string? Name { get; set; }
-
     public string? Surname { get; set; }
-    
-    public byte[]? Salt { get; set; }
 
 }

@@ -7,6 +7,7 @@ namespace Repo.Server.Controllers.Interfaces;
 public interface IAuthUserService
 {
     Task<Response<User>> CreateUser(RegistrationModel model);
+    Task<Response<string>> Login(LoginModel model);
     
     //TODO dodać wiecej metod
 }
