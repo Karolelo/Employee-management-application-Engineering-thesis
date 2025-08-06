@@ -39,6 +39,22 @@ public class AuthController : ControllerBase
          return StatusCode(500, new { Message = "Error during creating user", Error = ex.Message });
       }
    }
+   
+   [HttpPost("login")]
+   public async Task<IActionResult> Login(LoginModel model)
+   {
+      try
+      {
+         var response = await _authService.Login(model);
+         if(response.Success)
+            return Ok(new { Message = "User logged in successfully", Token = response.Data });
+         else 
+            return StatusCode(500, new { Message = response.Error });
+      }catch (Exception ex)
+      {
+         return StatusCode(500, new { Message = "Error during login", Error = ex.Message });
+      }
+   }
     
     
 }

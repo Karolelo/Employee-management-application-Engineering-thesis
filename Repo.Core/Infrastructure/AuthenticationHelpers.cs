@@ -26,7 +26,7 @@ public class AuthenticationHelpers
         }
         return salt;
     }
-
+    //TODO jak ja zrobiłem to sprawdzanie xdd 
     public static string GeneratePasswordHash(string password, byte[] salt)
     {
         string hashedPassword = Convert.ToBase64String(KeyDerivation.Pbkdf2(
@@ -38,10 +38,12 @@ public class AuthenticationHelpers
         return hashedPassword;
     }
 
-    public static bool ComparerPasswordHash(string password, string hashedPassword)
+    public static bool VerifyPasswordHash(string password, string storedHash, byte[] storedSalt)
     {
-        return hashedPassword == GeneratePasswordHash(password, Convert.FromBase64String(hashedPassword));
+        string hashedPassword = GeneratePasswordHash(password, storedSalt);
+        return hashedPassword == storedHash;
     }
+
     //Potem zmienić claimy, na inne niz user name
     public string GenerateToken(string username) {
         var tokenHandler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();

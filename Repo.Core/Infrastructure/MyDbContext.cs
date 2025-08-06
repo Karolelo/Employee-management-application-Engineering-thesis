@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Repo.Core.Models;
+using Task = Repo.Core.Models.Task;
 using Type = Repo.Core.Models.Type;
 using User = Repo.Core.Models.User;
-using Task = Repo.Core.Models.Task;
 namespace Repo.Core.Infrastructure;
 
 public partial class MyDbContext : DbContext
@@ -482,7 +482,6 @@ public partial class MyDbContext : DbContext
 
             entity.ToTable("User");
 
-            entity.Property(e => e.ID).ValueGeneratedNever();
             entity.Property(e => e.Email).HasMaxLength(50);
             entity.Property(e => e.Login).HasMaxLength(15);
             entity.Property(e => e.Name).HasMaxLength(100);

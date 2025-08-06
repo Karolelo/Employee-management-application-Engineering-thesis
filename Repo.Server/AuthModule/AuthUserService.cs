@@ -51,6 +51,7 @@ public class AuthUserService : IAuthUserService
         }
         catch (Exception e)
         {
+            throw;
             return Response<User>.Fail($"Error during creating of user: {e.Message}");
         }
     }
@@ -66,7 +67,7 @@ public class AuthUserService : IAuthUserService
                 return Response<string>.Fail("User with this nickname does not exist");
             }
 
-            if (!AuthenticationHelpers.ComparerPasswordHash(model.Password, user.Password))
+            if (!AuthenticationHelpers.VerifyPasswordHash(model.Password,user.Password, user.Salt))
             {
                 return Response<string>.Fail("Wrong password");
             }
@@ -76,6 +77,7 @@ public class AuthUserService : IAuthUserService
             return Response<string>.Ok(token);
         }catch (Exception e)
         {
+            throw;
             return Response<string>.Fail($"Error during login: {e.Message}");
         }
     }
