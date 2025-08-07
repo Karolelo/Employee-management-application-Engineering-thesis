@@ -27,6 +27,8 @@ public partial class User
 
     public virtual ICollection<HireHelper> HireHelpers { get; set; } = new List<HireHelper>();
 
+    public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
+
     public virtual ICollection<Target> Targets { get; set; } = new List<Target>();
 
     public virtual ICollection<WorkTable> WorkTables { get; set; } = new List<WorkTable>();

@@ -7,7 +7,7 @@ using Repo.Core.Models.auth;
 using Repo.Server.Controllers.Interfaces;
 
 namespace Repo.Server.Controllers;
-
+//TODO zrobić refres tokenów
 public class AuthUserService : IAuthUserService
 {
     private readonly MyDbContext _context;
@@ -44,14 +44,15 @@ public class AuthUserService : IAuthUserService
                 Name = model.Name,
                 Surname = model.Surname
             };
-
+            
+            //Dodać 
+            
             _context.Set<User>().Add(user);
             await _context.SaveChangesAsync();
             return Response<User>.Ok(user);
         }
         catch (Exception e)
         {
-            throw;
             return Response<User>.Fail($"Error during creating of user: {e.Message}");
         }
     }
@@ -72,13 +73,66 @@ public class AuthUserService : IAuthUserService
                 return Response<string>.Fail("Wrong password");
             }
 
-            var token = _authenticationHelpers.GenerateToken(user.Nickname);
+            var token = _authenticationHelpers.GenerateTokens(user.Nickname);
+            
+            //TODO dorobić tutaj dodawanie tokenu do bazy danych
             
             return Response<string>.Ok(token);
         }catch (Exception e)
         {
-            throw;
             return Response<string>.Fail($"Error during login: {e.Message}");
         }
     }
+
+    public async Task<Response<TokenModel>> RefreshToken(TokenModel tokenModel)
+    {
+       var accessToken = tokenModel.AccessToken;
+       var refreshToken = tokenModel.RefreshToken;
+       
+       var principals = _authenticationHelpers.GetPrincipalFromExpiredToken(accessToken);
+       
+       var username = principals.Identity.Name;
+
+       if (username == null)
+       {
+           return Response<TokenModel>.Fail("Invalid token, user was not found");
+       }
+
+       if (await ValidateRefreshToken(username, refreshToken) == false)
+       {
+           return Response<TokenModel>.Fail("Invalid refresh token");
+       }
+       
+       var newToken = _authenticationHelpers.GenerateToken(username);
+
+       return Response<TokenModel>.Ok(new TokenModel()
+           {
+               AccessToken = newToken,
+               RefreshToken = refreshToken
+           }
+       );
+
+    }
+    
+    private async Task<bool> ValidateRefreshToken(string username, string refreshToken)
+    {
+        var user = await _context.Set<User>()
+            .FirstOrDefaultAsync(e => e.Nickname == username);
+        
+        if (user == null)
+        {
+            return false;
+        }
+    
+        var token = await _context.Set<RefreshToken>()
+            .FirstOrDefaultAsync(e => 
+                e.Token == refreshToken && 
+                e.User_ID == user.ID && 
+                e.RevokedAt == null && 
+                e.ExpireDate > DateTime.Now);
+            
+        return token != null;
+    }
+
+   
 }

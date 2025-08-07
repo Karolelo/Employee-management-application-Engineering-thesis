@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Repo.Core.Models.auth;
 
 namespace Repo.Core.Infrastructure;
 
@@ -26,7 +27,6 @@ public class AuthenticationHelpers
         }
         return salt;
     }
-    //TODO jak ja zrobiłem to sprawdzanie xdd 
     public static string GeneratePasswordHash(string password, byte[] salt)
     {
         string hashedPassword = Convert.ToBase64String(KeyDerivation.Pbkdf2(
@@ -82,5 +82,56 @@ public class AuthenticationHelpers
             return false;
         }
     }
+
+    public string GenerateRefreshToken()
+    {
+        var randomNumber = new byte[32];
+        using (var rng = RandomNumberGenerator.Create())
+        {
+            rng.GetBytes(randomNumber);
+            return Convert.ToBase64String(randomNumber);
+        }
+    }
+    
+    public TokenModel GenerateTokens(string username)
+    {
+        return new TokenModel
+        {
+            AccessToken = GenerateToken(username),
+            RefreshToken = GenerateRefreshToken()
+        };
+    }
+    
+    public ClaimsPrincipal? GetPrincipalFromExpiredToken(string token)
+    {
+        var tokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.ASCII.GetBytes(_configuration["JWT:SecretKey"])),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ValidateLifetime = false 
+        };
+
+        var tokenHandler = new JwtSecurityTokenHandler();
+        try
+        {
+            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
+        
+            if (securityToken is not JwtSecurityToken jwtSecurityToken || 
+                !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+            {
+                return null;
+            }
+            
+            return principal;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+    
+   
     
 }

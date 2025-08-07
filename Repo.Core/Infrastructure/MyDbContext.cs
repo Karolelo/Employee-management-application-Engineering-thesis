@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Repo.Core.Models;
 using Task = Repo.Core.Models.Task;
-using Type = Repo.Core.Models.Type;
 using User = Repo.Core.Models.User;
+using Type = Repo.Core.Models.Type;
 namespace Repo.Core.Infrastructure;
 
 public partial class MyDbContext : DbContext
@@ -41,6 +41,8 @@ public partial class MyDbContext : DbContext
     public virtual DbSet<HireHelper> HireHelpers { get; set; }
 
     public virtual DbSet<Priority> Priorities { get; set; }
+
+    public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
 
     public virtual DbSet<RelatedTask> RelatedTasks { get; set; }
 
@@ -344,6 +346,23 @@ public partial class MyDbContext : DbContext
                 .HasColumnName("Priority");
         });
 
+        modelBuilder.Entity<RefreshToken>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("RefreshToken_pk");
+
+            entity.ToTable("RefreshToken");
+
+            entity.Property(e => e.ID).ValueGeneratedNever();
+            entity.Property(e => e.CreatedAt).HasColumnType("datetime");
+            entity.Property(e => e.ExpireDate).HasColumnType("datetime");
+            entity.Property(e => e.RevokedAt).HasColumnType("datetime");
+
+            entity.HasOne(d => d.User).WithMany(p => p.RefreshTokens)
+                .HasForeignKey(d => d.User_ID)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("RefreshToken_User");
+        });
+
         modelBuilder.Entity<RelatedTask>(entity =>
         {
             entity.HasKey(e => new { e.Main_Task_ID, e.Related_Task_ID }).HasName("RelatedTasks_pk");
@@ -449,7 +468,6 @@ public partial class MyDbContext : DbContext
             entity.ToTable("Task");
 
             entity.Property(e => e.ID).ValueGeneratedNever();
-            entity.Property(e => e.Estimated_Time).HasColumnType("datetime");
             entity.Property(e => e.Name).HasMaxLength(100);
             entity.Property(e => e.Start_Time).HasColumnType("datetime");
 

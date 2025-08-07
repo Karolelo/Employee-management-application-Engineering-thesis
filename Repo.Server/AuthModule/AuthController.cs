@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -23,38 +24,33 @@ public class AuthController : ControllerBase
       this._authService = _authService;
    }
    
-   [HttpPost( "register")]
+   [HttpPost("register")]
    public async Task<IActionResult> Register(RegistrationModel model)
    {
-      try
-      {
-         var response = await _authService.CreateUser(model);
-         if(response.Success)
-            return Ok(new { Message = "User registered successfully" });
-         else 
-            return StatusCode(500, new { Message = response.Error });
-      }
-      catch (Exception ex)
-      {
-         return StatusCode(500, new { Message = "Error during creating user", Error = ex.Message });
-      }
+      if (!ModelState.IsValid)
+         return BadRequest(ModelState);
+
+      var response = await _authService.CreateUser(model);
+    
+      return response.Success
+         ? Ok(new { Message = "User registered successfully" })
+         : BadRequest(new { Message = response.Error });
    }
    
    [HttpPost("login")]
    public async Task<IActionResult> Login(LoginModel model)
    {
-      try
-      {
-         var response = await _authService.Login(model);
-         if(response.Success)
-            return Ok(new { Message = "User logged in successfully", Token = response.Data });
-         else 
-            return StatusCode(500, new { Message = response.Error });
-      }catch (Exception ex)
-      {
-         return StatusCode(500, new { Message = "Error during login", Error = ex.Message });
-      }
+      if (!ModelState.IsValid)
+         return BadRequest(ModelState);
+
+      var response = await _authService.Login(model);
+    
+      return response.Success
+         ? Ok(new { Message = "User logged in successfully", Token = response.Data })
+         : Unauthorized(new { Message = response.Error });
    }
+
+   
     
     
 }
