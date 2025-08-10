@@ -2,6 +2,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Data.SqlClient;
 using Microsoft.IdentityModel.Tokens;
 using Repo.Core.Infrastructure;
 using Microsoft.EntityFrameworkCore;
@@ -16,11 +17,31 @@ ConfigurationManager configuration = builder.Configuration;
 builder.Services.AddScoped<IAuthUserService,AuthUserService>();
 builder.Services.AddScoped<AuthenticationHelpers>();
 
+// Connection priority - changeable if needed
+var candidateNames = new[] { "Mroziu-workspace", "DefaultConnection" };
+
+// Collect the connection strings from config
+var candidates = candidateNames
+    .Select(n => (Name: n, Conn: builder.Configuration.GetConnectionString(n)))
+    .Where(x => !string.IsNullOrWhiteSpace(x.Conn))
+    .ToList();
+
+if (candidates.Count == 0)
+{
+    throw new InvalidOperationException("No defined ConnectionStrings");
+}
+
+// Choosing the first working connection string
+var chosen = await ChooseFirstWorkingAsync(candidates);
+Console.WriteLine($"[DB] Chosen ConnectionString: {chosen.Name}");
+
 // Ensure the ApplicationDbContext is registered as a service
-builder.Services.AddDbContext<MyDbContext>(conf=> conf
-    .UseSqlServer(builder
-        .Configuration
-        .GetConnectionString("DefaultConnection"))); ;
+builder.Services.AddDbContext<MyDbContext>(conf =>
+    conf.UseSqlServer(chosen.Conn, o => o.EnableRetryOnFailure()));
+// builder.Services.AddDbContext<MyDbContext>(conf=> conf
+//     .UseSqlServer(builder
+//         .Configuration
+//         .GetConnectionString("DefaultConnection"))); ;
 // Adding Authentication
 builder.Services.AddAuthentication(options =>
     {
@@ -86,6 +107,31 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
         c.RoutePrefix = string.Empty; 
     });
+}
+
+static async Task<(string Name, string Conn)> ChooseFirstWorkingAsync(
+    IEnumerable<(string Name, string Conn)> candidates)
+{
+    foreach (var c in candidates)
+    {
+        try
+        {
+            // Shorten the ConnectTimeout for testing the connection only
+            var sb = new SqlConnectionStringBuilder(c.Conn) { ConnectTimeout = 2 };
+
+            await using var conn = new SqlConnection(sb.ConnectionString);
+            await conn.OpenAsync(); // If succeeded, take that ConnectionString
+            await conn.CloseAsync();
+
+            return (c.Name, sb.ConnectionString);
+        }
+        catch (Exception e)
+        {
+            // Ignore and try out another one
+        }
+    }
+
+    throw new InvalidOperationException("Failed to find a working ConnectionString");
 }
 
 app.UseHttpsRedirection();
