@@ -77,7 +77,7 @@ public class AuthUserService : IAuthUserService
             
             //TODO dorobić tutaj dodawanie tokenu do bazy danych
             
-            return Response<string>.Ok(token);
+            return Response<string>.Ok(token.ToString());
         }catch (Exception e)
         {
             return Response<string>.Fail($"Error during login: {e.Message}");
