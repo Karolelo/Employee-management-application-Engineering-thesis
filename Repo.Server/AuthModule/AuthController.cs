@@ -49,6 +49,20 @@ public class AuthController : ControllerBase
          ? Ok(new { Message = "User logged in successfully", Token = response.Data })
          : Unauthorized(new { Message = response.Error });
    }
+   
+   [HttpPost("refresh-token")]
+   public async Task<IActionResult> RefreshToken(TokenModel model)
+   {
+      if (!ModelState.IsValid)
+         return BadRequest(ModelState);
+      
+      var response = await _authService.RefreshToken(model);
+      
+      return response.Success
+         ? Ok(new { Message = "Token refreshed successfully", Token = response.Data })
+         : Unauthorized(new { Message = response.Error });
+
+   }
 
    
     
