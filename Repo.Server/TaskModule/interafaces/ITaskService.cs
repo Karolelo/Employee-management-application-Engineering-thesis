@@ -4,7 +4,7 @@ using Repo.Core.Models.task;
 
 namespace Repo.Server.TaskModule.interafaces;
 
-public interface ITaskManager
+public interface ITaskService
 {
     //Methods for getting task
     Task<Response<ICollection<Repo.Core.Models.Task>>> GetUserTasks(int userId);

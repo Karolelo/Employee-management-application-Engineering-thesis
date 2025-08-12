@@ -9,12 +9,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Repo.Server.Controllers;
 using Repo.Server.Controllers.Interfaces;
+using Repo.Server.TaskModule;
+using Repo.Server.TaskModule.interafaces;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
 
 //adding services
 builder.Services.AddScoped<IAuthUserService,AuthUserService>();
+builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<AuthenticationHelpers>();
 
 // Connection priority - changeable if needed

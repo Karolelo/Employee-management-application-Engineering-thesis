@@ -8,7 +8,7 @@ using Repo.Server.TaskModule.interafaces;
 using Task = Repo.Core.Models.Task;
 
 namespace Repo.Server.TaskModule;
-public class TaskService : ITaskManager
+public class TaskService : ITaskService
 {
     private readonly MyDbContext _context;
     
