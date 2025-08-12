@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Repo.Core.Infrastructure;
 using Repo.Core.Models;
 using Repo.Core.Models.api;
+using Repo.Core.Models.DTOs;
 using Repo.Core.Models.task;
 using Repo.Server.TaskModule.interafaces;
 using Task = Repo.Core.Models.Task;
@@ -127,30 +128,59 @@ public class TaskService : ITaskService
         return Response<Task>.Ok(task.Data);
     }
 
-    public async Task<Response<Task>> UpdateTask(UpdateTaskModel model, int id)
+    public async Task<Response<TaskDTO>> UpdateTask(UpdateTaskModel model, int id)
     {
         try
         {
-            var task = await _context.Set<Task>().FirstOrDefaultAsync(e => e.ID == id);
+            var task = await _context.Set<Task>()
+                .Include(t => t.Priority)
+                .Include(t => t.Status)
+                .FirstOrDefaultAsync(e => e.ID == id);
             if (task == null)
             {
-                return Response<Task>.Fail("Task not found");
+                return Response<TaskDTO>.Fail("Task not found");
+            }
+            
+            var priority = await _context.Set<Priority>().FirstOrDefaultAsync(e => e.Priority1 == model.Priority);
+            if (priority == null)
+            {
+                return Response<TaskDTO>.Fail("Priority not found");
+            }
+
+            var status = await _context.Set<Status>().FirstOrDefaultAsync(e => e.Status1 == model.Status);
+            if (status == null)
+            {
+                return Response<TaskDTO>.Fail("Status not found");
             }
 
             task.Name = model.Name;
             task.Description = model.Description;
             task.Start_Time = model.Start_Time;
             //task.Estimated_Time = model.Estimated_Time;
+            task.Priority = priority;
+            task.Status = status;
             await _context.SaveChangesAsync();
-            return Response<Task>.Ok(task);
+            
+            var dto = new TaskDTO
+            {
+                ID = task.ID, 
+                Name = task.Name, 
+                Description = task.Description, 
+                Start_Time = task.Start_Time, 
+                Estimated_Time = task.Estimated_Time, 
+                Priority = task.Priority.Priority1, 
+                Status = task.Status.Status1
+            };
+            
+            return Response<TaskDTO>.Ok(dto);
         }
         catch (DbUpdateConcurrencyException)
         {
-            return Response<Task>.Fail("Concurrency conflict");
+            return Response<TaskDTO>.Fail("Concurrency conflict");
         }
         catch (Exception e)
         {
-            return Response<Task>.Fail($"Error during updating task: {e.Message}");
+            return Response<TaskDTO>.Fail($"Error during updating task: {e.Message}");
         }
     }
 

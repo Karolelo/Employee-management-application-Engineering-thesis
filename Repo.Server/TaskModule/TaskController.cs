@@ -105,9 +105,12 @@ public class TaskController : ControllerBase
         
         var task = response.Data;
         
-        return response.Success
-            ? Ok(response.Data)
-            : BadRequest(new { Message = response.Error });
+        if (!response.Success)
+            return response.Error.Equals("Task not found")
+                ? NotFound(new { Message = response.Error })
+                : BadRequest(new { Message = response.Error });
+        
+        return Ok(response.Data);
     }
 
     [HttpDelete("{id}")]

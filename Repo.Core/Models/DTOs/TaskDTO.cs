@@ -1,7 +1,9 @@
-namespace Repo.Core.Models.task;
+﻿namespace Repo.Core.Models.DTOs;
 
-public class UpdateTaskModel
+public class TaskDTO
 {
+    public int ID { get; set; }
+    
     public string Name { get; set; } = null!;
 
     public string Description { get; set; } = null!;
