@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Repo.Server.Controllers;
 using Repo.Server.Controllers.Interfaces;
+using Repo.Server.TaskModule;
+using Repo.Server.TaskModule.interafaces;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
@@ -15,7 +17,7 @@ ConfigurationManager configuration = builder.Configuration;
 //adding services
 builder.Services.AddScoped<IAuthUserService,AuthUserService>();
 builder.Services.AddScoped<AuthenticationHelpers>();
-
+builder.Services.AddScoped<ITaskManager,TaskService>();
 // Ensure the ApplicationDbContext is registered as a service
 builder.Services.AddDbContext<MyDbContext>(conf=> conf
     .UseSqlServer(builder

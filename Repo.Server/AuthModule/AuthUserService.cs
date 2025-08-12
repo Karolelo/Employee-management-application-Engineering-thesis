@@ -46,6 +46,8 @@ public class AuthUserService : IAuthUserService
                 Name = model.Name,
                 Surname = model.Surname
             };
+            _context.Set<User>().Add(user);  
+            await _context.SaveChangesAsync();
             
             //Adding refresh token to database
             var token = new RefreshToken()
@@ -55,8 +57,7 @@ public class AuthUserService : IAuthUserService
                 ExpireDate = DateTime.Now.AddDays(7),
                 CreatedAt = DateTime.Now
             };
-            
-            _context.Set<User>().Add(user);
+            await _context.SaveChangesAsync();
             _context.Set<RefreshToken>().Add(token);
             await _context.SaveChangesAsync();
             await transaction.CommitAsync();
