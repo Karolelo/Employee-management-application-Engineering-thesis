@@ -340,7 +340,7 @@ public partial class MyDbContext : DbContext
 
             entity.ToTable("Priority");
 
-            entity.Property(e => e.ID).ValueGeneratedNever();
+            entity.Property(e => e.ID).ValueGeneratedOnAdd();
             entity.Property(e => e.Priority1)
                 .HasMaxLength(100)
                 .HasColumnName("Priority");
