@@ -157,9 +157,30 @@ public class TaskService : ITaskService
     {
         throw new NotImplementedException();
     }
-    //Zastanowić się nad implementacja przez baze danych
-    public void DeleteTask(int id)
+    
+    public async Task<Response<Task>> DeleteTask(int id)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var task = await _context.Set<Task>().FirstOrDefaultAsync(e => e.ID == id);
+
+            if (task == null)
+            {
+                return Response<Task>.Fail("Task not found");
+            }
+
+            if (task.Deleted == 1)
+            {
+                return Response<Task>.Fail("Task already deleted");
+            }
+            task.Deleted = 1;
+            _context.Set<Task>().Update(task);
+            await _context.SaveChangesAsync();
+            return Response<Task>.Ok(task);
+        }
+        catch (Exception e)
+        {
+            return Response<Task>.Fail($"Error during updating task: {e.Message}");
+        }
     }
 }

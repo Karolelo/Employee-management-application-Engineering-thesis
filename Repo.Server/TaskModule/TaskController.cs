@@ -92,4 +92,18 @@ public class TaskController : ControllerBase
             ? CreatedAtAction(nameof(GetTaskById), new {id = task.ID}, "Added new Task with ID: " + new {id = task.ID} + "\nAssigned Group with id " + new {groupId = groupId} + " to the task")
             : BadRequest(new { Message = response.Error });
     }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteTask(int id)
+    {
+        var response = await _taskService.DeleteTask(id);
+
+        if (!response.Success)
+        {
+            if (response.Error.Equals("Task not found")) return NotFound(new { Message = response.Error });
+            if (response.Error.Equals("Task already deleted")) return Conflict(new { Message = response.Error });
+            return BadRequest(new { Message = response.Error });
+        }
+        return NoContent();
+    }
 }

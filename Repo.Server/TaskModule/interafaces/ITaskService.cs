@@ -1,6 +1,7 @@
 using Repo.Core.Models;
 using Repo.Core.Models.api;
 using Repo.Core.Models.task;
+using Task = Repo.Core.Models.Task;
 
 namespace Repo.Server.TaskModule.interafaces;
 
@@ -23,5 +24,5 @@ public interface ITaskService
     Task<Response<Repo.Core.Models.Task>> UpdateTaskStatus(int id, int status);
     
     //Methods for deleting task
-    void DeleteTask(int id);
+    Task<Response<Task>> DeleteTask(int id);
 }
