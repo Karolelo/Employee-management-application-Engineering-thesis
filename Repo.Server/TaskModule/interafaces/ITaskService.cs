@@ -20,7 +20,7 @@ public interface ITaskService
     Task<Response<Repo.Core.Models.Task>> CreateTaskAssignToGroup(CreateTaskModel model, int groupId);
 
     //Methods for updating task
-    Task<Response<Repo.Core.Models.Task>> UpdateTask(UpdateTaskModel model);
+    Task<Response<Repo.Core.Models.Task>> UpdateTask(UpdateTaskModel model, int id);
     Task<Response<Repo.Core.Models.Task>> UpdateTaskStatus(int id, int status);
     
     //Methods for deleting task

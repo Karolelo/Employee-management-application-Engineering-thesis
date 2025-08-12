@@ -127,12 +127,11 @@ public class TaskService : ITaskService
         return Response<Task>.Ok(task.Data);
     }
 
-    public async Task<Response<Task>> UpdateTask(UpdateTaskModel model)
+    public async Task<Response<Task>> UpdateTask(UpdateTaskModel model, int id)
     {
-        using var transaction = await _context.Database.BeginTransactionAsync();
         try
         {
-            var task = await _context.Set<Task>().FirstOrDefaultAsync(e => e.ID == model.ID);
+            var task = await _context.Set<Task>().FirstOrDefaultAsync(e => e.ID == id);
             if (task == null)
             {
                 return Response<Task>.Fail("Task not found");
@@ -143,12 +142,14 @@ public class TaskService : ITaskService
             task.Start_Time = model.Start_Time;
             //task.Estimated_Time = model.Estimated_Time;
             await _context.SaveChangesAsync();
-            await transaction.CommitAsync();
             return Response<Task>.Ok(task);
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            return Response<Task>.Fail("Concurrency conflict");
         }
         catch (Exception e)
         {
-            await transaction.RollbackAsync();
             return Response<Task>.Fail($"Error during updating task: {e.Message}");
         }
     }

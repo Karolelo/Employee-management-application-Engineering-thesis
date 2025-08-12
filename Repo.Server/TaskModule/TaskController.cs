@@ -93,6 +93,23 @@ public class TaskController : ControllerBase
             : BadRequest(new { Message = response.Error });
     }
 
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateTask(int id, UpdateTaskModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return ValidationProblem(ModelState);
+        }
+        
+        var response = await _taskService.UpdateTask(model, id);
+        
+        var task = response.Data;
+        
+        return response.Success
+            ? Ok(response.Data)
+            : BadRequest(new { Message = response.Error });
+    }
+
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteTask(int id)
     {
