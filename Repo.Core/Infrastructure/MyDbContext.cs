@@ -467,7 +467,7 @@ public partial class MyDbContext : DbContext
 
             entity.ToTable("Task");
 
-            entity.Property(e => e.ID).ValueGeneratedNever();
+            entity.Property(e => e.ID).ValueGeneratedOnAdd();
             entity.Property(e => e.Name).HasMaxLength(100);
             entity.Property(e => e.Start_Time).HasColumnType("datetime");
 

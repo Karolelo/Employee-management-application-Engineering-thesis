@@ -41,5 +41,55 @@ public class TaskController : ControllerBase
             ? Ok(response.Data)
             : BadRequest(new { Message = response.Error });
     }
-    
+
+    [HttpPost("add")]
+    public async Task<IActionResult> AddTask(CreateTaskModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return ValidationProblem(ModelState);
+        }
+        
+        var response = await _taskService.CreateTask(model);
+        
+        var task = response.Data;
+
+        return response.Success
+            ? CreatedAtAction(nameof(GetTaskById), new {id = task.ID}, "Added new Task with ID: " + new {id = task.ID})
+            : BadRequest(new { Message = response.Error });
+    }
+
+    [HttpPost("add/user/{userId}")]
+    public async Task<IActionResult> AddTaskUser(int userId, CreateTaskModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return ValidationProblem(ModelState);
+        }
+        
+        var response = await _taskService.CreateTaskAssignToUser(model, userId);
+        
+        var task = response.Data;
+
+        return response.Success
+            ? CreatedAtAction(nameof(GetTaskById), new {id = task.ID}, "Added new Task with ID: " + new {id = task.ID} + "\nAssigned User with id " + new {userId = userId} + " to the task")
+            : BadRequest(new { Message = response.Error });
+    }
+
+    [HttpPost("add/group/{groupId}")]
+    public async Task<IActionResult> AddTaskGroup(int groupId, CreateTaskModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return ValidationProblem(ModelState);
+        }
+        
+        var response = await _taskService.CreateTaskAssignToGroup(model, groupId);
+        
+        var task = response.Data;
+
+        return response.Success
+            ? CreatedAtAction(nameof(GetTaskById), new {id = task.ID}, "Added new Task with ID: " + new {id = task.ID} + "\nAssigned Group with id " + new {groupId = groupId} + " to the task")
+            : BadRequest(new { Message = response.Error });
+    }
 }
