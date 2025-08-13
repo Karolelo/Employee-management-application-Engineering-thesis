@@ -1,10 +1,12 @@
 using Repo.Core.Models;
 using Repo.Core.Models.api;
 using Repo.Core.Models.task;
+using Repo.Core.Models.DTOs;
+using Task = Repo.Core.Models.Task;
 
 namespace Repo.Server.TaskModule.interafaces;
 
-public interface ITaskManager
+public interface ITaskService
 {
     //Methods for getting task
     Task<Response<ICollection<Repo.Core.Models.Task>>> GetUserTasks(int userId);
@@ -19,9 +21,9 @@ public interface ITaskManager
     Task<Response<Repo.Core.Models.Task>> CreateTaskAssignToGroup(CreateTaskModel model, int groupId);
 
     //Methods for updating task
-    Task<Response<Repo.Core.Models.Task>> UpdateTask(UpdateTaskModel model);
+    Task<Response<Repo.Core.Models.DTOs.TaskDTO>> UpdateTask(UpdateTaskModel model, int id);
     Task<Response<Repo.Core.Models.Task>> UpdateTaskStatus(int id, int status);
     
     //Methods for deleting task
-    void DeleteTask(int id);
+    Task<Response<Task>> DeleteTask(int id);
 }

@@ -4,6 +4,7 @@ using Repo.Core.Infrastructure;
 using Repo.Core.Models;
 using Repo.Core.Models.api;
 using Repo.Core.Models.auth;
+using Repo.Core.Models.Repo.Core.Models;
 using Repo.Server.Controllers.Interfaces;
 
 namespace Repo.Server.Controllers;
@@ -46,7 +47,8 @@ public class AuthUserService : IAuthUserService
                 Name = model.Name,
                 Surname = model.Surname
             };
-            _context.Set<User>().Add(user);  
+  
+            _context.Set<User>().Add(user);
             await _context.SaveChangesAsync();
             
             //Adding refresh token to database
@@ -65,8 +67,7 @@ public class AuthUserService : IAuthUserService
         }
         catch (Exception e)
         {
-            await transaction.RollbackAsync();
-            return Response<User>.Fail($"Error during creating of user: {e.InnerException.Message}");
+            return Response<User>.Fail($"Error during creating of user: {e.Message}");
         }
     }
 

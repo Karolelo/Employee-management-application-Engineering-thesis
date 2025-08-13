@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Repo.Server.TaskModule.interafaces;
 
 namespace Repo.Server.TaskModule;
 [ApiController]
@@ -8,9 +7,9 @@ namespace Repo.Server.TaskModule;
 [Authorize]
 public class TaskController : ControllerBase
 {
-    private readonly ITaskManager _taskService;
+    private readonly TaskService _taskService;
     
-    public TaskController(ITaskManager taskService)
+    public TaskController(TaskService taskService)
     {
         _taskService = taskService;
     }

@@ -3,12 +3,13 @@ using Microsoft.EntityFrameworkCore;
 using Repo.Core.Infrastructure;
 using Repo.Core.Models;
 using Repo.Core.Models.api;
+using Repo.Core.Models.DTOs;
 using Repo.Core.Models.task;
 using Repo.Server.TaskModule.interafaces;
 using Task = Repo.Core.Models.Task;
 
 namespace Repo.Server.TaskModule;
-public class TaskService : ITaskManager
+public class TaskService : ITaskService
 {
     private readonly MyDbContext _context;
     
@@ -127,29 +128,59 @@ public class TaskService : ITaskManager
         return Response<Task>.Ok(task.Data);
     }
 
-    public async Task<Response<Task>> UpdateTask(UpdateTaskModel model)
+    public async Task<Response<TaskDTO>> UpdateTask(UpdateTaskModel model, int id)
     {
-        using var transaction = await _context.Database.BeginTransactionAsync();
         try
         {
-            var task = await _context.Set<Task>().FirstOrDefaultAsync(e => e.ID == model.ID);
+            var task = await _context.Set<Task>()
+                .Include(t => t.Priority)
+                .Include(t => t.Status)
+                .FirstOrDefaultAsync(e => e.ID == id);
             if (task == null)
             {
-                return Response<Task>.Fail("Task not found");
+                return Response<TaskDTO>.Fail("Task not found");
+            }
+            
+            var priority = await _context.Set<Priority>().FirstOrDefaultAsync(e => e.Priority1 == model.Priority);
+            if (priority == null)
+            {
+                return Response<TaskDTO>.Fail("Priority not found");
+            }
+
+            var status = await _context.Set<Status>().FirstOrDefaultAsync(e => e.Status1 == model.Status);
+            if (status == null)
+            {
+                return Response<TaskDTO>.Fail("Status not found");
             }
 
             task.Name = model.Name;
             task.Description = model.Description;
             task.Start_Time = model.Start_Time;
             //task.Estimated_Time = model.Estimated_Time;
+            task.Priority = priority;
+            task.Status = status;
             await _context.SaveChangesAsync();
-            await transaction.CommitAsync();
-            return Response<Task>.Ok(task);
+            
+            var dto = new TaskDTO
+            {
+                ID = task.ID, 
+                Name = task.Name, 
+                Description = task.Description, 
+                Start_Time = task.Start_Time, 
+                Estimated_Time = task.Estimated_Time, 
+                Priority = task.Priority.Priority1, 
+                Status = task.Status.Status1
+            };
+            
+            return Response<TaskDTO>.Ok(dto);
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            return Response<TaskDTO>.Fail("Concurrency conflict");
         }
         catch (Exception e)
         {
-            await transaction.RollbackAsync();
-            return Response<Task>.Fail($"Error during updating task: {e.Message}");
+            return Response<TaskDTO>.Fail($"Error during updating task: {e.Message}");
         }
     }
 
@@ -157,9 +188,30 @@ public class TaskService : ITaskManager
     {
         throw new NotImplementedException();
     }
-    //Zastanowić się nad implementacja przez baze danych
-    public void DeleteTask(int id)
+    
+    public async Task<Response<Task>> DeleteTask(int id)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var task = await _context.Set<Task>().FirstOrDefaultAsync(e => e.ID == id);
+
+            if (task == null)
+            {
+                return Response<Task>.Fail("Task not found");
+            }
+
+            if (task.Deleted == 1)
+            {
+                return Response<Task>.Fail("Task already deleted");
+            }
+            task.Deleted = 1;
+            _context.Set<Task>().Update(task);
+            await _context.SaveChangesAsync();
+            return Response<Task>.Ok(task);
+        }
+        catch (Exception e)
+        {
+            return Response<Task>.Fail($"Error during updating task: {e.Message}");
+        }
     }
 }
