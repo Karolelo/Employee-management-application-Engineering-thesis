@@ -22,7 +22,7 @@ public class TaskController : ControllerBase
     
         return response.Success 
             ? Ok(response.Data)
-            : BadRequest(new { Message = response.Error }); 
+            : NotFound(new { Message = response.Error }); 
     }
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetTaskById(int id)
@@ -30,7 +30,8 @@ public class TaskController : ControllerBase
         var response = await _taskService.GetTaskById(id);
     
         return response.Success 
-            ? Ok(response.Data): BadRequest(new { Message = response.Error });
+            ? Ok(response.Data)
+            : NotFound(new { Message = response.Error });
     }
     [HttpGet("group/{groupId:int}")]
     public async Task<IActionResult> GetGroupTasks(int groupId)
@@ -39,7 +40,7 @@ public class TaskController : ControllerBase
         
         return response.Success 
             ? Ok(response.Data)
-            : BadRequest(new { Message = response.Error });
+            : NotFound(new { Message = response.Error });
     }
 
     [HttpPost("add")]
