@@ -34,7 +34,7 @@ public class TaskController : ControllerBase
             : NotFound(new { Message = response.Error });
     }
 
-    [HttpGet("{id:int}/with-related")]
+    [HttpGet("{id:int}/relations", Name = "GetTaskWithRelated")]
     public async Task<IActionResult> GetTaskWithRelatedTasks(int id)
     {
         var response = await _taskService.GetTaskWithRelatedTasks(id);
