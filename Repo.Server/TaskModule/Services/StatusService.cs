@@ -43,9 +43,41 @@ public class StatusService : IStatusService
         }
     }
 
-    public async Task<Response<StatusDTO>> UpdateStatus(StatusDTO status, int id)
+    public async Task<Response<StatusDTO>> UpdateStatus(StatusDTO statusModel, int id)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var status = await _context.Statuses.FirstOrDefaultAsync(s => s.ID == id);
+            if (status == null)
+                return Response<StatusDTO>.Fail("Status not found");
+            
+            var newStatus = (statusModel.Status ?? string.Empty).Trim();
+            if (string.IsNullOrWhiteSpace(newStatus))
+                return Response<StatusDTO>.Fail("Status name cannot be empty");
+            
+            var exists = await _context.Statuses
+                .AnyAsync(s => s.ID != id && s.Status1 == newStatus);
+            if (exists)
+                return Response<StatusDTO>.Fail("Priority with this name already exists");
+            
+            status.Status1 = newStatus;
+            await _context.SaveChangesAsync();
+
+            var dto = new StatusDTO
+            {
+                Status = status.Status1
+            };
+            
+            return Response<StatusDTO>.Ok(dto);
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            return Response<StatusDTO>.Fail("Concurrency conflict");
+        }
+        catch (Exception e)
+        {
+            return Response<StatusDTO>.Fail($"Error during updating status: {e.Message}");
+        }
     }
 
     public async Task<Response<StatusDTO>> GetStatusById(int id)

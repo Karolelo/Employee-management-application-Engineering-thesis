@@ -38,7 +38,19 @@ public class StatusController : ControllerBase
     [HttpPut("{id:int}")]
     public async Task<IActionResult> UpdateStatus(StatusDTO model, int id)
     {
-        throw new NotImplementedException();
+        if (!ModelState.IsValid)
+        {
+            return ValidationProblem(ModelState);
+        }
+
+        var response = await _statusService.UpdateStatus(model, id);
+        
+        if (!response.Success)
+            return response.Error.Equals("Status not found")
+                ? NotFound(new { Message = response.Error })
+                : BadRequest(new { Message = response.Error });
+        
+        return Ok(response.Data);
     }
     
     [HttpGet("{id:int}")]
