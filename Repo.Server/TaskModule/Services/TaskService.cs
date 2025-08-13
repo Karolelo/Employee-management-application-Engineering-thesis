@@ -37,9 +37,53 @@ public class TaskService : ITaskService
         return result == null ? Response<Task>.Fail("Task not found") : Response<Task>.Ok(result);
     }
 
-    public async Task<Response<ICollection<Tuple<Task, ICollection<Task>>>>> GetTaskWithRelatedTasks(int id)
+    public async Task<Response<TaskWithRelatedDTO>> GetTaskWithRelatedTasks(int id)
     {
-        throw new NotImplementedException();
+        var task = await _context.Tasks
+            .AsNoTracking()
+            .Where(t => t.ID == id)
+            .Select(t => new TaskDTO
+            {
+                ID = t.ID,
+                Name = t.Name,
+                Description = t.Description,
+                Start_Time = t.Start_Time,
+                Estimated_Time = t.Estimated_Time,
+                Priority = t.Priority.Priority1,
+                Status = t.Status.Status1
+            })
+            .FirstOrDefaultAsync();
+
+        if (task == null)
+            return Response<TaskWithRelatedDTO>.Fail("Task not found");
+
+        var relatedIds = await _context.RelatedTasks
+            .AsNoTracking()
+            .Where(rt => rt.Main_Task_ID == id || rt.Related_Task_ID == id)
+            .Select(rt => rt.Main_Task_ID == id ? rt.Related_Task_ID : rt.Main_Task_ID)
+            .Distinct()
+            .ToListAsync();
+
+        var relatedDTOs = await _context.Tasks
+            .AsNoTracking()
+            // trzeba podjac decyzje czy filtrujemy soft-delete (&& t.Deleted == 0)
+            .Where(t => relatedIds.Contains(t.ID))
+            .Select(t => new TaskDTO
+            {
+                ID = t.ID,
+                Name = t.Name,
+                Description = t.Description,
+                Start_Time = t.Start_Time,
+                Estimated_Time = t.Estimated_Time,
+                Priority = t.Priority.Priority1,
+                Status = t.Status.Status1
+            })
+            .ToListAsync();
+
+        return Response<TaskWithRelatedDTO>.Ok(new TaskWithRelatedDTO{
+            Task = task,
+            RelatedTasks = relatedDTOs
+        });
     }
 
     public async Task<Response<ICollection<Task>>> GetGroupTasks(int groupdId)

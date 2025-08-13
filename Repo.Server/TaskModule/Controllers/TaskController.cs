@@ -33,6 +33,16 @@ public class TaskController : ControllerBase
             ? Ok(response.Data)
             : NotFound(new { Message = response.Error });
     }
+
+    [HttpGet("{id:int}/with-related")]
+    public async Task<IActionResult> GetTaskWithRelatedTasks(int id)
+    {
+        var response = await _taskService.GetTaskWithRelatedTasks(id);
+        return response.Success
+            ? Ok(response.Data)
+            : NotFound(new { Message = response.Error });
+    }
+    
     [HttpGet("group/{groupId:int}")]
     public async Task<IActionResult> GetGroupTasks(int groupId)
     {

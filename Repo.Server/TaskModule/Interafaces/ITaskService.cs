@@ -12,7 +12,7 @@ public interface ITaskService
     Task<Response<ICollection<Repo.Core.Models.Task>>> GetUserTasks(int userId);
     Task<Response<Repo.Core.Models.Task>> GetTaskById(int id);
     
-    Task<Response<ICollection<Tuple<Repo.Core.Models.Task, ICollection<Core.Models.Task>>>>> GetTaskWithRelatedTasks(int id);
+    Task<Response<TaskWithRelatedDTO>> GetTaskWithRelatedTasks(int id);
     Task<Response<ICollection<Repo.Core.Models.Task>>> GetGroupTasks(int groudId);
 
     //Methods for creating task

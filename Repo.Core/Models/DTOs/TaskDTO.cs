@@ -16,3 +16,9 @@ public class TaskDTO
 
     public string Status { get; set; }
 }
+
+public class TaskWithRelatedDTO
+{
+    public TaskDTO Task { get; set; }
+    public IReadOnlyList<TaskDTO> RelatedTasks { get; set; }
+}
