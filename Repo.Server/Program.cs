@@ -100,7 +100,16 @@ builder.Services.AddSwaggerGen(option =>
         }
     });
 });
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularDevServer",
+        builder =>
+        {
+            builder.WithOrigins("http://localhost:55399")
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+});
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -137,7 +146,7 @@ static async Task<(string Name, string Conn)> ChooseFirstWorkingAsync(
 
     throw new InvalidOperationException("Failed to find a working ConnectionString");
 }
-
+app.UseCors("AllowAngularDevServer");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
