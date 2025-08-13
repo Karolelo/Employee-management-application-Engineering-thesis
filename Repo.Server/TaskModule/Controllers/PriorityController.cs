@@ -53,9 +53,13 @@ public class PriorityController : ControllerBase
          return Ok(response.Data);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     public async Task<IActionResult> GetPriorityById(int id)
     {
-        throw new NotImplementedException();
+        var response = await _priorityService.GetPriorityById(id);
+        
+        return response.Success
+            ? Ok(response.Data)
+            : NotFound(new { Message = response.Error });
     }
 }

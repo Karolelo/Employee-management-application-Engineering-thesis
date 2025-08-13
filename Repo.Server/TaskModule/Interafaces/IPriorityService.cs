@@ -8,5 +8,5 @@ public interface IPriorityService
 {
     Task<Response<Priority>> AddPriority(PriorityDTO priority);
     Task<Response<PriorityDTO>> UpdatePriority(PriorityDTO priority, int id);
-    Task<Response<Priority>> GetPriorityById(int id);
+    Task<Response<PriorityDTO>> GetPriorityById(int id);
 }

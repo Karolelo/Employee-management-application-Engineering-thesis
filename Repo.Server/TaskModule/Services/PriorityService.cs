@@ -80,8 +80,13 @@ public class PriorityService : IPriorityService
         }
     }
 
-    public Task<Response<Priority>> GetPriorityById(int id)
+    public async Task<Response<PriorityDTO>> GetPriorityById(int id)
     {
-        throw new NotImplementedException();
+        var result = await _context.Priorities
+            .AsNoTracking()
+            .Where(p => p.ID == id)
+            .Select(p => new PriorityDTO{ Priority = p.Priority1})
+            .FirstOrDefaultAsync();
+        return result == null ? Response<PriorityDTO>.Fail("Priority not found") : Response<PriorityDTO>.Ok(result);
     }
 }
