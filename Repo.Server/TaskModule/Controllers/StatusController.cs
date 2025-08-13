@@ -12,10 +12,12 @@ namespace Repo.Server.TaskModule;
 public class StatusController : ControllerBase
 {
     private readonly IStatusService _statusService;
+    private readonly ITaskService _taskService;
 
-    public StatusController(IStatusService statusService)
+    public StatusController(IStatusService statusService, ITaskService taskService)
     {
         _statusService = statusService;
+        _taskService = taskService;
     }
 
     [HttpPost("add")]
@@ -58,6 +60,16 @@ public class StatusController : ControllerBase
     {
         var response = await _statusService.GetStatusById(id);
         
+        return response.Success
+            ? Ok(response.Data)
+            : NotFound(new { Message = response.Error });
+    }
+
+    [HttpGet("{id:int}/tasks")]
+    public async Task<IActionResult> GetTasksForStatus(int id)
+    {
+        var response = await _taskService.GetTasksByStatusId(id);
+
         return response.Success
             ? Ok(response.Data)
             : NotFound(new { Message = response.Error });

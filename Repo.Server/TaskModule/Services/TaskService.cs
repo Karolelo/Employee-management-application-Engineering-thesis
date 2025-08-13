@@ -158,6 +158,34 @@ public class TaskService : ITaskService
             ? Response<ICollection<TaskDTO>>.Fail("Priority has no tasks")
             : Response<ICollection<TaskDTO>>.Ok(tasks);
     }
+    
+    public async Task<Response<ICollection<TaskDTO>>> GetTasksByStatusId(int statusId)
+    {
+        var statusExists = await _context.Statuses
+            .AsNoTracking()
+            .AnyAsync(s => s.ID == statusId);
+        if (!statusExists)
+            return Response<ICollection<TaskDTO>>.Fail("Status not found");
+        
+        var tasks = await _context.Tasks
+            .AsNoTracking()
+            .Where(t => t.Status_ID == statusId && t.Deleted == 0)
+            .Select(t => new TaskDTO
+            {
+                ID = t.ID,
+                Name = t.Name,
+                Description = t.Description,
+                Start_Time = t.Start_Time,
+                Estimated_Time = t.Estimated_Time,
+                Priority = t.Priority.Priority1,
+                Status = t.Status.Status1
+            })
+            .ToListAsync();
+        
+        return tasks.Count == 0
+            ? Response<ICollection<TaskDTO>>.Fail("Status has no tasks")
+            : Response<ICollection<TaskDTO>>.Ok(tasks);
+    }
 
     public async Task<Response<Task>> CreateTask(CreateTaskModel model)
     {
