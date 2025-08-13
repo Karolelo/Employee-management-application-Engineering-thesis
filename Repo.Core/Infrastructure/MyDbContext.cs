@@ -423,7 +423,7 @@ public partial class MyDbContext : DbContext
 
             entity.ToTable("Status");
 
-            entity.Property(e => e.ID).ValueGeneratedNever();
+            entity.Property(e => e.ID).ValueGeneratedOnAdd();
             entity.Property(e => e.Status1)
                 .HasMaxLength(100)
                 .HasColumnName("Status");

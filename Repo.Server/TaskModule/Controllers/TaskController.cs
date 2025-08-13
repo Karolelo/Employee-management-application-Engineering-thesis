@@ -22,7 +22,7 @@ public class TaskController : ControllerBase
     
         return response.Success 
             ? Ok(response.Data)
-            : BadRequest(new { Message = response.Error }); 
+            : NotFound(new { Message = response.Error }); 
     }
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetTaskById(int id)
@@ -30,7 +30,8 @@ public class TaskController : ControllerBase
         var response = await _taskService.GetTaskById(id);
     
         return response.Success 
-            ? Ok(response.Data): BadRequest(new { Message = response.Error });
+            ? Ok(response.Data)
+            : NotFound(new { Message = response.Error });
     }
     [HttpGet("group/{groupId:int}")]
     public async Task<IActionResult> GetGroupTasks(int groupId)
@@ -39,7 +40,7 @@ public class TaskController : ControllerBase
         
         return response.Success 
             ? Ok(response.Data)
-            : BadRequest(new { Message = response.Error });
+            : NotFound(new { Message = response.Error });
     }
 
     [HttpPost("add")]
@@ -55,7 +56,7 @@ public class TaskController : ControllerBase
         var task = response.Data;
 
         return response.Success
-            ? CreatedAtAction(nameof(GetTaskById), new {id = task.ID}, "Added new Task with ID: " + new {id = task.ID})
+            ? CreatedAtAction(nameof(GetTaskById), new {id = task.ID}, $"Added new task with ID: {task.ID}")
             : BadRequest(new { Message = response.Error });
     }
 
@@ -72,7 +73,7 @@ public class TaskController : ControllerBase
         var task = response.Data;
 
         return response.Success
-            ? CreatedAtAction(nameof(GetTaskById), new {id = task.ID}, "Added new Task with ID: " + new {id = task.ID} + "\nAssigned User with id " + new {userId = userId} + " to the task")
+            ? CreatedAtAction(nameof(GetTaskById), new {id = task.ID}, $"Added new Task with ID: {task.ID}" + $"\nAssigned User with id {userId} to the task")
             : BadRequest(new { Message = response.Error });
     }
 
@@ -89,7 +90,7 @@ public class TaskController : ControllerBase
         var task = response.Data;
 
         return response.Success
-            ? CreatedAtAction(nameof(GetTaskById), new {id = task.ID}, "Added new Task with ID: " + new {id = task.ID} + "\nAssigned Group with id " + new {groupId = groupId} + " to the task")
+            ? CreatedAtAction(nameof(GetTaskById), new {id = task.ID}, $"Added new Task with ID: {task.ID}" + $"\nAssigned Group with id {groupId} to the task")
             : BadRequest(new { Message = response.Error });
     }
 

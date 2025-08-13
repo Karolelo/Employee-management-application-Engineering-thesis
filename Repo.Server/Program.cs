@@ -19,6 +19,7 @@ ConfigurationManager configuration = builder.Configuration;
 builder.Services.AddScoped<IAuthUserService,AuthUserService>();
 builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<IPriorityService, PriorityService>();
+builder.Services.AddScoped<IStatusService, StatusService>();
 builder.Services.AddScoped<AuthenticationHelpers>();
 
 // Connection priority - changeable if needed
