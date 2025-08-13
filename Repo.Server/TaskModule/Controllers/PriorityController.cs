@@ -35,6 +35,24 @@ public class PriorityController : ControllerBase
             : BadRequest(new { Message = response.Error });
     }
 
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdatePriority(PriorityDTO model, int id)
+    {
+        if (!ModelState.IsValid)
+        {
+            return ValidationProblem(ModelState);
+        }
+        
+         var response = await _priorityService.UpdatePriority(model, id);
+         
+         if (!response.Success)
+             return response.Error.Equals("Priority not found")
+                 ? NotFound(new { Message = response.Error })
+                 : BadRequest(new { Message = response.Error });
+         
+         return Ok(response.Data);
+    }
+
     [HttpGet("{id}")]
     public async Task<IActionResult> GetPriorityById(int id)
     {

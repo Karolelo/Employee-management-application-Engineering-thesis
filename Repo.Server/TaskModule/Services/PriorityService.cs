@@ -43,9 +43,41 @@ public class PriorityService : IPriorityService
         }
     }
 
-    public Task<Response<PriorityDTO>> UpdatePriority(PriorityDTO priority, int id)
+    public async Task<Response<PriorityDTO>> UpdatePriority(PriorityDTO priorityModel, int id)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var priority = await _context.Priorities.FirstOrDefaultAsync(p => p.ID == id);
+            if (priority == null)
+                return Response<PriorityDTO>.Fail("Priority not found");
+            
+            var newPriority = (priorityModel.Priority ?? string.Empty).Trim();
+            if (string.IsNullOrWhiteSpace(newPriority))
+                return Response<PriorityDTO>.Fail("Priority name cannot be empty");
+            
+            var exists = await _context.Priorities
+                .AnyAsync(p => p.ID != id && p.Priority1 == newPriority);
+            if (exists)
+                return Response<PriorityDTO>.Fail("Priority with this name already exists");
+            
+            priority.Priority1 = newPriority;
+            await _context.SaveChangesAsync();
+
+            var dto = new PriorityDTO
+            {
+                Priority = priority.Priority1
+            };
+            
+            return Response<PriorityDTO>.Ok(dto);
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            return Response<PriorityDTO>.Fail("Concurrency conflict");
+        }
+        catch (Exception e)
+        {
+            return Response<PriorityDTO>.Fail($"Error during updating priority: {e.Message}");
+        }
     }
 
     public Task<Response<Priority>> GetPriorityById(int id)
