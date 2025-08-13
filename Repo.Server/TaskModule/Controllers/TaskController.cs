@@ -15,7 +15,7 @@ public class TaskController : ControllerBase
     {
         _taskService = taskService;
     }
-    [HttpGet("user/{userId}")]
+    [HttpGet("user/{userId:int}")]
     public async Task<IActionResult> GetUserTasks(int userId)
     {
         var response = await _taskService.GetUserTasks(userId);
@@ -24,7 +24,7 @@ public class TaskController : ControllerBase
             ? Ok(response.Data)
             : BadRequest(new { Message = response.Error }); 
     }
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     public async Task<IActionResult> GetTaskById(int id)
     {
         var response = await _taskService.GetTaskById(id);
@@ -32,7 +32,7 @@ public class TaskController : ControllerBase
         return response.Success 
             ? Ok(response.Data): BadRequest(new { Message = response.Error });
     }
-    [HttpGet("group/{groupId}")]
+    [HttpGet("group/{groupId:int}")]
     public async Task<IActionResult> GetGroupTasks(int groupId)
     {
         var response = await _taskService.GetGroupTasks(groupId);
@@ -59,7 +59,7 @@ public class TaskController : ControllerBase
             : BadRequest(new { Message = response.Error });
     }
 
-    [HttpPost("add/user/{userId}")]
+    [HttpPost("user/add/{userId:int}")]
     public async Task<IActionResult> AddTaskUser(int userId, CreateTaskModel model)
     {
         if (!ModelState.IsValid)
@@ -76,7 +76,7 @@ public class TaskController : ControllerBase
             : BadRequest(new { Message = response.Error });
     }
 
-    [HttpPost("add/group/{groupId}")]
+    [HttpPost("group/add/{groupId:int}")]
     public async Task<IActionResult> AddTaskGroup(int groupId, CreateTaskModel model)
     {
         if (!ModelState.IsValid)
@@ -93,7 +93,7 @@ public class TaskController : ControllerBase
             : BadRequest(new { Message = response.Error });
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("{id:int}")]
     public async Task<IActionResult> UpdateTask(int id, UpdateTaskModel model)
     {
         if (!ModelState.IsValid)
@@ -113,7 +113,7 @@ public class TaskController : ControllerBase
         return Ok(response.Data);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteTask(int id)
     {
         var response = await _taskService.DeleteTask(id);
