@@ -56,6 +56,10 @@ public class StatusController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetStatusById(int id)
     {
-        throw new NotImplementedException();
+        var response = await _statusService.GetStatusById(id);
+        
+        return response.Success
+            ? Ok(response.Data)
+            : NotFound(new { Message = response.Error });
     }
 }

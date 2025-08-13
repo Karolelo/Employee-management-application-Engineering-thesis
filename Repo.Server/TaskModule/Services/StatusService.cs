@@ -82,6 +82,11 @@ public class StatusService : IStatusService
 
     public async Task<Response<StatusDTO>> GetStatusById(int id)
     {
-        throw new NotImplementedException();
+        var result = await _context.Statuses
+            .AsNoTracking()
+            .Where(s => s.ID == id)
+            .Select(s => new StatusDTO { Status = s.Status1})
+            .FirstOrDefaultAsync();
+        return result == null ? Response<StatusDTO>.Fail("Status not found") : Response<StatusDTO>.Ok(result);
     }
 }
