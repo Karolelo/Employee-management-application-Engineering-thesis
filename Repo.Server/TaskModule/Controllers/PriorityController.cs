@@ -35,7 +35,7 @@ public class PriorityController : ControllerBase
             : BadRequest(new { Message = response.Error });
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("{id:int}")]
     public async Task<IActionResult> UpdatePriority(PriorityDTO model, int id)
     {
         if (!ModelState.IsValid)
