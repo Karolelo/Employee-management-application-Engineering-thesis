@@ -25,6 +25,8 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatTableModule } from '@angular/material/table';
 import {MatIcon} from '@angular/material/icon';
 import {CalendarModule} from './calendar-module/calendar.module';
+import {HTTP_INTERCEPTORS} from '@angular/common/http';
+import {AuthInterceptorService} from './common_services/auth-interceptor-services.service';
 @NgModule({
   declarations: [
     AppComponent,
@@ -57,7 +59,13 @@ import {CalendarModule} from './calendar-module/calendar.module';
     MatIcon,
     CalendarModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptorService,
+      multi: true
+    }
+  ],
   exports: [
 
   ],

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Repo.Core.Models;
 using Task = Repo.Core.Models.Task;
-using User = Repo.Core.Models.User;
 using Type = Repo.Core.Models.Type;
+using User = Repo.Core.Models.User;
 namespace Repo.Core.Infrastructure;
 
 public partial class MyDbContext : DbContext
@@ -352,7 +352,6 @@ public partial class MyDbContext : DbContext
 
             entity.ToTable("RefreshToken");
 
-            entity.Property(e => e.ID).ValueGeneratedNever();
             entity.Property(e => e.CreatedAt).HasColumnType("datetime");
             entity.Property(e => e.ExpireDate).HasColumnType("datetime");
             entity.Property(e => e.RevokedAt).HasColumnType("datetime");

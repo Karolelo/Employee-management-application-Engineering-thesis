@@ -20,8 +20,10 @@ public class AuthUserService : IAuthUserService
 
     public async Task<Response<User>> CreateUser(RegistrationModel model)
     {
+        await using var transaction = await _context.Database.BeginTransactionAsync();
         try
         {
+            
             if (_context.Set<User>().Any(x => x.Email == model.Email))
             {
                 return Response<User>.Fail("User with this email already exists");
@@ -44,11 +46,22 @@ public class AuthUserService : IAuthUserService
                 Name = model.Name,
                 Surname = model.Surname
             };
-            
-            //Dodać 
-            
+  
             _context.Set<User>().Add(user);
             await _context.SaveChangesAsync();
+            
+            //Adding refresh token to database
+            var token = new RefreshToken()
+            {
+                Token = _authenticationHelpers.GenerateRefreshToken(),
+                User_ID = user.ID,
+                ExpireDate = DateTime.Now.AddDays(7),
+                CreatedAt = DateTime.Now
+            };
+            await _context.SaveChangesAsync();
+            _context.Set<RefreshToken>().Add(token);
+            await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
             return Response<User>.Ok(user);
         }
         catch (Exception e)
@@ -72,12 +85,29 @@ public class AuthUserService : IAuthUserService
             {
                 return Response<string>.Fail("Wrong password");
             }
+            
+            //Validate if our refresh token is valid, if not we make new one
+            
+            var refreshToken = _context.Set<RefreshToken>().FirstOrDefault(e => e.User_ID == user.ID);
 
-            var token = _authenticationHelpers.GenerateTokens(user.Nickname);
+            if (refreshToken != null && refreshToken.RevokedAt == null &&
+                refreshToken.ExpireDate > DateTime.Now.AddDays(1))
+            {
+                //TODO jednak dawać też refresh token, bo lipa trochę jak będę chciał odświeżać 
+                var tokens = _authenticationHelpers.GenerateTokens(user.Nickname);
+                var token = new RefreshToken()
+                {
+                    Token = tokens.RefreshToken,
+                    User_ID = user.ID,
+                    ExpireDate = DateTime.Now.AddDays(7),
+                    CreatedAt = DateTime.Now
+                };
+                return Response<string>.Ok(tokens.AccessToken);
+            }
+          
+            return Response<string>.Ok(
+                    _authenticationHelpers.GenerateToken(user.Nickname));
             
-            //TODO dorobić tutaj dodawanie tokenu do bazy danych
-            
-            return Response<string>.Ok(token.ToString());
         }catch (Exception e)
         {
             return Response<string>.Fail($"Error during login: {e.Message}");

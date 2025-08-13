@@ -1,4 +1,7 @@
-﻿namespace Repo.Core.Models;
+﻿using System;
+using System.Collections.Generic;
+
+namespace Repo.Core.Models;
 
 public partial class RefreshToken
 {
