@@ -18,23 +18,47 @@ public class TaskService : ITaskService
         _context = context;
     }
 
-    public async Task<Response<ICollection<Task>>> GetUserTasks(int userId)
+    public async Task<Response<ICollection<TaskDTO>>> GetUserTasks(int userId)
     {
-        var result = await _context.Set<Task>()
-            .Include(t => t.Users)
-            .Where(e => e.Users.Any(u => u.ID == userId))
+        var tasks = await _context.Tasks
+            .AsNoTracking()
+            .Where(t => t.Users.Any(u => u.ID == userId))
+            .Select(t => new TaskDTO
+            {
+                ID = t.ID,
+                Name = t.Name,
+                Description = t.Description,
+                Start_Time = t.Start_Time,
+                Estimated_Time = t.Estimated_Time,
+                Priority = t.Priority.Priority1,
+                Status = t.Status.Status1,
+            })
             .ToListAsync();
-    
-        return result.Count == 0 
-            ? Response<ICollection<Task>>.Fail("User has no tasks") 
-            : Response<ICollection<Task>>.Ok(result);
+
+        return tasks.Count == 0
+            ? Response<ICollection<TaskDTO>>.Fail("User has no tasks")
+            : Response<ICollection<TaskDTO>>.Ok(tasks);
     }
-    public async Task<Response<Task>> GetTaskById(int id)
+    public async Task<Response<TaskDTO>> GetTaskById(int id)
     {
-        var result = await _context.Set<Task>()
-            .Include(t => t.RelatedTaskRelated_Tasks)
-            .FirstOrDefaultAsync(e => e.ID == id);
-        return result == null ? Response<Task>.Fail("Task not found") : Response<Task>.Ok(result);
+        var task = await _context.Tasks
+            .AsNoTracking()
+            .Where(t => t.ID == id)
+            .Select(t => new TaskDTO
+            {
+                ID = t.ID,
+                Name = t.Name,
+                Description = t.Description,
+                Start_Time = t.Start_Time,
+                Estimated_Time = t.Estimated_Time,
+                Priority = t.Priority.Priority1,
+                Status = t.Status.Status1
+            })
+            .FirstOrDefaultAsync();
+
+        return task == null
+            ? Response<TaskDTO>.Fail("Task not found")
+            : Response<TaskDTO>.Ok(task);
     }
 
     public async Task<Response<TaskWithRelatedDTO>> GetTaskWithRelatedTasks(int id)
@@ -86,14 +110,26 @@ public class TaskService : ITaskService
         });
     }
 
-    public async Task<Response<ICollection<Task>>> GetGroupTasks(int groupdId)
+    public async Task<Response<ICollection<TaskDTO>>> GetGroupTasks(int groupId)
     {
-        var result = await _context.Set<Task>()
-            .Include(t => t.Groups)  
-            .Where(e => e.Groups.Any(g => g.ID == groupdId))
+        var tasks = await _context.Tasks
+            .AsNoTracking()
+            .Where(t => t.Groups.Any(g => g.ID == groupId))
+            .Select(t => new TaskDTO
+            {
+                ID = t.ID,
+                Name = t.Name,
+                Description = t.Description,
+                Start_Time = t.Start_Time,
+                Estimated_Time = t.Estimated_Time,
+                Priority = t.Priority.Priority1,
+                Status = t.Status.Status1
+            })
             .ToListAsync();
         
-        return result.Count == 0 ? Response<ICollection<Task>>.Fail("User has no tasks") : Response<ICollection<Task>>.Ok(result);
+        return tasks.Count == 0
+            ? Response<ICollection<TaskDTO>>.Fail("Group has no tasks")
+            : Response<ICollection<TaskDTO>>.Ok(tasks);
     }
 
     public async Task<Response<Task>> CreateTask(CreateTaskModel model)

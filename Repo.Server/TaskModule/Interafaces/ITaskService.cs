@@ -9,11 +9,11 @@ namespace Repo.Server.TaskModule.interafaces;
 public interface ITaskService
 {
     //Methods for getting task
-    Task<Response<ICollection<Repo.Core.Models.Task>>> GetUserTasks(int userId);
-    Task<Response<Repo.Core.Models.Task>> GetTaskById(int id);
+    Task<Response<ICollection<TaskDTO>>> GetUserTasks(int userId);
+    Task<Response<TaskDTO>> GetTaskById(int id);
     
     Task<Response<TaskWithRelatedDTO>> GetTaskWithRelatedTasks(int id);
-    Task<Response<ICollection<Repo.Core.Models.Task>>> GetGroupTasks(int groudId);
+    Task<Response<ICollection<TaskDTO>>> GetGroupTasks(int groupId);
 
     //Methods for creating task
     Task<Response<Repo.Core.Models.Task>> CreateTask(CreateTaskModel model);
