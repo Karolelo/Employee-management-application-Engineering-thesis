@@ -22,7 +22,7 @@ public class TaskService : ITaskService
     {
         var tasks = await _context.Tasks
             .AsNoTracking()
-            .Where(t => t.Users.Any(u => u.ID == userId))
+            .Where(t => t.Users.Any(u => u.ID == userId) && t.Deleted == 0)
             .Select(t => new TaskDTO
             {
                 ID = t.ID,
@@ -43,7 +43,7 @@ public class TaskService : ITaskService
     {
         var task = await _context.Tasks
             .AsNoTracking()
-            .Where(t => t.ID == id)
+            .Where(t => t.ID == id && t.Deleted == 0)
             .Select(t => new TaskDTO
             {
                 ID = t.ID,
@@ -91,7 +91,7 @@ public class TaskService : ITaskService
         var relatedDTOs = await _context.Tasks
             .AsNoTracking()
             // trzeba podjac decyzje czy filtrujemy soft-delete (&& t.Deleted == 0)
-            .Where(t => relatedIds.Contains(t.ID))
+            .Where(t => relatedIds.Contains(t.ID) && t.Deleted == 0)
             .Select(t => new TaskDTO
             {
                 ID = t.ID,
@@ -114,7 +114,7 @@ public class TaskService : ITaskService
     {
         var tasks = await _context.Tasks
             .AsNoTracking()
-            .Where(t => t.Groups.Any(g => g.ID == groupId))
+            .Where(t => t.Groups.Any(g => g.ID == groupId) && t.Deleted == 0)
             .Select(t => new TaskDTO
             {
                 ID = t.ID,
