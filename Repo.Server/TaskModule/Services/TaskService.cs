@@ -132,6 +132,33 @@ public class TaskService : ITaskService
             : Response<ICollection<TaskDTO>>.Ok(tasks);
     }
 
+    public async Task<Response<ICollection<TaskDTO>>> GetTasksByPriorityId(int priorityId)
+    {
+        var priorityExists = await _context.Priorities
+            .AsNoTracking()
+            .AnyAsync(p => p.ID == priorityId);
+        if (!priorityExists)
+            return Response<ICollection<TaskDTO>>.Fail("Priority not found");
+        
+        var tasks = await _context.Tasks
+            .AsNoTracking()
+            .Where(t => t.Priority_ID == priorityId && t.Deleted == 0)
+            .Select(t => new TaskDTO
+            {
+                ID = t.ID,
+                Name = t.Name,
+                Description = t.Description,
+                Start_Time = t.Start_Time,
+                Estimated_Time = t.Estimated_Time,
+                Priority = t.Priority.Priority1,
+                Status = t.Status.Status1
+            })
+            .ToListAsync();
+        return tasks.Count == 0
+            ? Response<ICollection<TaskDTO>>.Fail("Priority has no tasks")
+            : Response<ICollection<TaskDTO>>.Ok(tasks);
+    }
+
     public async Task<Response<Task>> CreateTask(CreateTaskModel model)
     {
         try

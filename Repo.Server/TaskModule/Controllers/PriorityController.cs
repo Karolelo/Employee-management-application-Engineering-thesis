@@ -12,11 +12,13 @@ namespace Repo.Server.TaskModule;
 public class PriorityController : ControllerBase
 {
     private readonly IPriorityService _priorityService;
+    private readonly ITaskService _taskService;
     
-    public PriorityController(IPriorityService priorityService)
-        {
+    public PriorityController(IPriorityService priorityService, ITaskService taskService)
+    {
         _priorityService = priorityService;
-        }
+        _taskService = taskService;
+    }
 
     [HttpPost("add")]
     public async Task<IActionResult> AddPriority(PriorityDTO model)
@@ -58,6 +60,15 @@ public class PriorityController : ControllerBase
     {
         var response = await _priorityService.GetPriorityById(id);
         
+        return response.Success
+            ? Ok(response.Data)
+            : NotFound(new { Message = response.Error });
+    }
+
+    [HttpGet("{id:int}/tasks")]
+    public async Task<IActionResult> GetTasksForPriority(int id)
+    {
+        var response = await _taskService.GetTasksByPriorityId(id);
         return response.Success
             ? Ok(response.Data)
             : NotFound(new { Message = response.Error });

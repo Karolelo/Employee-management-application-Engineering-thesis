@@ -14,6 +14,8 @@ public interface ITaskService
     
     Task<Response<TaskWithRelatedDTO>> GetTaskWithRelatedTasks(int id);
     Task<Response<ICollection<TaskDTO>>> GetGroupTasks(int groupId);
+    
+    Task<Response<ICollection<TaskDTO>>> GetTasksByPriorityId(int priorityId);
 
     //Methods for creating task
     Task<Response<Repo.Core.Models.Task>> CreateTask(CreateTaskModel model);
