@@ -8,10 +8,11 @@
     <BuildOutputFolder>$(MSBuildProjectDirectory)\dist\Repo.Frontend\browser\</BuildOutputFolder>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="src\app\common_models\" />
+    <Folder Include="src\app\common_components\" />
     <Folder Include="src\app\common_services\" />
     <Folder Include="src\app\layouts\" />
     <Folder Include="src\app\login\services\" />
+    <Folder Include="src\app\modules\" />
     <Folder Include="src\app\task_module\components\" />
   </ItemGroup>
 </Project>

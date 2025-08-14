@@ -15,6 +15,7 @@ namespace Repo.Server.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[AllowAnonymous]
 public class AuthController : ControllerBase
 {
    private readonly IAuthUserService _authService;
@@ -36,7 +37,7 @@ public class AuthController : ControllerBase
          ? Ok(new { Message = "User registered successfully" })
          : BadRequest(new { Message = response.Error });
    }
-   
+  
    [HttpPost("login")]
    public async Task<IActionResult> Login(LoginModel model)
    {

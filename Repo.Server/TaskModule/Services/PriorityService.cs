@@ -16,6 +16,18 @@ public class PriorityService : IPriorityService
         _context = context;
     }
     
+    //Methods for getting priority
+    public async Task<Response<PriorityDTO>> GetPriorityById(int id)
+    {
+        var result = await _context.Priorities
+            .AsNoTracking()
+            .Where(p => p.ID == id)
+            .Select(p => new PriorityDTO{ Priority = p.Priority1})
+            .FirstOrDefaultAsync();
+        return result == null ? Response<PriorityDTO>.Fail("Priority not found") : Response<PriorityDTO>.Ok(result);
+    }
+    
+    //Methods for creating priority
     public async Task<Response<Priority>> AddPriority(PriorityDTO priorityModel)
     {
         try
@@ -43,6 +55,7 @@ public class PriorityService : IPriorityService
         }
     }
 
+    //Methods for updating priority
     public async Task<Response<PriorityDTO>> UpdatePriority(PriorityDTO priorityModel, int id)
     {
         try
@@ -78,15 +91,5 @@ public class PriorityService : IPriorityService
         {
             return Response<PriorityDTO>.Fail($"Error during updating priority: {e.Message}");
         }
-    }
-
-    public async Task<Response<PriorityDTO>> GetPriorityById(int id)
-    {
-        var result = await _context.Priorities
-            .AsNoTracking()
-            .Where(p => p.ID == id)
-            .Select(p => new PriorityDTO{ Priority = p.Priority1})
-            .FirstOrDefaultAsync();
-        return result == null ? Response<PriorityDTO>.Fail("Priority not found") : Response<PriorityDTO>.Ok(result);
     }
 }

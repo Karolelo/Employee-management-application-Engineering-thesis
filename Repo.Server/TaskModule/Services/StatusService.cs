@@ -16,6 +16,18 @@ public class StatusService : IStatusService
         _context = context;
     }
     
+    //Methods for getting status
+    public async Task<Response<StatusDTO>> GetStatusById(int id)
+    {
+        var result = await _context.Statuses
+            .AsNoTracking()
+            .Where(s => s.ID == id)
+            .Select(s => new StatusDTO { Status = s.Status1})
+            .FirstOrDefaultAsync();
+        return result == null ? Response<StatusDTO>.Fail("Status not found") : Response<StatusDTO>.Ok(result);
+    }
+    
+    //Methods for creating status
     public async Task<Response<Status>> AddStatus(StatusDTO statusModel)
     {
         try
@@ -43,6 +55,7 @@ public class StatusService : IStatusService
         }
     }
 
+    //Methods for updating status
     public async Task<Response<StatusDTO>> UpdateStatus(StatusDTO statusModel, int id)
     {
         try
@@ -78,15 +91,5 @@ public class StatusService : IStatusService
         {
             return Response<StatusDTO>.Fail($"Error during updating status: {e.Message}");
         }
-    }
-
-    public async Task<Response<StatusDTO>> GetStatusById(int id)
-    {
-        var result = await _context.Statuses
-            .AsNoTracking()
-            .Where(s => s.ID == id)
-            .Select(s => new StatusDTO { Status = s.Status1})
-            .FirstOrDefaultAsync();
-        return result == null ? Response<StatusDTO>.Fail("Status not found") : Response<StatusDTO>.Ok(result);
     }
 }

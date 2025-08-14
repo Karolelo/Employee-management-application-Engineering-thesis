@@ -17,28 +17,8 @@ public class TaskService : ITaskService
     {
         _context = context;
     }
-
-    public async Task<Response<ICollection<TaskDTO>>> GetUserTasks(int userId)
-    {
-        var tasks = await _context.Tasks
-            .AsNoTracking()
-            .Where(t => t.Users.Any(u => u.ID == userId) && t.Deleted == 0)
-            .Select(t => new TaskDTO
-            {
-                ID = t.ID,
-                Name = t.Name,
-                Description = t.Description,
-                Start_Time = t.Start_Time,
-                Estimated_Time = t.Estimated_Time,
-                Priority = t.Priority.Priority1,
-                Status = t.Status.Status1,
-            })
-            .ToListAsync();
-
-        return tasks.Count == 0
-            ? Response<ICollection<TaskDTO>>.Fail("User has no tasks")
-            : Response<ICollection<TaskDTO>>.Ok(tasks);
-    }
+    
+    //Methods for getting task
     public async Task<Response<TaskDTO>> GetTaskById(int id)
     {
         var task = await _context.Tasks
@@ -108,6 +88,28 @@ public class TaskService : ITaskService
             Task = task,
             RelatedTasks = relatedDTOs
         });
+    }
+
+    public async Task<Response<ICollection<TaskDTO>>> GetUserTasks(int userId)
+    {
+        var tasks = await _context.Tasks
+            .AsNoTracking()
+            .Where(t => t.Users.Any(u => u.ID == userId) && t.Deleted == 0)
+            .Select(t => new TaskDTO
+            {
+                ID = t.ID,
+                Name = t.Name,
+                Description = t.Description,
+                Start_Time = t.Start_Time,
+                Estimated_Time = t.Estimated_Time,
+                Priority = t.Priority.Priority1,
+                Status = t.Status.Status1,
+            })
+            .ToListAsync();
+
+        return tasks.Count == 0
+            ? Response<ICollection<TaskDTO>>.Fail("User has no tasks")
+            : Response<ICollection<TaskDTO>>.Ok(tasks);
     }
 
     public async Task<Response<ICollection<TaskDTO>>> GetGroupTasks(int groupId)
@@ -187,6 +189,7 @@ public class TaskService : ITaskService
             : Response<ICollection<TaskDTO>>.Ok(tasks);
     }
 
+    //Methods for creating task
     public async Task<Response<Task>> CreateTask(CreateTaskModel model)
     {
         try
@@ -224,7 +227,7 @@ public class TaskService : ITaskService
             return Response<Task>.Fail($"Error during creating task: {e.Message}");
         }
     }
-
+    
     public async Task<Response<Task>> CreateTaskAssignToUser(CreateTaskModel model, int userId)
     {
         var user = _context.Set<User>().FirstOrDefault(e => e.ID == userId);
@@ -263,6 +266,7 @@ public class TaskService : ITaskService
         return Response<Task>.Ok(task.Data);
     }
 
+    //Methods for updating task
     public async Task<Response<TaskDTO>> UpdateTask(UpdateTaskModel model, int id)
     {
         try
@@ -318,12 +322,8 @@ public class TaskService : ITaskService
             return Response<TaskDTO>.Fail($"Error during updating task: {e.Message}");
         }
     }
-
-    public Task<Response<Task>> UpdateTaskStatus(int id, int status)
-    {
-        throw new NotImplementedException();
-    }
     
+    //Methods for deleting task
     public async Task<Response<Task>> DeleteTask(int id)
     {
         try
@@ -350,6 +350,7 @@ public class TaskService : ITaskService
         }
     }
 
+    //Methods for managing relations
     public async Task<Response<TaskRelationDTO>> AddRelation(int taskId, int relatedTaskId)
     {
         try

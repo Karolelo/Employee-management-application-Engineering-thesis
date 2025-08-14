@@ -6,7 +6,12 @@ namespace Repo.Server.TaskModule.interafaces;
 
 public interface IPriorityService
 {
-    Task<Response<Priority>> AddPriority(PriorityDTO priority);
-    Task<Response<PriorityDTO>> UpdatePriority(PriorityDTO priority, int id);
+    //Methods for getting priority
     Task<Response<PriorityDTO>> GetPriorityById(int id);
+    
+    //Methods for creating priority
+    Task<Response<Priority>> AddPriority(PriorityDTO priority);
+    
+    //Methods for updating priority
+    Task<Response<PriorityDTO>> UpdatePriority(PriorityDTO priority, int id);
 }

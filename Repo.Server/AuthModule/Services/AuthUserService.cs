@@ -7,7 +7,7 @@ using Repo.Core.Models.auth;
 using Repo.Server.Controllers.Interfaces;
 
 namespace Repo.Server.Controllers;
-//TODO zrobić refres tokenów
+
 public class AuthUserService : IAuthUserService
 {
     private readonly MyDbContext _context;
@@ -70,7 +70,7 @@ public class AuthUserService : IAuthUserService
         }
     }
 
-    public async Task<Response<string>> Login(LoginModel model)
+    public async Task<Response<TokenModel>> Login(LoginModel model)
     {
         try
         {
@@ -78,39 +78,44 @@ public class AuthUserService : IAuthUserService
 
             if (user == null)
             {
-                return Response<string>.Fail("User with this nickname does not exist");
+                return Response<TokenModel>.Fail("User with this nickname does not exist");
             }
 
             if (!AuthenticationHelpers.VerifyPasswordHash(model.Password,user.Password, user.Salt))
             {
-                return Response<string>.Fail("Wrong password");
+                return Response<TokenModel>.Fail("Wrong password");
             }
             
             //Validate if our refresh token is valid, if not we make new one
-            
-            var refreshToken = _context.Set<RefreshToken>().FirstOrDefault(e => e.User_ID == user.ID);
+            var refreshToken = await _context.Set<RefreshToken>().FirstOrDefaultAsync(e => e.User_ID == user.ID);
 
             if (refreshToken != null && refreshToken.RevokedAt == null &&
                 refreshToken.ExpireDate > DateTime.Now.AddDays(1))
             {
-                //TODO jednak dawać też refresh token, bo lipa trochę jak będę chciał odświeżać 
-                var tokens = _authenticationHelpers.GenerateTokens(user.Nickname);
-                var token = new RefreshToken()
+                return Response<TokenModel>.Ok(new TokenModel()
                 {
-                    Token = tokens.RefreshToken,
-                    User_ID = user.ID,
-                    ExpireDate = DateTime.Now.AddDays(7),
-                    CreatedAt = DateTime.Now
-                };
-                return Response<string>.Ok(tokens.AccessToken);
+                    AccessToken = _authenticationHelpers.GenerateToken(user.Nickname),
+                    RefreshToken = refreshToken.Token
+                });
             }
-          
-            return Response<string>.Ok(
-                    _authenticationHelpers.GenerateToken(user.Nickname));
+            //creatng new token if neccesary
+            var tokens = _authenticationHelpers.GenerateTokens(user.Nickname);
+            var token = new RefreshToken()
+            {
+                Token = tokens.RefreshToken,
+                User_ID = user.ID,
+                ExpireDate = DateTime.Now.AddDays(7),
+                CreatedAt = DateTime.Now
+            };
+                
+            await _context.Set<RefreshToken>().AddAsync(token);
+            await _context.SaveChangesAsync();
+            
+            return Response<TokenModel>.Ok(tokens);
             
         }catch (Exception e)
         {
-            return Response<string>.Fail($"Error during login: {e.Message}");
+            return Response<TokenModel>.Fail($"Error during login: {e.Message}");
         }
     }
 

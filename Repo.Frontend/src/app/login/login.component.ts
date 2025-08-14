@@ -12,20 +12,20 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 })
 export class LoginComponent {
   private router = inject(Router);
-  username: string ='';
+  nickname: string ='';
   password: string='';
 
   constructor(private authService: AuthService, private snackBar: MatSnackBar) {
   }
   LogIn() {
     const credentials: LoginRequest = {
-      username: this.username,
+      nickname: this.nickname,
       password: this.password
     };
 
     this.authService.login(credentials).subscribe({
       next: () => {
-        this.router.navigate(['home']);
+        this.router.navigate(['']);
       },
       error: (error) => {
         console.error('Błąd logowania:', error);

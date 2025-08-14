@@ -1,7 +1,5 @@
 using System.Text;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.SqlClient;
 using Microsoft.IdentityModel.Tokens;
 using Repo.Core.Infrastructure;
@@ -106,7 +104,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAngularDevServer",
         builder =>
         {
-            builder.WithOrigins("http://localhost:55399")
+            builder.WithOrigins("http://localhost:4200")
                 .AllowAnyHeader()
                 .AllowAnyMethod();
         });

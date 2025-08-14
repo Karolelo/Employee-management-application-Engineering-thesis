@@ -19,42 +19,8 @@ public class PriorityController : ControllerBase
         _priorityService = priorityService;
         _taskService = taskService;
     }
-
-    [HttpPost("add")]
-    public async Task<IActionResult> AddPriority(PriorityDTO model)
-    {
-        if (!ModelState.IsValid)
-        {
-            return ValidationProblem(ModelState);
-        }
-        
-        var response = await _priorityService.AddPriority(model);
-
-        var priority = response.Data;
-
-        return response.Success
-            ? CreatedAtAction(nameof(GetPriorityById), new { id = priority.ID }, $"Added new priority with ID: {priority.ID}")
-            : BadRequest(new { Message = response.Error });
-    }
-
-    [HttpPut("{id:int}")]
-    public async Task<IActionResult> UpdatePriority(PriorityDTO model, int id)
-    {
-        if (!ModelState.IsValid)
-        {
-            return ValidationProblem(ModelState);
-        }
-        
-         var response = await _priorityService.UpdatePriority(model, id);
-         
-         if (!response.Success)
-             return response.Error.Equals("Priority not found")
-                 ? NotFound(new { Message = response.Error })
-                 : BadRequest(new { Message = response.Error });
-         
-         return Ok(response.Data);
-    }
-
+    
+    //Methods for getting priority
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetPriorityById(int id)
     {
@@ -72,5 +38,42 @@ public class PriorityController : ControllerBase
         return response.Success
             ? Ok(response.Data)
             : NotFound(new { Message = response.Error });
+    }
+
+    //Methods for creating priority
+    [HttpPost("add")]
+    public async Task<IActionResult> AddPriority(PriorityDTO model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return ValidationProblem(ModelState);
+        }
+        
+        var response = await _priorityService.AddPriority(model);
+
+        var priority = response.Data;
+
+        return response.Success
+            ? CreatedAtAction(nameof(GetPriorityById), new { id = priority.ID }, $"Added new priority with ID: {priority.ID}")
+            : BadRequest(new { Message = response.Error });
+    }
+
+    //Methods for updating priority
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> UpdatePriority(PriorityDTO model, int id)
+    {
+        if (!ModelState.IsValid)
+        {
+            return ValidationProblem(ModelState);
+        }
+        
+         var response = await _priorityService.UpdatePriority(model, id);
+         
+         if (!response.Success)
+             return response.Error.Equals("Priority not found")
+                 ? NotFound(new { Message = response.Error })
+                 : BadRequest(new { Message = response.Error });
+         
+         return Ok(response.Data);
     }
 }

@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import {BehaviorSubject, catchError, Observable, tap, throwError} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {LoginRequest} from '../interafaces/login-request';
-import {TokenResponse} from '../../common_models/token-response';
-import {TokenModel} from '../interafaces/token-model';
+import {TokenResponse} from '../interafaces/token-response';
+
 
 @Injectable({
   providedIn: 'root'
@@ -25,6 +25,7 @@ export class AuthService {
   {
     return this.http.post<TokenResponse>('/api/auth/login', creditals)
       .pipe(  tap(response => {
+         console.log(response);
           this.storeTokens(response);
           this.isAuthenticatedSubject.next(true);
         }),
@@ -36,20 +37,31 @@ export class AuthService {
   }
 
   refreshToken(): Observable<TokenResponse> {
+    const accessToken = this.getToken();
     const refreshToken = localStorage.getItem(this.REFRESH_TOKEN_KEY);
+
+    if (!accessToken || !refreshToken) {
+      this.logout();
+      return throwError(() => new Error('No authorization token or refresh token.'));
+    }
+
     return this.http.post<TokenResponse>('/api/auth/refresh-token', {
-      accessToken: this.getToken(),
-      refreshToken: refreshToken
+      accessToken,
+      refreshToken
     }).pipe(
       tap(response => {
         this.storeTokens(response);
+      }),
+      catchError(error => {
+        //this.logout();
+        return throwError(() => error);
       })
     );
   }
 
   private storeTokens(response: TokenResponse): void {
-    localStorage.setItem(this.TOKEN_KEY,response.accessToken);
-    localStorage.setItem(this.REFRESH_TOKEN_KEY,response.refreshToken);
+    localStorage.setItem(this.TOKEN_KEY,response.token.accessToken);
+    localStorage.setItem(this.REFRESH_TOKEN_KEY,response.token.refreshToken);
   }
 
   getToken(): string | null {
