@@ -157,4 +157,16 @@ public class TaskController : ControllerBase
 
         return CreatedAtRoute("GetTaskWithRelated", new { id }, response.Data);
     }
+    
+    [HttpDelete("{id:int}/relations/{relatedId:int}")]
+    public async Task<IActionResult> RemoveRelation(int id, int relatedId)
+    {
+        var response = await _taskService.RemoveRelation(id, relatedId);
+        if (!response.Success)
+            return response.Error.Equals("Relation not found")
+                ?  NotFound(new { Message = response.Error })
+                : BadRequest(new { Message = response.Error });
+        
+        return NoContent();
+    }
 }

@@ -393,4 +393,25 @@ public class TaskService : ITaskService
             return Response<TaskRelationDTO>.Fail($"Error during creating relation: {e.Message}");
         }
     }
+    
+    public async Task<Response<object>> RemoveRelation(int taskId, int relatedTaskId)
+    {
+        try
+        {
+            var relation = await _context.RelatedTasks
+                .FirstOrDefaultAsync(rt =>
+                    (rt.Main_Task_ID == taskId && rt.Related_Task_ID == relatedTaskId) ||
+                    (rt.Main_Task_ID == relatedTaskId && rt.Related_Task_ID == taskId));
+            if (relation == null)
+                return Response<object>.Fail("Relation not found");
+            
+            _context.RelatedTasks.Remove(relation);
+            await _context.SaveChangesAsync();
+            return Response<object>.Ok(new { removed = true });
+        }
+        catch (Exception e)
+        {
+            return Response<object>.Fail($"Error during removing relation: {e.Message}");
+        }
+    }
 }

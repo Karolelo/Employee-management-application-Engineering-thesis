@@ -31,4 +31,5 @@ public interface ITaskService
     Task<Response<Task>> DeleteTask(int id);
     
     Task<Response<TaskRelationDTO>> AddRelation(int taskId, int relatedTaskId);
+    Task<Response<object>> RemoveRelation(int taskId, int relatedTaskId);
 }
