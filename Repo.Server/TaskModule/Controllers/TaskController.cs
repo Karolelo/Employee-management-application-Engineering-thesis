@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Repo.Core.Models.DTOs;
 using Repo.Core.Models.task;
 using Repo.Server.TaskModule.interafaces;
 
@@ -136,5 +138,23 @@ public class TaskController : ControllerBase
             return BadRequest(new { Message = response.Error });
         }
         return NoContent();
+    }
+
+    [HttpPost("{id:int}/relations")]
+    public async Task<IActionResult> AddRelation(int id, CreateTaskRelationDTO model)
+    {
+        var response = await _taskService.AddRelation(id, model.RelatedTaskID);
+        if (!response.Success)
+        {
+            return response.Error switch
+            {
+                "Task not found"                => NotFound(new { Message = response.Error }),
+                "Cannot relate task to itself"  or
+                "Relation already exists"       => Conflict(new { Message = response.Error }),
+                _                               => BadRequest(new { Message = response.Error })
+            };
+        }
+
+        return CreatedAtRoute("GetTaskWithRelated", new { id }, response.Data);
     }
 }

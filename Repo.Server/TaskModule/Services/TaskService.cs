@@ -349,4 +349,48 @@ public class TaskService : ITaskService
             return Response<Task>.Fail($"Error during updating task: {e.Message}");
         }
     }
+
+    public async Task<Response<TaskRelationDTO>> AddRelation(int taskId, int relatedTaskId)
+    {
+        try
+        {
+            if (taskId == relatedTaskId)
+                return Response<TaskRelationDTO>.Fail("Cannot relate task to itself");
+
+            var ids = await _context.Tasks
+                .AsNoTracking()
+                .Where(t => (t.ID == taskId || t.ID == relatedTaskId) && t.Deleted == 0)
+                .Select(t => t.ID)
+                .ToListAsync();
+
+            if (ids.Count != 2)
+                return Response<TaskRelationDTO>.Fail("Task not found");
+
+            var exists = await _context.RelatedTasks
+                .AsNoTracking()
+                .AnyAsync(rt =>
+                    (rt.Main_Task_ID == taskId && rt.Related_Task_ID == relatedTaskId) ||
+                    (rt.Main_Task_ID == relatedTaskId && rt.Related_Task_ID == taskId));
+            if (exists)
+                return Response<TaskRelationDTO>.Fail("Relation already exists");
+
+            var relation = new RelatedTask
+            {
+                Main_Task_ID = taskId,
+                Related_Task_ID = relatedTaskId,
+            };
+            _context.RelatedTasks.Add(relation);
+            await _context.SaveChangesAsync();
+
+            return Response<TaskRelationDTO>.Ok(new TaskRelationDTO(relation.Main_Task_ID, relation.Related_Task_ID));
+        }
+        catch (DbUpdateException e)
+        {
+            return Response<TaskRelationDTO>.Fail("Relation already exists");
+        }
+        catch (Exception e)
+        {
+            return Response<TaskRelationDTO>.Fail($"Error during creating relation: {e.Message}");
+        }
+    }
 }

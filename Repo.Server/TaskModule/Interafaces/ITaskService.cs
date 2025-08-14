@@ -29,4 +29,6 @@ public interface ITaskService
     
     //Methods for deleting task
     Task<Response<Task>> DeleteTask(int id);
+    
+    Task<Response<TaskRelationDTO>> AddRelation(int taskId, int relatedTaskId);
 }
