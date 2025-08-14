@@ -9,12 +9,10 @@ namespace Repo.Server.TaskModule.interafaces;
 public interface ITaskService
 {
     //Methods for getting task
-    Task<Response<ICollection<TaskDTO>>> GetUserTasks(int userId);
     Task<Response<TaskDTO>> GetTaskById(int id);
-    
     Task<Response<TaskWithRelatedDTO>> GetTaskWithRelatedTasks(int id);
+    Task<Response<ICollection<TaskDTO>>> GetUserTasks(int userId);
     Task<Response<ICollection<TaskDTO>>> GetGroupTasks(int groupId);
-    
     Task<Response<ICollection<TaskDTO>>> GetTasksByPriorityId(int priorityId);
     Task<Response<ICollection<TaskDTO>>> GetTasksByStatusId(int statusId);
 
@@ -25,11 +23,11 @@ public interface ITaskService
 
     //Methods for updating task
     Task<Response<Repo.Core.Models.DTOs.TaskDTO>> UpdateTask(UpdateTaskModel model, int id);
-    Task<Response<Repo.Core.Models.Task>> UpdateTaskStatus(int id, int status);
     
     //Methods for deleting task
     Task<Response<Task>> DeleteTask(int id);
     
+    //Methods for managing relations
     Task<Response<TaskRelationDTO>> AddRelation(int taskId, int relatedTaskId);
     Task<Response<object>> RemoveRelation(int taskId, int relatedTaskId);
 }

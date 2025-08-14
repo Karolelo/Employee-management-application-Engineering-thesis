@@ -17,15 +17,8 @@ public class TaskController : ControllerBase
     {
         _taskService = taskService;
     }
-    [HttpGet("user/{userId:int}")]
-    public async Task<IActionResult> GetUserTasks(int userId)
-    {
-        var response = await _taskService.GetUserTasks(userId);
     
-        return response.Success 
-            ? Ok(response.Data)
-            : NotFound(new { Message = response.Error }); 
-    }
+    //Methods for getting task
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetTaskById(int id)
     {
@@ -45,6 +38,16 @@ public class TaskController : ControllerBase
             : NotFound(new { Message = response.Error });
     }
     
+    [HttpGet("user/{userId:int}")]
+    public async Task<IActionResult> GetUserTasks(int userId)
+    {
+        var response = await _taskService.GetUserTasks(userId);
+    
+        return response.Success 
+            ? Ok(response.Data)
+            : NotFound(new { Message = response.Error }); 
+    }
+    
     [HttpGet("group/{groupId:int}")]
     public async Task<IActionResult> GetGroupTasks(int groupId)
     {
@@ -55,6 +58,7 @@ public class TaskController : ControllerBase
             : NotFound(new { Message = response.Error });
     }
 
+    //Methods for creating task
     [HttpPost("add")]
     public async Task<IActionResult> AddTask(CreateTaskModel model)
     {
@@ -106,6 +110,7 @@ public class TaskController : ControllerBase
             : BadRequest(new { Message = response.Error });
     }
 
+    //Methods for updating task
     [HttpPut("{id:int}")]
     public async Task<IActionResult> UpdateTask(int id, UpdateTaskModel model)
     {
@@ -126,6 +131,7 @@ public class TaskController : ControllerBase
         return Ok(response.Data);
     }
 
+    //Methods for deleting task
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteTask(int id)
     {
@@ -140,6 +146,7 @@ public class TaskController : ControllerBase
         return NoContent();
     }
 
+    //Methods for managing relations
     [HttpPost("{id:int}/relations")]
     public async Task<IActionResult> AddRelation(int id, CreateTaskRelationDTO model)
     {
