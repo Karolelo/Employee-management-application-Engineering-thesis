@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Identity;
 
 namespace Repo.Core.Models;
-//Mroziu dziedziczym z identity user, żeby nie było duplikacji
-public partial class User : IdentityUser
+
+public partial class User
 {
+    public int ID { get; set; }
+
     public string Nickname { get; set; } = null!;
 
     public string Name { get; set; } = null!;
@@ -16,15 +17,17 @@ public partial class User : IdentityUser
 
     public string Password { get; set; } = null!;
 
-    public string Email { get; set; } = null!;
+    public byte[] Salt { get; set; } = null!;
 
-    public byte AdminPrivileges { get; set; }
+    public string Email { get; set; } = null!;
 
     public int Deleted { get; set; }
 
     public virtual ICollection<Document> Documents { get; set; } = new List<Document>();
 
     public virtual ICollection<HireHelper> HireHelpers { get; set; } = new List<HireHelper>();
+
+    public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
 
     public virtual ICollection<Target> Targets { get; set; } = new List<Target>();
 
@@ -39,6 +42,8 @@ public partial class User : IdentityUser
     public virtual ICollection<Grade> Grades { get; set; } = new List<Grade>();
 
     public virtual ICollection<Group> Groups { get; set; } = new List<Group>();
+
+    public virtual ICollection<Role> Roles { get; set; } = new List<Role>();
 
     public virtual ICollection<Skill> Skills { get; set; } = new List<Skill>();
 

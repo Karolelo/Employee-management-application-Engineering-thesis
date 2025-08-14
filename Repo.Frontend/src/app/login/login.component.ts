@@ -1,5 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
+import {AuthService} from './services/auth.service';
+import {LoginRequest} from './interafaces/login-request';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-login',
@@ -9,8 +12,28 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent {
   private router = inject(Router);
+  username: string ='';
+  password: string='';
 
+  constructor(private authService: AuthService, private snackBar: MatSnackBar) {
+  }
   LogIn() {
-    this.router.navigate(['home']);
+    const credentials: LoginRequest = {
+      username: this.username,
+      password: this.password
+    };
+
+    this.authService.login(credentials).subscribe({
+      next: () => {
+        this.router.navigate(['home']);
+      },
+      error: (error) => {
+        console.error('Błąd logowania:', error);
+        this.snackBar.open('Error during login: ' + error.message, 'Close', {
+          duration: 5000,
+          panelClass: ['error-snackbar']
+        })
+      }
+    });
   }
 }

@@ -79,7 +79,8 @@
           },
           "defaultConfiguration": "development",
           "options": {
-            "port": 55399
+            "port": 55399,
+            "proxyConfig": "src/proxy.conf.json"
           }
         },
         "extract-i18n": {

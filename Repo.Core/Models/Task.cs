@@ -13,7 +13,7 @@ public partial class Task
 
     public DateTime Start_Time { get; set; }
 
-    public DateTime Estimated_Time { get; set; }
+    public TimeSpan Estimated_Time { get; set; }
 
     public int Creator_ID { get; set; }
 
