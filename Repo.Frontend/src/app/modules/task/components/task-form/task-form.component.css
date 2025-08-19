@@ -1,0 +1,224 @@
+/*Wyjebać to do głownych plików*/
+:root {
+  --primary-color: #6c5ce7;
+  --secondary-color: #00cec9;
+  --accent-color: #fd79a8;
+  --background-color: #f9f9f9;
+  --text-color: #2d3436;
+  --error-color: #d63031;
+  --success-color: #00b894;
+  --shadow-color: rgba(108, 92, 231, 0.1);
+  --input-bg: #ffffff;
+  --low-priority: #27ae60;
+  --medium-priority: #f39c12;
+  --high-priority: #e74c3c;
+  --todo-status: #3498db;
+  --inprogress-status: #f1c40f;
+  --completed-status: #2ecc71;
+}
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  line-height: 1.6;
+}
+
+.task-form {
+  max-width: 800px;
+  width: 90%;
+  margin: 1rem auto;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 20px 40px 20px rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+  transition: all 0.3s ease;
+}
+
+.task-form:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+h2 {
+  font-family:monospace;
+  color: var(--primary-color);
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  position: relative;
+  padding-bottom: 0.5rem;
+  font-weight: 1000;
+}
+
+h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background-color: var(--accent-color);
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+input, select {
+  padding: 0.75rem 1rem;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  background-color: var(--input-bg);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  width: 100%;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color:#2d3436;
+  box-shadow: 0 0 0 3px rgba(21, 21, 22, 0.2);
+}
+
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236c5ce7' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1em;
+}
+
+button[type="submit"] {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #ffffff;
+  background-color: #6c5ce7;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
+}
+
+
+button[type="submit"]:hover {
+  background-color: #5a4cb1;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+button[type="submit"]:active {
+  background-color: #473b91;
+  transform: translateY(0);
+}
+
+button[type="submit"][disabled] {
+  background-color: #b2bec3;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+button[type="submit"].valid {
+  background-color: #2ecc71;
+}
+
+button[type="submit"].invalid {
+  background-color: #e74c3c;
+}
+
+
+@media (max-width: 768px) {
+  .task-form {
+    margin: 2rem 1rem;
+    padding: 2rem;
+    width: 95%;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  input, select, button {
+    font-size: 0.9rem;
+  }
+}
+
+select[formControlName="priority"] {
+  padding-left: 2.5rem;
+  background-position: left 0.75rem center, right 1rem center;
+  background-size: 1em, 1em;
+  background-repeat: no-repeat, no-repeat;
+}
+
+select[formControlName="priority"] option[value="low"] {
+  color: var(--low-priority);
+}
+
+select[formControlName="priority"] option[value="medium"] {
+  color: var(--medium-priority);
+}
+
+select[formControlName="priority"] option[value="high"] {
+  color: var(--high-priority);
+}
+
+select[formControlName="priority"]:has(option[value="low"]:checked) {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' fill='%2327ae60'%3E%3Cpath d='M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9l17-17c9.4-9.4 24.6-9.4 33.9 0l39 39 96-96c9.4-9.4 24.6-9.4 33.9 0l17 17c9.4 9.4 9.4 24.6 0 33.9z'/%3E%3C/svg%3E"),
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236c5ce7' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+}
+
+select[formControlName="priority"]:has(option[value="medium"]:checked) {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' fill='%23f39c12'%3E%3Cpath d='M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9l17-17c9.4-9.4 24.6-9.4 33.9 0l39 39 96-96c9.4-9.4 24.6-9.4 33.9 0l17 17c9.4 9.4 9.4 24.6 0 33.9z'/%3E%3C/svg%3E"),
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236c5ce7' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+}
+
+select[formControlName="priority"]:has(option[value="high"]:checked) {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' fill='%23e74c3c'%3E%3Cpath d='M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9l17-17c9.4-9.4 24.6-9.4 33.9 0l39 39 96-96c9.4-9.4 24.6-9.4 33.9 0l17 17c9.4 9.4 9.4 24.6 0 33.9z'/%3E%3C/svg%3E"),
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236c5ce7' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+}
+
+select[formControlName="status"] {
+  padding-left: 2.5rem;
+  background-position: left 0.75rem center, right 1rem center;
+  background-size: 1em, 1em;
+  background-repeat: no-repeat, no-repeat;
+}
+
+select[formControlName="status"] option[value="to-do"] {
+  color: var(--todo-status);
+}
+
+select[formControlName="status"] option[value="in-progress"] {
+  color: var(--inprogress-status);
+}
+
+select[formControlName="status"] option[value="completed"] {
+  color: var(--completed-status);
+}
+
+select[formControlName="status"]:has(option[value="to-do"]:checked) {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' fill='%233498db'%3E%3Cpath d='M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9l17-17c9.4-9.4 24.6-9.4 33.9 0l39 39 96-96c9.4-9.4 24.6-9.4 33.9 0l17 17c9.4 9.4 9.4 24.6 0 33.9z'/%3E%3C/svg%3E"),
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236c5ce7' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+}
+
+select[formControlName="status"]:has(option[value="in-progress"]:checked) {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' fill='%23f1c40f'%3E%3Cpath d='M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9l17-17c9.4-9.4 24.6-9.4 33.9 0l39 39 96-96c9.4-9.4 24.6-9.4 33.9 0l17 17c9.4 9.4 9.4 24.6 0 33.9z'/%3E%3C/svg%3E"),
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236c5ce7' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+}
+
+select[formControlName="status"]:has(option[value="completed"]:checked) {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' fill='%232ecc71'%3E%3Cpath d='M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9l17-17c9.4-9.4 24.6-9.4 33.9 0l39 39 96-96c9.4-9.4 24.6-9.4 33.9 0l17 17c9.4 9.4 9.4 24.6 0 33.9z'/%3E%3C/svg%3E"),
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236c5ce7' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+}
+

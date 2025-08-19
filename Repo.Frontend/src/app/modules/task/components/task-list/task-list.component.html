@@ -1,0 +1,17 @@
+<li *ngFor="let task of tasks$">
+  <div>
+    <span class="status-indicator" [ngClass]="task.status"></span>
+    {{ task.title }} - <span [ngClass]="task.priority">{{ task.priority }}</span> - {{ task.status }}
+  </div>
+  <div>
+    <button (click)="onEditTask(task)">
+      <i class="fa fa-edit edit-icon"></i>
+    </button>
+    <button (click)="onDeleteTask(task.id)">
+      <i class="fa fa-trash delete-icon"></i>
+    </button>
+    <button (click)="onViewTask(task)">
+      <i class="fa fa-eye view-icon"></i>
+    </button>
+  </div>
+</li>

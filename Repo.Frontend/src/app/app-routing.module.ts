@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import {LoginComponent} from './login/login.component';
+import {LoginComponent} from './modules/login/login.component';
 import {AuthLayoutComponent} from './layouts/auth-layout/auth-layout.component';
 import {MainLayoutComponent} from './layouts/main-layout/main-layout.component';
-import {TasksComponent} from './task_module/tasks/tasks.component';
-import {TaskCreatorComponent} from './task_module/task-creator/task-creator.component';
-import {TaskDetailsComponent} from './task_module/components/task-details/task-details.component';
-import {CalendarModule} from './calendar-module/calendar.module';
+import {TasksComponent} from './modules/task_module/tasks/tasks.component';
+import {TaskCreatorComponent} from './modules/task_module/task-creator/task-creator.component';
+import {TaskDetailsComponent} from './modules/task_module/components/task-details/task-details.component';
+import {CalendarModule} from './modules/calendar-module/calendar.module';
 const routes: Routes = [
   {
     path: '',

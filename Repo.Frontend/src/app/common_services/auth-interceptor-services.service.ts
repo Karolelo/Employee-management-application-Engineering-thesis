@@ -2,7 +2,7 @@ import {BehaviorSubject, catchError, filter, finalize, Observable, switchMap, ta
 import {HttpErrorResponse, HttpEvent, HttpHeaders, HttpRequest} from '@angular/common/http';
 import {HttpHandler, HttpInterceptor} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {AuthService} from '../login/services/auth.service';
+import {AuthService} from '../modules/login/services/auth.service';
 
 @Injectable()
 export class AuthInterceptorService implements HttpInterceptor {
