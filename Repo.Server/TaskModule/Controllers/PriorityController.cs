@@ -11,6 +11,7 @@ namespace Repo.Server.TaskModule;
 [Authorize]
 public class PriorityController : ControllerBase
 {
+    //Stary no przydała by się metoda zwracająca wszystkie priority i ewentuallnie szukająca tego priority po nazwie !
     private readonly IPriorityService _priorityService;
     private readonly ITaskService _taskService;
     

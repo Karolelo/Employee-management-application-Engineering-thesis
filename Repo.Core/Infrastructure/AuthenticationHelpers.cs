@@ -45,13 +45,19 @@ public class AuthenticationHelpers
     }
 
     //Potem zmienić claimy, na inne niz user name
-    public string GenerateToken(string username) {
+    public string GenerateToken(string userName,ICollection<string> RoleName = null) {
         var tokenHandler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
         var key = System.Text.Encoding.ASCII.GetBytes(_configuration["JWT:SecretKey"]);
+
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, userName)
+        };
+        
+        claims.AddRange(RoleName.Select(role => new Claim(ClaimTypes.Role, role)));
+        
         var tokenDescriptor = new SecurityTokenDescriptor {
-            Subject = new ClaimsIdentity(new Claim[] {
-                new Claim(ClaimTypes.Name, username)
-            }),
+            Subject = new ClaimsIdentity(claims),
             Issuer = _configuration["JWT:ValidIssuer"],
             Audience = _configuration["JWT:ValidAudience"],
             Expires = DateTime.UtcNow.AddHours(1),
@@ -93,11 +99,11 @@ public class AuthenticationHelpers
         }
     }
     
-    public TokenModel GenerateTokens(string username)
+    public TokenModel GenerateTokens(string username,ICollection<string> RoleName = null)
     {
         return new TokenModel
         {
-            AccessToken = GenerateToken(username),
+            AccessToken = GenerateToken(username,RoleName),
             RefreshToken = GenerateRefreshToken()
         };
     }

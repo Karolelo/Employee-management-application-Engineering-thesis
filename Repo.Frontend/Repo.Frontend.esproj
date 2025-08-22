@@ -14,6 +14,8 @@
     <Folder Include="src\app\layouts\" />
     <Folder Include="src\app\modules\" />
     <Folder Include="src\app\modules\task\components\" />
-    <Folder Include="src\app\modules\task\services\" />
+    <Folder Include="src\app\modules\task\pages\" />
+    <Folder Include="src\app\modules\task\services\priority\" />
+    <Folder Include="src\app\modules\task\services\task\" />
   </ItemGroup>
 </Project>

@@ -49,6 +49,29 @@ public class AuthUserService : IAuthUserService
   
             _context.Set<User>().Add(user);
             await _context.SaveChangesAsync();
+            user.Roles = new List<Role>();
+            
+            //Adding Roles to user
+            if (model.Role != null && model.Role.Any())
+            {
+                foreach (var roleName in model.Role)
+                {
+                    var role = await _context.Roles.FirstOrDefaultAsync(r => r.Role_Name == roleName);
+                    if (role != null)
+                    {
+                        user.Roles.Add(role);
+                    }
+                }
+            }
+            else
+            {
+                // Basic role if not find any "User"
+                var defaultRole = await _context.Roles.FirstOrDefaultAsync(r => r.Role_Name == "User");
+                if (defaultRole != null)
+                {
+                    user.Roles.Add(defaultRole);
+                }
+            }
             
             //Adding refresh token to database
             var token = new RefreshToken()
@@ -58,6 +81,7 @@ public class AuthUserService : IAuthUserService
                 ExpireDate = DateTime.Now.AddDays(7),
                 CreatedAt = DateTime.Now
             };
+            
             await _context.SaveChangesAsync();
             _context.Set<RefreshToken>().Add(token);
             await _context.SaveChangesAsync();
@@ -66,6 +90,7 @@ public class AuthUserService : IAuthUserService
         }
         catch (Exception e)
         {
+            await transaction.RollbackAsync();
             return Response<User>.Fail($"Error during creating of user: {e.Message}");
         }
     }
@@ -88,18 +113,19 @@ public class AuthUserService : IAuthUserService
             
             //Validate if our refresh token is valid, if not we make new one
             var refreshToken = await _context.Set<RefreshToken>().FirstOrDefaultAsync(e => e.User_ID == user.ID);
-
+            var Roles = await GetUserRoles(user.ID);
+            
             if (refreshToken != null && refreshToken.RevokedAt == null &&
                 refreshToken.ExpireDate > DateTime.Now.AddDays(1))
             {
                 return Response<TokenModel>.Ok(new TokenModel()
                 {
-                    AccessToken = _authenticationHelpers.GenerateToken(user.Nickname),
+                    AccessToken = _authenticationHelpers.GenerateToken(user.Nickname,Roles),
                     RefreshToken = refreshToken.Token
                 });
             }
             //creatng new token if neccesary
-            var tokens = _authenticationHelpers.GenerateTokens(user.Nickname);
+            var tokens = _authenticationHelpers.GenerateTokens(user.Nickname,Roles);
             var token = new RefreshToken()
             {
                 Token = tokens.RefreshToken,
@@ -167,6 +193,15 @@ public class AuthUserService : IAuthUserService
                 e.ExpireDate > DateTime.Now);
             
         return token != null;
+    }
+    
+    private async Task<List<string>> GetUserRoles(int userId)
+    {
+        return await _context.Users.Include(u=>u.Roles)
+            .Where(u => u.ID == userId)
+            .SelectMany(u => u.Roles)
+            .Select(r => r.Role_Name)
+            .ToListAsync();
     }
 
    

@@ -1,4 +1,5 @@
 import {Component, EventEmitter, Output} from '@angular/core';
+import { NgClass } from '@angular/common';
 import {MatDialog} from '@angular/material/dialog';
 import {TaskService} from '../../services/task.service';
 import {Task} from '../../interfaces/task'
@@ -12,7 +13,6 @@ import {TaskDetailsComponent} from '../task-details/task-details.component';
   providers: [TaskService]
 })
 export class TaskListComponent {
-  private destroy$ = new Subject<void>();
   tasks$!: Observable<Task[]>;
   @Output() editTask = new EventEmitter<Task>();
   constructor(private taskService: TaskService, private dialog: MatDialog) {

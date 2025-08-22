@@ -4,6 +4,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.IdentityModel.Tokens;
 using Repo.Core.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Repo.Server.Controllers;
 using Repo.Server.Controllers.Interfaces;
@@ -150,7 +151,14 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
-app.UseAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+    options.AddPolicy("UserOnly", policy => policy.RequireRole("User","TeamLeader","Admin","Accountant"));
+    options.AddPolicy("TeamLeader",policy => policy.RequireRole("TeamLeader"));
+    options.AddPolicy("Accountant", policy => policy.RequireRole("Admin", "Accountant"));
+    
+});
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

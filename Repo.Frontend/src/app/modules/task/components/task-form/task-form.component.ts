@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
-import {AbstractControl, FormBuilder, ValidationErrors, ValidatorFn, Validators} from '@angular/forms';
+import {Component, Input, SimpleChanges} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {TaskService} from '../../services/task.service';
 import {futureDateValidation} from '../../../../common_validators/fututreDateValidation';
+import {Task} from '../../interfaces/task'
+import {NgClass} from '@angular/common';
 
 @Component({
   selector: 'app-task-form',
@@ -9,13 +11,16 @@ import {futureDateValidation} from '../../../../common_validators/fututreDateVal
   templateUrl: './task-form.component.html',
   styleUrl: './task-form.component.css'
 })
+//TODO dodać potem dynamiczne priority oraz jak ID usera przekazywać
 export class TaskFormComponent {
+  @Input() taskToEdit?: Task;
+  taskForm: FormGroup;
   constructor(private fb: FormBuilder,private taskService: TaskService) {
-    fb.group({
+    this.taskForm=fb.group({
       name:  ['', Validators.required],
       description: ['',Validators.compose([Validators.required, Validators.minLength(20)])],
-      StartDate: [Date.now(),futureDateValidation],
-      EstimatedTime: [0,Validators.compose([Validators.required, Validators.min(1)])],
+      startDate: [Date.now(),futureDateValidation],
+      estimatedTime: [0,Validators.compose([Validators.required, Validators.min(1)])],
       priority: ['',Validators.required],
       status: ['',Validators.required]
     })
@@ -33,26 +38,7 @@ export class TaskFormComponent {
       return;
     }
     const formValue = this.taskForm.value;
-    const now = new Date().toLocaleString();
-    if (this.taskToEdit) {
-      const updatedTask: Task = {
-        ...this.taskToEdit,
-        ...formValue,
-        history: [
-          ...this.taskToEdit.history,
-          `Task "${this.taskToEdit.title}" updated on ${now}: ${this.generateUpdateLog(this.taskToEdit, formValue)}`
-        ],
-      };
-      this.taskService.updateTask(updatedTask);
-      this.taskToEdit = undefined;
-    } else {
-      const newTask: Task = {
-        ...formValue,
-        id: Date.now(),
-        history: [`Task "${formValue.title}" created on ${now}`],
-      };
-      this.taskService.addTask(newTask);
-    }
+    this.taskService.createTaskForUser(1, formValue)
     this.taskForm.reset();
   }
 

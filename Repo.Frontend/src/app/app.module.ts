@@ -23,6 +23,7 @@ import {MatIcon} from '@angular/material/icon';
 import {CalendarModule} from './modules/calendar-module/calendar.module';
 import {HTTP_INTERCEPTORS} from '@angular/common/http';
 import {AuthInterceptorService} from './common_services/auth-interceptor-services.service';
+import {TaskModule} from './modules/task/task.module';
 @NgModule({
   declarations: [
     AppComponent,
@@ -49,7 +50,8 @@ import {AuthInterceptorService} from './common_services/auth-interceptor-service
     MatDividerModule,
     MatTableModule,
     MatIcon,
-    CalendarModule
+    CalendarModule,
+    TaskModule
   ],
   providers: [
     {

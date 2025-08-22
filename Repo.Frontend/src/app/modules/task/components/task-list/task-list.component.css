@@ -1,4 +1,4 @@
-:root {
+/*:root {
   --primary-color: #6c5ce7;
   --secondary-color: #00cec9;
   --accent-color: #fd79a8;
@@ -14,7 +14,7 @@
   --todo-status: #3498db;
   --inprogress-status: #f1c40f;
   --completed-status: #2ecc71;
-}
+}*/
 
 body {
   font-family: 'Montserrat', sans-serif;

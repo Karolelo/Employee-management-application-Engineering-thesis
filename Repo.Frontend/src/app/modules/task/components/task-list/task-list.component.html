@@ -1,7 +1,7 @@
-<li *ngFor="let task of tasks$">
+<li *ngFor="let task of tasks$ | async">
   <div>
-    <span class="status-indicator" [ngClass]="task.status"></span>
-    {{ task.title }} - <span [ngClass]="task.priority">{{ task.priority }}</span> - {{ task.status }}
+    <span class="status-indicator" [ngClass]="task.Status"></span>
+    {{ task.Name }} - <span [ngClass]="task.Priority">{{ task.Priority }}</span> - {{ task.Status }}
   </div>
   <div>
     <button (click)="onEditTask(task)">
