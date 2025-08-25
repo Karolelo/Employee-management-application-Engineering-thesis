@@ -110,6 +110,15 @@ builder.Services.AddCors(options =>
                 .AllowAnyMethod();
         });
 });
+//adding basic roles
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+    options.AddPolicy("UserOnly", policy => policy.RequireRole("User","TeamLeader","Admin","Accountant"));
+    options.AddPolicy("TeamLeader",policy => policy.RequireRole("TeamLeader"));
+    options.AddPolicy("Accountant", policy => policy.RequireRole("Admin", "Accountant"));
+    
+});
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -151,14 +160,6 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
-    options.AddPolicy("UserOnly", policy => policy.RequireRole("User","TeamLeader","Admin","Accountant"));
-    options.AddPolicy("TeamLeader",policy => policy.RequireRole("TeamLeader"));
-    options.AddPolicy("Accountant", policy => policy.RequireRole("Admin", "Accountant"));
-    
-});
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

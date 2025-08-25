@@ -24,6 +24,11 @@ import {CalendarModule} from './modules/calendar-module/calendar.module';
 import {HTTP_INTERCEPTORS} from '@angular/common/http';
 import {AuthInterceptorService} from './common_services/auth-interceptor-services.service';
 import {TaskModule} from './modules/task/task.module';
+import {JwtHelperService, JwtModule} from '@auth0/angular-jwt';
+
+export function tokenGetter() {
+  return localStorage.getItem('auth_token');
+}
 @NgModule({
   declarations: [
     AppComponent,
@@ -51,7 +56,14 @@ import {TaskModule} from './modules/task/task.module';
     MatTableModule,
     MatIcon,
     CalendarModule,
-    TaskModule
+    TaskModule,
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: tokenGetter,
+        allowedDomains: ["localhost:4200"],
+        disallowedRoutes: []
+      }
+    })
   ],
   providers: [
     {
@@ -63,6 +75,6 @@ import {TaskModule} from './modules/task/task.module';
   exports: [
 
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule { }

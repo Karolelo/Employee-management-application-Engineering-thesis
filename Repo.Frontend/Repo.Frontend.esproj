@@ -13,6 +13,7 @@
     <Folder Include="src\app\common_services\" />
     <Folder Include="src\app\layouts\" />
     <Folder Include="src\app\modules\" />
+    <Folder Include="src\app\modules\login\services\user_data\" />
     <Folder Include="src\app\modules\task\components\" />
     <Folder Include="src\app\modules\task\pages\" />
     <Folder Include="src\app\modules\task\services\priority\" />

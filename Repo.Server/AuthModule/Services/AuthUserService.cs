@@ -120,12 +120,12 @@ public class AuthUserService : IAuthUserService
             {
                 return Response<TokenModel>.Ok(new TokenModel()
                 {
-                    AccessToken = _authenticationHelpers.GenerateToken(user.Nickname,Roles),
+                    AccessToken = _authenticationHelpers.GenerateToken(user.ID,user.Nickname,Roles),
                     RefreshToken = refreshToken.Token
                 });
             }
             //creatng new token if neccesary
-            var tokens = _authenticationHelpers.GenerateTokens(user.Nickname,Roles);
+            var tokens = _authenticationHelpers.GenerateTokens(user.ID,user.Nickname,Roles);
             var token = new RefreshToken()
             {
                 Token = tokens.RefreshToken,
@@ -147,32 +147,38 @@ public class AuthUserService : IAuthUserService
 
     public async Task<Response<TokenModel>> RefreshToken(TokenModel tokenModel)
     {
-       var accessToken = tokenModel.AccessToken;
-       var refreshToken = tokenModel.RefreshToken;
-       
-       var principals = _authenticationHelpers.GetPrincipalFromExpiredToken(accessToken);
-       
-       var username = principals.Identity.Name;
+        var accessToken = tokenModel.AccessToken;
+        var refreshToken = tokenModel.RefreshToken;
+   
+        var principals = _authenticationHelpers.GetPrincipalFromExpiredToken(accessToken);
+        if (principals == null)
+        {
+            return Response<TokenModel>.Fail("Bad token format");
+        }
 
-       if (username == null)
-       {
-           return Response<TokenModel>.Fail("Invalid token, user was not found");
-       }
+        var id = int.Parse(principals.FindFirst("id").Value);
+        var username = principals.Identity.Name;
+   
+        if (username == null)
+        {
+            return Response<TokenModel>.Fail("Bad token no user was found");
+        }
 
-       if (await ValidateRefreshToken(username, refreshToken) == false)
-       {
-           return Response<TokenModel>.Fail("Invalid refresh token");
-       }
-       
-       var newToken = _authenticationHelpers.GenerateToken(username);
+        if (await ValidateRefreshToken(username, refreshToken) == false)
+        {
+            return Response<TokenModel>.Fail("Bad refresh token");
+        }
+        
+        var roles = await GetUserRoles(id);
+        
+        var newAccessToken = _authenticationHelpers.GenerateToken(id, username, roles);
 
-       return Response<TokenModel>.Ok(new TokenModel()
-           {
-               AccessToken = newToken,
-               RefreshToken = refreshToken
-           }
-       );
-
+        return Response<TokenModel>.Ok(new TokenModel()
+            {
+                AccessToken = newAccessToken,
+                RefreshToken = refreshToken
+            }
+        );
     }
     
     private async Task<bool> ValidateRefreshToken(string username, string refreshToken)
@@ -197,11 +203,13 @@ public class AuthUserService : IAuthUserService
     
     private async Task<List<string>> GetUserRoles(int userId)
     {
-        return await _context.Users.Include(u=>u.Roles)
+        var roles = await _context.Users.Include(u=>u.Roles)
             .Where(u => u.ID == userId)
             .SelectMany(u => u.Roles)
             .Select(r => r.Role_Name)
             .ToListAsync();
+        //I add basic rolle
+        return roles.Count > 0 ? roles : new List<string>(){"User"};
     }
 
    
