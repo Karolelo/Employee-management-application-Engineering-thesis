@@ -41,6 +41,24 @@ public class StatusController : ControllerBase
             : NotFound(new { Message = response.Error });
     }
 
+    [HttpGet]
+    public async Task<IActionResult> GetAllStatus()
+    {
+        var response = await _statusService.GetAllStatus();
+        return response.Success
+            ? Ok(response.Data)
+            : NotFound(new { Message = response.Error });
+    }
+
+    [HttpGet("search")]
+    public async Task<IActionResult> GetStatusByName([FromQuery] string name)
+    {
+        var response = await _statusService.GetStatusByName(name);
+        return response.Success
+            ? Ok(response.Data)
+            : NotFound(new { Message = response.Error });
+    }
+
     //Methods for adding status
     [HttpPost("add")]
     public async Task<IActionResult> AddStatus(StatusDTO model)
