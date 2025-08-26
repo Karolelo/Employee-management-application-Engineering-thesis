@@ -8,6 +8,8 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Repo.Server.Controllers;
 using Repo.Server.Controllers.Interfaces;
+using Repo.Server.GradeModule.Interfaces;
+using Repo.Server.GradeModule.Services;
 using Repo.Server.TaskModule;
 using Repo.Server.TaskModule.interafaces;
 
@@ -19,6 +21,7 @@ builder.Services.AddScoped<IAuthUserService,AuthUserService>();
 builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<IPriorityService, PriorityService>();
 builder.Services.AddScoped<IStatusService, StatusService>();
+builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<AuthenticationHelpers>();
 
 // Connection priority - changeable if needed
