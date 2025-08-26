@@ -446,7 +446,7 @@ public partial class MyDbContext : DbContext
 
             entity.ToTable("Target");
 
-            entity.Property(e => e.ID).ValueGeneratedNever();
+            entity.Property(e => e.ID).ValueGeneratedOnAdd();
             entity.Property(e => e.Finish_Time).HasColumnType("datetime");
             entity.Property(e => e.Name).HasMaxLength(100);
             entity.Property(e => e.Start_Time).HasColumnType("datetime");
@@ -454,11 +454,24 @@ public partial class MyDbContext : DbContext
             entity.HasOne(d => d.Tag).WithMany(p => p.Targets)
                 .HasForeignKey(d => d.Tag_ID)
                 .HasConstraintName("Target_Tag");
-
-            entity.HasOne(d => d.User).WithMany(p => p.Targets)
-                .HasForeignKey(d => d.User_ID)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("Target_User");
+            
+            entity.HasMany<Repo.Core.Models.User>(d => d.Users)
+                .WithMany(u => u.Targets)
+                .UsingEntity<Dictionary<string, object>>(
+                    "TargetUser",
+                    r => r.HasOne<Repo.Core.Models.User>().WithMany()
+                        .HasForeignKey("User_ID")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("TargetUser_User"),
+                    l => l.HasOne<Repo.Core.Models.Target>().WithMany()
+                        .HasForeignKey("Target_ID")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("TargetUser_Target"),
+                    j =>
+                    {
+                        j.HasKey("Target_ID", "User_ID").HasName("TargetUser_pk");
+                        j.ToTable("TargetUser");
+                    });
         });
 
         modelBuilder.Entity<Task>(entity =>

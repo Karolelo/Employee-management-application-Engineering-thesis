@@ -15,11 +15,9 @@ public partial class Target
 
     public DateTime? Finish_Time { get; set; }
 
-    public int User_ID { get; set; }
-
     public int? Tag_ID { get; set; }
 
     public virtual Tag? Tag { get; set; }
-
-    public virtual User User { get; set; } = null!;
+    
+    public virtual ICollection<User> Users { get; set; } = new List<User>();
 }
