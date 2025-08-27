@@ -5,9 +5,7 @@ import {UserData} from '../../interafaces/user-data';
 @Injectable({
   providedIn: 'root'
 })
-@Injectable({
-  providedIn: 'root'
-})
+//Serwis nie trzyma danych kiedy przechdozisz linkami, a nie przeklikuje
 export class UserStoreService {
   private userData = new BehaviorSubject<UserData | null>(null);
 
@@ -34,7 +32,6 @@ export class UserStoreService {
     const roleKey = 'role';
     const roles = decodedToken[roleKey];
     // changing for array
-
     if(Array.isArray(roles))
       return roles
     return [roles];

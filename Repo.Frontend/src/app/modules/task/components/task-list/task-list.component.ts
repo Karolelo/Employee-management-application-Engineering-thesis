@@ -21,17 +21,12 @@ export class TaskListComponent {
   tasks$!: Observable<Task[]>;
   @Output() editTask = new EventEmitter<Task>();
   constructor(private taskService: TaskService,private userDataStore: UserStoreService, private dialog: MatDialog) {
-    /*console.log('User data store ');
-    this.userDataStore.getUserData().subscribe(user => {
-      console.log('User data store ', user);
-    })*/
   }
   ngOnInit(): void {
     this.loading = true;
     this.userDataStore.getUserData().subscribe({
       next: (user) => {
         if (user) {
-
           this.tasks$ = this.taskService.getAllUserTask(user.id).pipe(
             tap(() => {
               this.loading = false;

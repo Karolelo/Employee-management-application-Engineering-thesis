@@ -22,7 +22,7 @@ export class LoginComponent {
   ngOnInit() {
     this.authService.isAuthenticated().subscribe(isAuth => {
       if (isAuth) {
-        this.router.navigate(['']);
+        this.router.navigate(['/tasks']);
       }
     });
   }

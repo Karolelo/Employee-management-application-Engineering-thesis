@@ -8,7 +8,7 @@
     <BuildOutputFolder>$(MSBuildProjectDirectory)\dist\Repo.Frontend\browser\</BuildOutputFolder>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="src\app\common_components\" />
+    <Folder Include="src\app\common_components\sidenavbar\" />
     <Folder Include="src\app\common_interafaces\api\" />
     <Folder Include="src\app\common_services\" />
     <Folder Include="src\app\layouts\" />

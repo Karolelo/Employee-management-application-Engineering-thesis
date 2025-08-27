@@ -1,4 +1,4 @@
-import {Inject, Injectable} from '@angular/core';
+import { Injectable} from '@angular/core';
 import {BehaviorSubject, catchError, Observable, tap, throwError} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {LoginRequest} from '../../interafaces/login-request';
@@ -6,7 +6,6 @@ import {TokenResponse} from '../../interafaces/token-response';
 import {Router} from '@angular/router';
 import {UserStoreService} from '../user_data/user-store.service';
 import {JwtHelperService} from '@auth0/angular-jwt';
-
 
 @Injectable({
   providedIn: 'root'
@@ -16,9 +15,8 @@ export class AuthService {
   private readonly REFRESH_TOKEN_KEY = 'refresh_token';
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
   constructor(private http: HttpClient,private router: Router,private storeService: UserStoreService,private jwtHelper: JwtHelperService) {
-    this.checkInitialAuth();
+   this.checkInitialAuth()
   }
-
   private checkInitialAuth(): void {
     try {
       const token = localStorage.getItem(this.TOKEN_KEY);
@@ -38,8 +36,8 @@ export class AuthService {
       }
 
       console.log('Old token still valid');
-      this.isAuthenticatedSubject.next(true);
       this.storeService.storeUserData(token);
+      this.isAuthenticatedSubject.next(true);
     } catch (error) {
       console.error('Error durring validation of token:', error);
       this.isAuthenticatedSubject.next(false);
@@ -101,6 +99,7 @@ export class AuthService {
   }
 
   logout(): void {
+    this.storeService.clearUserData();
     localStorage.removeItem(this.TOKEN_KEY);
     localStorage.removeItem(this.REFRESH_TOKEN_KEY);
     this.isAuthenticatedSubject.next(false);

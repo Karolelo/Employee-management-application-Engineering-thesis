@@ -25,6 +25,8 @@ import {HTTP_INTERCEPTORS} from '@angular/common/http';
 import {AuthInterceptorService} from './common_services/auth-interceptor-services.service';
 import {TaskModule} from './modules/task/task.module';
 import {JwtHelperService, JwtModule} from '@auth0/angular-jwt';
+import { SidenavbarComponent } from './common_components/sidenavbar/sidenavbar/sidenavbar.component';
+import {MatListItem, MatNavList} from '@angular/material/list';
 
 export function tokenGetter() {
   return localStorage.getItem('auth_token');
@@ -36,6 +38,7 @@ export function tokenGetter() {
     NavbarComponent,
     AuthLayoutComponent,
     MainLayoutComponent,
+    SidenavbarComponent,
   ],
   imports: [
     BrowserModule,
@@ -63,7 +66,11 @@ export function tokenGetter() {
         allowedDomains: ["localhost:4200"],
         disallowedRoutes: []
       }
-    })
+    }),
+    MatNavList,
+    MatListItem,
+    MatIcon,
+    MatSidenavModule,
   ],
   providers: [
     {

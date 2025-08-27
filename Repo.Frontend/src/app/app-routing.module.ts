@@ -11,8 +11,10 @@ const routes: Routes = [
     path: '',
     component: MainLayoutComponent,
     children: [
-      { path: 'tasks', loadChildren: () => TaskModule},
-      { path: 'calendar', loadChildren: () => CalendarModule,}
+      { path: 'tasks', loadChildren: () => TaskModule,
+      data: { title: 'Tasks module' }},
+      { path: 'calendar', loadChildren: () => CalendarModule,
+      data: { title: 'Calendar module' }},
     ]
   },
   {
