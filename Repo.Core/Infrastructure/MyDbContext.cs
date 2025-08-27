@@ -177,7 +177,7 @@ public partial class MyDbContext : DbContext
 
             entity.ToTable("Course");
 
-            entity.Property(e => e.ID).ValueGeneratedNever();
+            entity.Property(e => e.ID).ValueGeneratedOnAdd();
             entity.Property(e => e.Name).HasMaxLength(100);
 
             entity.HasMany(d => d.Users).WithMany(p => p.Courses)

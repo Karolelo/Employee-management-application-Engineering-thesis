@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Runtime.CompilerServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Repo.Core.Models.api;
 using Repo.Server.GradeModule.DTOs;
 using Repo.Server.GradeModule.Interfaces;
@@ -44,5 +46,42 @@ public class CourseController : ControllerBase
         return response.Success
             ? Ok(response.Data)
             : NotFound(new { message = response.Error });
+    }
+    
+    //[HttpPost] methods
+    [HttpPost]
+    public async Task<IActionResult> CreateCourse([FromBody] CourseMiniDTO dto)
+    {
+        var response = await _courseService.CreateCourse(dto);
+        return response.Success
+            ? CreatedAtAction(nameof(GetCourseById), new { id = response.Data!.ID }, response.Data)
+            : BadRequest(new { message = response.Error });
+    }
+    
+    //TODO: move EnrollUser to UserModule when created
+    [HttpPost("{id:int}/enroll")]
+    public async Task<IActionResult> EnrollUser(int id)
+    {
+        if (!int.TryParse(User.FindFirst("id")?.Value, out var userId))
+        {
+            return Unauthorized(new { message = "Missing user id claim" });
+        }
+        
+        var response = await _courseService.EnrollUser(id, userId);
+        return response.Success
+            ? NoContent()
+            : BadRequest(new { message = response.Error });
+    }
+    
+    //[HttpPut] methods
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> UpdateCourse(int id, [FromBody] CourseMiniDTO dto)
+    {
+        var response = await _courseService.UpdateCourse(id, dto);
+        if (!response.Success)
+            return response.Error.Equals("Course not found")
+                ? NotFound(new { message = response.Error })
+                : BadRequest(new { message = response.Error });
+        return NoContent();
     }
 }

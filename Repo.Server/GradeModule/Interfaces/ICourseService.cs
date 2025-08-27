@@ -16,9 +16,9 @@ public interface ICourseService
     Task<Response<object>> EnrollUser(int courseId, int userId);
 
     //[HttpPut] methods
-    Task<Response<object>> UpdateCourse(int courseId, CourseMiniDTO dto);
+    Task<Response<CourseDTO>> UpdateCourse(int courseId, CourseMiniDTO dto);
 
     //[HttpDelete] methods
-    Task<Response<object>> DeleteCourse(int courseId);
+    Task<Response<CourseDTO>> DeleteCourse(int courseId);
     Task<Response<object>> UnenrollUser(int courseId, int userId);
 }
