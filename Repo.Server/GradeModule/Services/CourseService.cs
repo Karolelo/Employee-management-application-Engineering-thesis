@@ -285,11 +285,74 @@ public class CourseService : ICourseService
     //[HttpDelete] methods
     public async Task<Response<CourseDTO>> DeleteCourse(int courseId)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var course = await _context.Courses
+                .Include(c => c.Users)
+                .FirstOrDefaultAsync(c => c.ID == courseId);
+            if (course == null)
+            {
+                return Response<CourseDTO>.Fail("Course not found");
+            }
+
+            if (course.Users.Count > 0)
+            {
+                return Response<CourseDTO>.Fail(
+                    $"Course has {course.Users.Count} participant(s). Unenroll them first");
+            }
+
+            _context.Courses.Remove(course);
+            await _context.SaveChangesAsync();
+
+            return Response<CourseDTO>.Ok(new CourseDTO
+            {
+                ID = course.ID,
+                Name = course.Name,
+                Description = course.Description,
+                Start_Date = course.Start_Date,
+                Finish_Date = course.Finish_Date
+            });
+        }
+        catch (DbUpdateException e) when (e.IsUniqueViolation())
+        {
+            return Response<CourseDTO>.Fail("Course has participants. Unenroll them first");
+        }
+        catch (DbUpdateException e)
+        {
+            return Response<CourseDTO>.Fail($"DB error: {e.Message}");
+        }
+        catch (Exception e)
+        {
+            return Response<CourseDTO>.Fail($"Error during deleting course: {e.Message}");
+        }
     }
 
     public async Task<Response<object>> UnenrollUser(int courseId, int userId)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var user = await _context.Users
+                .Include(u => u.Courses)
+                .FirstOrDefaultAsync(u => u.ID == userId);
+            if (user == null)
+                return Response<object>.Fail("User not found");
+
+            var course = user.Courses.FirstOrDefault(c => c.ID == courseId);
+            if (course == null)
+                return Response<object>.Fail("Enrollment not found");
+
+            user.Courses.Remove(course);
+            await _context.SaveChangesAsync();
+            
+            return Response<object>.Ok(new { enrolled = false });
+        }
+        catch (DbUpdateException e)
+        {
+            return Response<object>.Fail($"DB error: {e.Message}");
+        }
+        catch (Exception e)
+        {
+            return Response<object>.Fail($"Error during unenrolling user: {e.Message}");
+        }
     }
 }

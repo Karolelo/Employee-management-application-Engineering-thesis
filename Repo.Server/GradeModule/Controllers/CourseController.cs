@@ -84,4 +84,36 @@ public class CourseController : ControllerBase
                 : BadRequest(new { message = response.Error });
         return NoContent();
     }
+    
+    //[HttpDelete] methods
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> DeleteCourse(int id)
+    {
+        var response = await _courseService.DeleteCourse(id);
+        if (response.Success)
+            return NoContent();
+        
+        return response.Error switch
+        {
+            "Course not found"      => NotFound(new { Message = response.Error }),
+            var msg when msg?.StartsWith("Course has") == true
+                => Conflict(new { message = response.Error }),
+            _                       => BadRequest(new { Message = response.Error })
+        };
+    }
+    
+    //TODO: move UnenrollUser to UserModule when created
+    [HttpDelete("{id:int}/enroll")]
+    public async Task<IActionResult> UnenrollUser(int id)
+    {
+        if (!int.TryParse(User.FindFirst("id")?.Value, out var userId))
+            return Unauthorized(new { message = "Missing user id claim" });
+        
+        var response = await _courseService.UnenrollUser(id, userId);
+        if (!response.Success)
+            return response.Error.Equals("Course not found")
+                ? NotFound(new { message = response.Error })
+                : BadRequest(new { message = response.Error });
+        return NoContent();
+    }
 }
