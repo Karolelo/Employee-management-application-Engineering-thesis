@@ -20,79 +20,84 @@ public class AuthUserService : IAuthUserService
 
     public async Task<Response<User>> CreateUser(RegistrationModel model)
     {
-        await using var transaction = await _context.Database.BeginTransactionAsync();
-        try
+        var strategy = _context.Database.CreateExecutionStrategy();
+
+        return await strategy.ExecuteAsync(async () =>
         {
-            
-            if (_context.Set<User>().Any(x => x.Email == model.Email))
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+            try
             {
-                return Response<User>.Fail("User with this email already exists");
-            }
 
-            if (_context.Set<User>().Any(x => x.Nickname == model.Nickname))
-            {
-                return Response<User>.Fail("User with this nickname already exists");
-            }
-
-            byte[] salt = AuthenticationHelpers.GenerateSalt(64);
-
-            User user = new()
-            {
-                Login = model.Login,
-                Nickname = model.Nickname,
-                Email = model.Email,
-                Password = AuthenticationHelpers.GeneratePasswordHash(model.Password, salt),
-                Salt = salt,
-                Name = model.Name,
-                Surname = model.Surname
-            };
-  
-            _context.Set<User>().Add(user);
-            await _context.SaveChangesAsync();
-            user.Roles = new List<Role>();
-            
-            //Adding Roles to user
-            if (model.Role != null && model.Role.Any())
-            {
-                foreach (var roleName in model.Role)
+                if (_context.Set<User>().Any(x => x.Email == model.Email))
                 {
-                    var role = await _context.Roles.FirstOrDefaultAsync(r => r.Role_Name == roleName);
-                    if (role != null)
+                    return Response<User>.Fail("User with this email already exists");
+                }
+
+                if (_context.Set<User>().Any(x => x.Nickname == model.Nickname))
+                {
+                    return Response<User>.Fail("User with this nickname already exists");
+                }
+
+                byte[] salt = AuthenticationHelpers.GenerateSalt(64);
+
+                User user = new()
+                {
+                    Login = model.Login,
+                    Nickname = model.Nickname,
+                    Email = model.Email,
+                    Password = AuthenticationHelpers.GeneratePasswordHash(model.Password, salt),
+                    Salt = salt,
+                    Name = model.Name,
+                    Surname = model.Surname
+                };
+
+                _context.Set<User>().Add(user);
+                await _context.SaveChangesAsync();
+                user.Roles = new List<Role>();
+
+                //Adding Roles to user
+                if (model.Role != null && model.Role.Any())
+                {
+                    foreach (var roleName in model.Role)
                     {
-                        user.Roles.Add(role);
+                        var role = await _context.Roles.FirstOrDefaultAsync(r => r.Role_Name == roleName);
+                        if (role != null)
+                        {
+                            user.Roles.Add(role);
+                        }
                     }
                 }
-            }
-            else
-            {
-                // Basic role if not find any "User"
-                var defaultRole = await _context.Roles.FirstOrDefaultAsync(r => r.Role_Name == "User");
-                if (defaultRole != null)
+                else
                 {
-                    user.Roles.Add(defaultRole);
+                    // Basic role if not find any "User"
+                    var defaultRole = await _context.Roles.FirstOrDefaultAsync(r => r.Role_Name == "User");
+                    if (defaultRole != null)
+                    {
+                        user.Roles.Add(defaultRole);
+                    }
                 }
+
+                //Adding refresh token to database
+                var token = new RefreshToken()
+                {
+                    Token = _authenticationHelpers.GenerateRefreshToken(),
+                    User_ID = user.ID,
+                    ExpireDate = DateTime.Now.AddDays(7),
+                    CreatedAt = DateTime.Now
+                };
+
+                await _context.SaveChangesAsync();
+                _context.Set<RefreshToken>().Add(token);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+                return Response<User>.Ok(user);
             }
-            
-            //Adding refresh token to database
-            var token = new RefreshToken()
+            catch (Exception e)
             {
-                Token = _authenticationHelpers.GenerateRefreshToken(),
-                User_ID = user.ID,
-                ExpireDate = DateTime.Now.AddDays(7),
-                CreatedAt = DateTime.Now
-            };
-            
-            await _context.SaveChangesAsync();
-            _context.Set<RefreshToken>().Add(token);
-            await _context.SaveChangesAsync();
-            await transaction.CommitAsync();
-            return Response<User>.Ok(user);
-        }
-        catch (Exception e)
-        {
-            await transaction.RollbackAsync();
-            return Response<User>.Fail($"Error during creating of user: {e.Message}");
-        }
+                await transaction.RollbackAsync();
+                return Response<User>.Fail($"Error during creating of user: {e.Message}");
+            }
+        });
     }
 
     public async Task<Response<TokenModel>> Login(LoginModel model)

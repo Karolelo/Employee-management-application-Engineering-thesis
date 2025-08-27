@@ -26,6 +26,39 @@ public class StatusService : IStatusService
             .FirstOrDefaultAsync();
         return result == null ? Response<StatusDTO>.Fail("Status not found") : Response<StatusDTO>.Ok(result);
     }
+
+    public async Task<Response<ICollection<StatusDTO>>> GetAllStatus()
+    {
+        var list = await _context.Statuses
+            .AsNoTracking()
+            .OrderBy(s => s.Status1)
+            .Select(s => new StatusDTO { Status = s.Status1 })
+            .ToListAsync();
+        
+        return list.Count == 0
+            ? Response<ICollection<StatusDTO>>.Fail("No statuses found")
+            : Response<ICollection<StatusDTO>>.Ok(list);
+    }
+
+    public async Task<Response<ICollection<StatusDTO>>> GetStatusByName(string name)
+    {
+        var term = (name ?? string.Empty).Trim();
+        if (string.IsNullOrWhiteSpace(term))
+        {
+            return Response<ICollection<StatusDTO>>.Fail("Name cannot be empty");
+        }
+        
+        var list = await _context.Statuses
+            .AsNoTracking()
+            .Where(s => EF.Functions.Like(s.Status1, $"%{term}%"))
+            .OrderBy(s => s.Status1)
+            .Select(s => new StatusDTO { Status = s.Status1 })
+            .ToListAsync();
+        
+        return list.Count == 0
+            ? Response<ICollection<StatusDTO>>.Fail("No statuses match the query")
+            : Response<ICollection<StatusDTO>>.Ok(list);
+    }
     
     //Methods for creating status
     public async Task<Response<Status>> AddStatus(StatusDTO statusModel)

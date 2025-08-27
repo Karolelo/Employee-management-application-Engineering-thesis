@@ -352,6 +352,7 @@ public partial class MyDbContext : DbContext
 
             entity.ToTable("RefreshToken");
 
+            entity.Property(e => e.ID).ValueGeneratedOnAdd();
             entity.Property(e => e.CreatedAt).HasColumnType("datetime");
             entity.Property(e => e.ExpireDate).HasColumnType("datetime");
             entity.Property(e => e.RevokedAt).HasColumnType("datetime");

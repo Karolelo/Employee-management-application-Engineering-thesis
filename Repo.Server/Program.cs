@@ -155,13 +155,19 @@ static async Task<(string Name, string Conn)> ChooseFirstWorkingAsync(
 
     throw new InvalidOperationException("Failed to find a working ConnectionString");
 }
-app.UseCors("AllowAngularDevServer");
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
 app.UseRouting();
+
+app.UseCors("AllowAngularDevServer");
 app.UseAuthentication();
-app.UseAuthorization(); 
+app.UseAuthorization();
+
+app.MapControllers();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
 app.Run();

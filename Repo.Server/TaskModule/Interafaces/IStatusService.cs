@@ -8,6 +8,8 @@ public interface IStatusService
 {
     //Methods for getting status
     Task<Response<StatusDTO>> GetStatusById(int id);
+    Task<Response<ICollection<StatusDTO>>> GetAllStatus();
+    Task<Response<ICollection<StatusDTO>>> GetStatusByName(string name);
     
     //Methods for creating status
     Task<Response<Status>> AddStatus(StatusDTO status);

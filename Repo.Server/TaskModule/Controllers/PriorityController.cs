@@ -41,6 +41,24 @@ public class PriorityController : ControllerBase
             : NotFound(new { Message = response.Error });
     }
 
+    [HttpGet]
+    public async Task<IActionResult> GetAllPriority()
+    {
+        var response = await _priorityService.GetAllPriority();
+        return response.Success
+            ? Ok(response.Data)
+            : NotFound(new { Message = response.Error });
+    }
+
+    [HttpGet("search")]
+    public async Task<IActionResult> GetPriorityByName([FromQuery] string name)
+    {
+        var response = await _priorityService.GetPriorityByName(name);
+        return response.Success
+            ? Ok(response.Data)
+            : NotFound(new { Message = response.Error });
+    }
+
     //Methods for creating priority
     [HttpPost("add")]
     public async Task<IActionResult> AddPriority(PriorityDTO model)
