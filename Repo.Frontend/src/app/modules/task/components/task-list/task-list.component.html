@@ -1,0 +1,33 @@
+<main class="task-list">
+  <ng-container *ngIf="!errorMessage; else errorTpl">
+    <div *ngIf="loading" class="loading-spinner">
+      <mat-spinner></mat-spinner>
+    </div>
+
+    <ng-container *ngIf="!loading">
+      <li *ngFor="let task of tasks$ | async">
+        <div>
+          <span class="status-indicator" [ngClass]="task.Status"></span>
+          {{ task.Name }} - <span [ngClass]="task.Priority">{{ task.Priority }}</span> - {{ task.Status }}
+        </div>
+        <div>
+          <button (click)="onEditTask(task)">
+            <i class="fa fa-edit edit-icon"></i>
+          </button>
+          <button (click)="onDeleteTask(task.id)">
+            <i class="fa fa-trash delete-icon"></i>
+          </button>
+          <button (click)="onViewTask(task)">
+            <i class="fa fa-eye view-icon"></i>
+          </button>
+        </div>
+      </li>
+    </ng-container>
+  </ng-container>
+
+  <ng-template #errorTpl>
+    <div class="error-message">
+      {{ errorMessage }}
+    </div>
+  </ng-template>
+</main>

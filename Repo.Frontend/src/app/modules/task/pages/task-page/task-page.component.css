@@ -1,0 +1,25 @@
+.task-page {
+  display: flex;
+  flex: 1;
+  padding: 5px;
+  gap: 20px;
+}
+
+.task-form-section,
+.task-list-section {
+  flex: 1;
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  height: calc(100vh - 100px); /* Adjust height considering header height */
+  overflow-y: auto;
+}
+
+.task-form-section {
+  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+}
+
+.task-list-section {
+  background: linear-gradient(135deg, #f5f7fa, #e2ebf0);
+}

@@ -1,0 +1,10 @@
+<div class="task-detail">
+  <h2>Task Details <i class="fa fa-tasks detail-icon"></i></h2>
+  <p><strong>Title:</strong> {{ data.Name }}</p>
+  <p><strong>Description:</strong> {{ data.Description }} <i class="fa fa-align-left description-icon"></i></p>
+  <p><strong>Due Date:</strong> {{ data.StartDate | date:'shortDate' }} <i class="fa fa-calendar-alt due-date-icon"></i></p>
+  <p><strong>Estimated Time</strong>{{data.EstimatedTime}}<i class="fa-regular fa-alarm-clock time-icon"></i></p>
+  <p><strong>Priority:</strong> <span [ngClass]="data.Priority">{{ data.Priority }}</span> <i class="fa fa-exclamation-triangle priority-icon"></i></p>
+  <p><strong>Status:</strong> {{ data.Status }} <i class="fa fa-info-circle status-icon"></i></p>
+  <button class="close-btn" (click)="close()">Close <i class="fa fa-times close-icon"></i></button>
+</div>

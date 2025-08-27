@@ -19,6 +19,7 @@
     "@angular/platform-browser": "^19.2.0",
     "@angular/platform-browser-dynamic": "^19.2.0",
     "@angular/router": "^19.2.0",
+    "@auth0/angular-jwt": "^5.2.0",
     "@daypilot/daypilot-lite-angular": "^4.1.0",
     "jest-editor-support": "*",
     "rxjs": "~7.8.0",

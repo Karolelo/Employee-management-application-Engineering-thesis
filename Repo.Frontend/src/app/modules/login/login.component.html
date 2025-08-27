@@ -1,0 +1,23 @@
+<section class="login-container">
+<div class="login-left">
+  <h2>Login! 👋</h2>
+  <p>How do I get started?</p>
+  <button class="btn btn-google">Sign in with Google</button>
+  <button class="btn btn-apple">Sign in with Apple</button>
+  <p>or Login with Email</p>
+  <form (ngSubmit)="LogIn()">
+    <label for="username">Username</label>
+    <input type="email" id="username" name="username" [(ngModel)]="nickname" placeholder="Karolelo">
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password" [(ngModel)]="password" placeholder="******">
+    <button type="submit" class="btn btn-signin">Sign In</button>
+  </form>
+</div>
+<div class="login-right">
+  <div class="login-info">
+    <div class="image-container">
+      <h3>Welcome on our site</h3>
+    </div>
+  </div>
+</div>
+</section>

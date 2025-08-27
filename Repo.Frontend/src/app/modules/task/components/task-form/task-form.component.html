@@ -1,0 +1,65 @@
+<div class="task-form">
+  <h2>{{ taskToEdit ? 'Edit Task' : 'Add Task' }}</h2>
+  <form [formGroup]="taskForm" (ngSubmit)="onSubmit()">
+    <div class="floating-label">
+      <input formControlName="name" placeholder=" ">
+      <label>Title</label>
+      <div *ngIf="taskForm.get('name')?.invalid && taskForm.get('name')?.touched" class="error-message">
+        Title is required.
+      </div>
+    </div>
+
+    <div class="floating-label">
+      <input formControlName="description" placeholder=" ">
+      <label>Description</label>
+      <div *ngIf="taskForm.get('description')?.invalid && taskForm.get('description')?.touched" class="error-message">
+        Description is required.
+      </div>
+    </div>
+
+    <div class="floating-label">
+      <input formControlName="startDate" type="date" placeholder=" ">
+      <label>Task start date</label>
+      <div *ngIf="taskForm.get('startDate')?.invalid && taskForm.get('startDate')?.touched" class="error-message">
+        Start date is required.
+      </div>
+    </div>
+
+    <div class="floating-label">
+      <input formControlName="estimatedTime" type="number" placeholder="">
+      <label>Task start date</label>
+      <div *ngIf="taskForm.get('startDate')?.invalid
+      && taskForm.get('startDate')?.touched && taskForm.get('descritpion')?.errors" class="error-message">
+        Start date is required and must be greater than 0 .
+      </div>
+    </div>
+
+    <div class="floating-label">
+      <select formControlName="priority" placeholder=" ">
+        <option value="">Select Priority</option>
+        <option value="low">Low</option>
+        <option value="normal">Normal</option>
+        <option value="high">High</option>
+      </select>
+      <label></label>
+      <div *ngIf="taskForm.get('priority')?.invalid && taskForm.get('priority')?.touched" class="error-message">
+        Priority is required.
+      </div>
+    </div>
+
+    <div class="floating-label">
+      <select formControlName="status" placeholder=" ">
+        <option value="to-do">To-Do</option>
+        <option value="in-progress">In-Progress</option>
+        <option value="finished">Finished</option>
+      </select>
+      <label></label>
+    </div>
+
+    <button type="submit"
+            [disabled]="taskForm.invalid"
+            [ngClass]="{'valid': taskForm.valid, 'invalid': taskForm.invalid}">
+      {{ taskToEdit ? 'Update Task' : 'Add Task' }}
+    </button>
+  </form>
+</div>
