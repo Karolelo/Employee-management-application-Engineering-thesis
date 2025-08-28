@@ -234,9 +234,9 @@ public partial class MyDbContext : DbContext
 
             entity.ToTable("Grade");
 
-            entity.Property(e => e.ID).ValueGeneratedNever();
+            entity.Property(e => e.ID).ValueGeneratedOnAdd();
             entity.Property(e => e.Grade1)
-                .HasColumnType("decimal(2, 2)")
+                .HasColumnType("decimal(3, 2)")
                 .HasColumnName("Grade");
 
             entity.HasMany(d => d.Users).WithMany(p => p.Grades)
