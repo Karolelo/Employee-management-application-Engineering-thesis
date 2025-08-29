@@ -45,6 +45,10 @@ export class UserStoreService {
     return this.userData.asObservable();
   }
 
+  getUserId(): number | null {
+    return this.userData.value?.id || null;
+  }
+
   hasRole(role: string): boolean {
     return this.userData.value?.roles.includes(role) || false;
   }

@@ -1,9 +1,10 @@
 import {Component, Input, SimpleChanges} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {TaskService} from '../../services/task.service';
 import {futureDateValidation} from '../../../../common_validators/fututreDateValidation';
 import {Task} from '../../interfaces/task'
 import {NgClass} from '@angular/common';
+import {TaskService} from '../../services/task/task.service';
+import {UserStoreService} from '../../../login/services/user_data/user-store.service';
 
 @Component({
   selector: 'app-task-form',
@@ -15,7 +16,7 @@ import {NgClass} from '@angular/common';
 export class TaskFormComponent {
   @Input() taskToEdit?: Task;
   taskForm: FormGroup;
-  constructor(private fb: FormBuilder,private taskService: TaskService) {
+  constructor(private fb: FormBuilder,private taskService: TaskService,private userDataStore: UserStoreService) {
     this.taskForm=fb.group({
       name:  ['', Validators.required],
       description: ['',Validators.compose([Validators.required, Validators.minLength(20)])],
@@ -38,7 +39,25 @@ export class TaskFormComponent {
       return;
     }
     const formValue = this.taskForm.value;
-    this.taskService.createTaskForUser(1, formValue)
+    const now = new Date().toLocaleString();
+    if (this.taskToEdit) {
+      const updatedTask: Task = {
+        ...this.taskToEdit,
+        ...formValue
+      };
+      this.taskService.updateTask(this.taskToEdit.id,updatedTask);
+      this.taskToEdit = undefined;
+    } else {
+      const newTask: Task = {
+        ...formValue,
+      }
+
+      const value = this.userDataStore.getUserId()
+      if(value) {
+        this.taskService.createTaskForUser(value,newTask);
+      }
+    }
+    this.taskForm.reset();
     this.taskForm.reset();
   }
 

@@ -166,8 +166,10 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-app.MapControllerRoute(
+// Hmmm we could use it, but i read that is more appropriate for MVC
+// and we prefere more explicit api
+/*app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "api/{controller=Home}/{action=Index}/{id?}");*/
 
 app.Run();

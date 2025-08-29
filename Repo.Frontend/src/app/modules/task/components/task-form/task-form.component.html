@@ -10,7 +10,7 @@
     </div>
 
     <div class="floating-label">
-      <input formControlName="description" placeholder=" ">
+      <textarea formControlName="description" placeholder=" " rows="4" class="task-description"></textarea>
       <label>Description</label>
       <div *ngIf="taskForm.get('description')?.invalid && taskForm.get('description')?.touched" class="error-message">
         Description is required.
@@ -27,7 +27,7 @@
 
     <div class="floating-label">
       <input formControlName="estimatedTime" type="number" placeholder="">
-      <label>Task start date</label>
+      <label>Estimated time for task</label>
       <div *ngIf="taskForm.get('startDate')?.invalid
       && taskForm.get('startDate')?.touched && taskForm.get('descritpion')?.errors" class="error-message">
         Start date is required and must be greater than 0 .
@@ -35,8 +35,8 @@
     </div>
 
     <div class="floating-label">
+      <label>Priority</label>
       <select formControlName="priority" placeholder=" ">
-        <option value="">Select Priority</option>
         <option value="low">Low</option>
         <option value="normal">Normal</option>
         <option value="high">High</option>
@@ -48,7 +48,8 @@
     </div>
 
     <div class="floating-label">
-      <select formControlName="status" placeholder=" ">
+      <label>Status</label>
+      <select formControlName="status" placeholder="">
         <option value="to-do">To-Do</option>
         <option value="in-progress">In-Progress</option>
         <option value="finished">Finished</option>

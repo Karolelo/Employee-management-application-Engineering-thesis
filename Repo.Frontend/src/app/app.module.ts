@@ -27,6 +27,7 @@ import {TaskModule} from './modules/task/task.module';
 import {JwtHelperService, JwtModule} from '@auth0/angular-jwt';
 import { SidenavbarComponent } from './common_components/sidenavbar/sidenavbar/sidenavbar.component';
 import {MatListItem, MatNavList} from '@angular/material/list';
+import {CommonModule, NgClass} from '@angular/common';
 
 export function tokenGetter() {
   return localStorage.getItem('auth_token');
@@ -41,6 +42,7 @@ export function tokenGetter() {
     SidenavbarComponent,
   ],
   imports: [
+    CommonModule,
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
@@ -71,6 +73,7 @@ export function tokenGetter() {
     MatListItem,
     MatIcon,
     MatSidenavModule,
+    NgClass
   ],
   providers: [
     {

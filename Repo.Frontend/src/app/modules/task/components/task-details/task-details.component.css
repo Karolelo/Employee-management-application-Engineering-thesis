@@ -45,3 +45,19 @@
 .task-detail .close-btn .close-icon {
   margin-left: 10px;
 }
+
+.completed{
+  color: #ff6b6b;
+  min-width: 100px;
+}
+
+.started{
+  color: #5bc0de;
+  min-width: 50px;
+}
+
+.progress{
+  color: #f0ad4e;
+  min-width: 75px;
+}
+

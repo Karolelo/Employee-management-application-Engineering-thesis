@@ -16,7 +16,7 @@ export class AuthInterceptorService implements HttpInterceptor {
     if (this.isPublicEndpoint(request.url)) {
       return next.handle(request);
     }
-
+    console.log('intercept');
     const token = this.authService.getToken();
     if (token) {
       request = this.addTokenHeader(request, token);
@@ -28,8 +28,8 @@ export class AuthInterceptorService implements HttpInterceptor {
           if (error.status === 401) {
             return this.handle401Error(request, next);
           } else if (error.status === 403) {
-            // Obsługa braku dostępu
-            this.authService.logout();
+            // Manage not access
+            //this.authService.logout();
             return throwError(() => new Error('NO access'));
           }
         }
@@ -57,6 +57,7 @@ export class AuthInterceptorService implements HttpInterceptor {
   }
 
   private handle401Error(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    console.log('handle401Error');
     if (!this.isRefreshing) {
       this.isRefreshing = true;
       this.refreshTokenSubject.next(null);
@@ -70,16 +71,16 @@ export class AuthInterceptorService implements HttpInterceptor {
         catchError((error) => {
           this.isRefreshing = false;
           this.authService.logout();
-          return throwError(() => new Error('Sesja wygasła. Zaloguj się ponownie.'));
+          return throwError(() => new Error('Session not working. Log in again'));
         }),
-        // Dodanie finalize aby upewnić się, że flaga zostanie zresetowana
+        // refreshing flag
         finalize(() => {
           this.isRefreshing = false;
         })
       );
     }
 
-    // Oczekiwanie na zakończenie odświeżania tokena
+    // wating for refresh token
     return this.refreshTokenSubject.pipe(
       filter(token => token !== null),
       take(1),

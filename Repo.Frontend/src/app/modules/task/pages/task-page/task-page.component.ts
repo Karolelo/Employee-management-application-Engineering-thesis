@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import {TaskService} from '../../services/task.service';
 import {Task} from '../../interfaces/task'
+import {TaskService} from '../../services/task/task.service';
 @Component({
   selector: 'app-task-page',
   standalone: false,

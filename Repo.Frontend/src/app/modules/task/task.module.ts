@@ -8,6 +8,7 @@ import { TaskPageComponent } from './pages/task-page/task-page.component';
 import {TaskRoutingModule} from './task-routing.module';
 import {MatProgressSpinner} from '@angular/material/progress-spinner';
 import {NgClass} from '@angular/common';
+import {MatProgressBar} from "@angular/material/progress-bar";
 
 
 @NgModule({
@@ -21,7 +22,8 @@ import {NgClass} from '@angular/common';
         CommonModule,
         ReactiveFormsModule,
         TaskRoutingModule,
-        MatProgressSpinner
+        MatProgressSpinner,
+        MatProgressBar
     ]
 })
 export class TaskModule { }

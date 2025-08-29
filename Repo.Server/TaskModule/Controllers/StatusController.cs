@@ -1,13 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Repo.Core.Models.DTOs;
 using Repo.Server.TaskModule.interafaces;
 
-namespace Repo.Server.TaskModule;
-
+namespace Repo.Server.TaskModule.Controllers;
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 [Authorize]
 public class StatusController : ControllerBase
 {
