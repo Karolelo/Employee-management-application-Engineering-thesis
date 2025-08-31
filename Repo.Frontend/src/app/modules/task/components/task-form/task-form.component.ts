@@ -1,5 +1,5 @@
-import {Component, Input, SimpleChanges} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {FormBuilder, FormGroup, ValidationErrors, Validators} from '@angular/forms';
 import {futureDateValidation} from '../../../../common_validators/fututreDateValidation';
 import {Task} from '../../interfaces/task'
 import {NgClass} from '@angular/common';
@@ -13,7 +13,7 @@ import {UserStoreService} from '../../../login/services/user_data/user-store.ser
   styleUrl: './task-form.component.css'
 })
 //TODO dodać potem dynamiczne priority oraz jak ID usera przekazywać
-export class TaskFormComponent {
+export class TaskFormComponent implements OnChanges{
   @Input() taskToEdit?: Task;
   taskForm: FormGroup;
   constructor(private fb: FormBuilder,private taskService: TaskService,private userDataStore: UserStoreService) {
@@ -26,7 +26,6 @@ export class TaskFormComponent {
       status: ['',Validators.required]
     })
   }
-
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['taskToEdit'] && this.taskToEdit) {
       this.taskForm.patchValue(this.taskToEdit);
@@ -34,31 +33,41 @@ export class TaskFormComponent {
   }
 
   onSubmit(): void {
-    if (this.taskForm.invalid) {
-      alert('Please fill in the required fields: Title and Priority.');
-      return;
-    }
     const formValue = this.taskForm.value;
     const now = new Date().toLocaleString();
+
     if (this.taskToEdit) {
       const updatedTask: Task = {
         ...this.taskToEdit,
         ...formValue
       };
-      this.taskService.updateTask(this.taskToEdit.id,updatedTask);
+      this.taskService.updateTask(this.taskToEdit.id, updatedTask);
       this.taskToEdit = undefined;
     } else {
+      const timeSpanString = `${formValue.estimatedTime}:00:00.0000000`;
+      const dateString = formValue.startDate.toLocaleString();
+      const date = new Date(dateString);
       const newTask: Task = {
         ...formValue,
-      }
-
+        start_Time: date,
+        estimated_Time: timeSpanString
+      };
+      console.log('Added task'+ newTask);
       const value = this.userDataStore.getUserId()
       if(value) {
-        this.taskService.createTaskForUser(value,newTask);
+        this.taskService.createTaskForUser(value, newTask).subscribe({
+          next: (response) => {
+            console.log('Task dodany:', response);
+          },
+          error: (error) => {
+            console.error('Error durring adding task:', error);
+            throw error;
+          }
+        });
       }
     }
-    this.taskForm.reset();
-    this.taskForm.reset();
   }
 
 }
+
+

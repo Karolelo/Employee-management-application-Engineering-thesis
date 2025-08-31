@@ -71,7 +71,7 @@ public class TaskController : ControllerBase
         var task = response.Data;
 
         return response.Success
-            ? CreatedAtAction(nameof(GetTaskById), new {id = task.ID}, $"Added new task with ID: {task.ID}")
+            ? CreatedAtAction(nameof(GetTaskById), new {id = task.ID}, task)
             : BadRequest(new { Message = response.Error });
     }
 
@@ -88,7 +88,7 @@ public class TaskController : ControllerBase
         var task = response.Data;
 
         return response.Success
-            ? CreatedAtAction(nameof(GetTaskById), new {id = task.ID}, $"Added new Task with ID: {task.ID}" + $"\nAssigned User with id {userId} to the task")
+            ? CreatedAtAction(nameof(GetTaskById), new {id = task.ID}, task)
             : BadRequest(new { Message = response.Error });
     }
 
@@ -105,7 +105,7 @@ public class TaskController : ControllerBase
         var task = response.Data;
 
         return response.Success
-            ? CreatedAtAction(nameof(GetTaskById), new {id = task.ID}, $"Added new Task with ID: {task.ID}" + $"\nAssigned Group with id {groupId} to the task")
+            ? CreatedAtAction(nameof(GetTaskById), new {id = task.ID},task)
             : BadRequest(new { Message = response.Error });
     }
 

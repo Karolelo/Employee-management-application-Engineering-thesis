@@ -17,9 +17,9 @@ public interface ITaskService
     Task<Response<ICollection<TaskDTO>>> GetTasksByStatusId(int statusId);
 
     //Methods for creating task
-    Task<Response<Repo.Core.Models.Task>> CreateTask(CreateTaskModel model);
-    Task<Response<Repo.Core.Models.Task>> CreateTaskAssignToUser(CreateTaskModel model, int userId);
-    Task<Response<Repo.Core.Models.Task>> CreateTaskAssignToGroup(CreateTaskModel model, int groupId);
+    Task<Response<TaskDTO>> CreateTask(CreateTaskModel model);
+    Task<Response<TaskDTO>> CreateTaskAssignToUser(CreateTaskModel model, int userId);
+    Task<Response<TaskDTO>> CreateTaskAssignToGroup(CreateTaskModel model, int groupId);
 
     //Methods for updating task
     Task<Response<Repo.Core.Models.DTOs.TaskDTO>> UpdateTask(UpdateTaskModel model, int id);

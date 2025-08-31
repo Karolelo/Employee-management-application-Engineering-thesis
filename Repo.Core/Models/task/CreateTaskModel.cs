@@ -12,7 +12,7 @@ public class CreateTaskModel
     public string Description { get; set; } = null!;
     [FutureDate]
     public DateTime Start_Time { get; set; }
-    [Range(typeof(TimeSpan), "00:15:00", "365.00:00:00")]
+    [Range(typeof(TimeSpan), "00:1:00", "365:00:00")]
     public TimeSpan Estimated_Time { get; set; }
     
     public string Priority { get; set; }

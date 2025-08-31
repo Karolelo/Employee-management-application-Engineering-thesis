@@ -1,7 +1,20 @@
-﻿namespace Repo.Core.Models.DTOs;
+﻿using Microsoft.EntityFrameworkCore.Metadata;
+
+namespace Repo.Core.Models.DTOs;
 
 public class TaskDTO
 {
+    //To be honest mrozinski tak chyba by było wygodniej 
+    /*public TaskDTO(Task task)
+    {
+        this.ID = task.ID;
+        this.Name = task.Name;
+        this.Description = task.Description;
+        this.Start_Time = task.Start_Time;
+        this.Estimated_Time = task.Estimated_Time;
+        this.Priority = task.Priority.Priority1;
+        this.Status = task.Status.Status1;
+    }*/
     public int ID { get; set; }
     
     public string Name { get; set; } = null!;

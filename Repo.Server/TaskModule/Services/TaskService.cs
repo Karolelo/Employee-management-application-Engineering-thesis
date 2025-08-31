@@ -190,7 +190,7 @@ public class TaskService : ITaskService
     }
 
     //Methods for creating task
-    public async Task<Response<Task>> CreateTask(CreateTaskModel model)
+    public async Task<Response<TaskDTO>> CreateTask(CreateTaskModel model)
     {
         try
         {
@@ -206,13 +206,13 @@ public class TaskService : ITaskService
 
             if (priority == null)
             {
-                return Response<Task>.Fail("Priority not found");
+                return Response<TaskDTO>.Fail("Priority not found");
             }
 
             var status = await _context.Set<Status>().FirstOrDefaultAsync(e => e.Status1 == model.Status);
             if (status == null)
             {
-                return Response<Task>.Fail("Status not found");
+                return Response<TaskDTO>.Fail("Status not found");
             }
 
             task.Priority = priority;
@@ -220,50 +220,88 @@ public class TaskService : ITaskService
 
             await _context.Set<Task>().AddAsync(task);
             await _context.SaveChangesAsync();
-            return Response<Task>.Ok(task);
+
+            var taskDto = new TaskDTO
+            {
+                ID = task.ID,
+                Name = task.Name,
+                Description = task.Description,
+                Start_Time = task.Start_Time,
+                Estimated_Time = task.Estimated_Time,
+                Priority = task.Priority.Priority1,
+                Status = task.Status.Status1
+            };
+
+            return Response<TaskDTO>.Ok(taskDto);
         }
         catch (Exception e)
         {
-            return Response<Task>.Fail($"Error during creating task: {e.Message}");
+            return Response<TaskDTO>.Fail($"Error during creating task: {e.Message}");
         }
     }
-    
-    public async Task<Response<Task>> CreateTaskAssignToUser(CreateTaskModel model, int userId)
+
+    public async Task<Response<TaskDTO>> CreateTaskAssignToUser(CreateTaskModel model, int userId)
     {
         var user = _context.Set<User>().FirstOrDefault(e => e.ID == userId);
         if (user == null)
         {
-            return Response<Task>.Fail("User not found");
+            return Response<TaskDTO>.Fail("User not found");
         }
-        
+
         var task = await CreateTask(model);
         if (!task.Success)
         {
-            return Response<Task>.Fail(task.Error);
+            return Response<TaskDTO>.Fail(task.Error);
         }
-        
-        task.Data.Users.Add(user);
+
+        var taskEntity = await _context.Set<Task>().FindAsync(task.Data.ID);
+        taskEntity.Users.Add(user);
         await _context.SaveChangesAsync();
-        return Response<Task>.Ok(task.Data);
+
+        var taskDto = new TaskDTO
+        {
+            ID = taskEntity.ID,
+            Name = taskEntity.Name,
+            Description = taskEntity.Description,
+            Start_Time = taskEntity.Start_Time,
+            Estimated_Time = taskEntity.Estimated_Time,
+            Priority = taskEntity.Priority.Priority1,
+            Status = taskEntity.Status.Status1
+        };
+
+        return Response<TaskDTO>.Ok(taskDto);
     }
 
-    public async Task<Response<Task>> CreateTaskAssignToGroup(CreateTaskModel model, int groupId)
+    public async Task<Response<TaskDTO>> CreateTaskAssignToGroup(CreateTaskModel model, int groupId)
     {
         var group = _context.Set<Group>().FirstOrDefault(e => e.ID == groupId);
         if (group == null)
         {
-            return Response<Task>.Fail("Group not found");
+            return Response<TaskDTO>.Fail("Group not found");
         }
-        
+
         var task = await CreateTask(model);
         if (!task.Success)
         {
-            return Response<Task>.Fail(task.Error);
+            return Response<TaskDTO>.Fail(task.Error);
         }
-        
-        task.Data.Groups.Add(group);
+
+        var taskEntity = await _context.Set<Task>().FindAsync(task.Data.ID);
+        taskEntity.Groups.Add(group);
         await _context.SaveChangesAsync();
-        return Response<Task>.Ok(task.Data);
+
+        var taskDto = new TaskDTO
+        {
+            ID = taskEntity.ID,
+            Name = taskEntity.Name,
+            Description = taskEntity.Description,
+            Start_Time = taskEntity.Start_Time,
+            Estimated_Time = taskEntity.Estimated_Time,
+            Priority = taskEntity.Priority.Priority1,
+            Status = taskEntity.Status.Status1
+        };
+
+        return Response<TaskDTO>.Ok(taskDto);
     }
 
     //Methods for updating task

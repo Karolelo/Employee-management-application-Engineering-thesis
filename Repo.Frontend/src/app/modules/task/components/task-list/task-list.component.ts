@@ -51,6 +51,7 @@ export class TaskListComponent {
 
   onDeleteTask(taskId: number): void {
     this.taskService.deleteTask(taskId);
+    this.tasks = this.tasks.filter(task => task.id !== taskId);
   }
 
   onViewTask(task: Task): void {

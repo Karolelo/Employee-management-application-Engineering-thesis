@@ -7,7 +7,7 @@ public class FutureDateAttribute : ValidationAttribute
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
         DateTime date = (DateTime)value;
-        if (date <= DateTime.Now)
+        if (date >= DateTime.Now)
         {
             return new ValidationResult("Date cannot be in the past");
         }

@@ -9,7 +9,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="src\app\common_components\sidenavbar\" />
-    <Folder Include="src\app\common_interafaces\api\" />
+    <Folder Include="src\app\common_interafaces\" />
     <Folder Include="src\app\common_services\" />
     <Folder Include="src\app\layouts\" />
     <Folder Include="src\app\modules\" />

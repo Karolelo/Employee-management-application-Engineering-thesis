@@ -4,33 +4,47 @@
     <div class="floating-label">
       <input formControlName="name" placeholder=" ">
       <label>Title</label>
-      <div *ngIf="taskForm.get('name')?.invalid && taskForm.get('name')?.touched" class="error-message">
+      <span *ngIf="taskForm.get('name')?.invalid && taskForm.get('name')?.touched" class="error-message">
         Title is required.
-      </div>
+      </span>
     </div>
 
     <div class="floating-label">
       <textarea formControlName="description" placeholder=" " rows="4" class="task-description"></textarea>
       <label>Description</label>
-      <div *ngIf="taskForm.get('description')?.invalid && taskForm.get('description')?.touched" class="error-message">
-        Description is required.
+      <div *ngIf="taskForm.get('description')?.invalid
+        && taskForm.get('description')?.touched
+        && taskForm.get('description')?.errors as error" class="error-message">
+        <span *ngIf="error['required']">
+          Description is required.
+        </span>
+        <span *ngIf="error['minlength']">
+          Description must be at least 20 characters long.
+        </span>
       </div>
     </div>
 
     <div class="floating-label">
       <input formControlName="startDate" type="date" placeholder=" ">
       <label>Task start date</label>
-      <div *ngIf="taskForm.get('startDate')?.invalid && taskForm.get('startDate')?.touched" class="error-message">
-        Start date is required.
-      </div>
+      <span *ngIf="taskForm.get('startDate')?.invalid
+      && taskForm.get('startDate')?.touched" class="error-message">
+        Start date needs in in future
+      </span>
     </div>
 
     <div class="floating-label">
       <input formControlName="estimatedTime" type="number" placeholder="">
-      <label>Estimated time for task</label>
-      <div *ngIf="taskForm.get('startDate')?.invalid
-      && taskForm.get('startDate')?.touched && taskForm.get('descritpion')?.errors" class="error-message">
-        Start date is required and must be greater than 0 .
+      <label>Estimated time for task in hours</label>
+      <div *ngIf="taskForm.get('estimatedTime')?.invalid
+      && taskForm.get('estimatedTime')?.touched
+       && taskForm.get('estimatedTime')?.errors as error" class="error-message">
+       <span *ngIf="error['required']">
+         Estimated time is required.
+       </span>
+        <span *ngIf="error['min']">
+          Estimated time must be at least 1 hour.
+        </span>
       </div>
     </div>
 
@@ -42,9 +56,9 @@
         <option value="high">High</option>
       </select>
       <label></label>
-      <div *ngIf="taskForm.get('priority')?.invalid && taskForm.get('priority')?.touched" class="error-message">
+      <span *ngIf="taskForm.get('priority')?.invalid && taskForm.get('priority')?.touched" class="error-message">
         Priority is required.
-      </div>
+      </span>
     </div>
 
     <div class="floating-label">
@@ -56,6 +70,9 @@
       </select>
       <label></label>
     </div>
+    <span *ngIf="taskForm.get('status')?.invalid && taskForm.get('status')?.touched" class="error-message">
+        Status is required.
+      </span>
 
     <button type="submit"
             [disabled]="taskForm.invalid"

@@ -2,8 +2,8 @@ export interface Task {
   id: number;
   name: string;
   description: string;
-  startDate: Date;
-  estimatedTime: number;
+  Start_Time: Date;
+  estimated_Time: string;
   creator: string;
   deleted: boolean;
   priority: string;

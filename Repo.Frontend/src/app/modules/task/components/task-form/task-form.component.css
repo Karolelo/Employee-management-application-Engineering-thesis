@@ -210,3 +210,8 @@ select[formControlName="status"]:has(option[value="finished"]:checked) {
   width: 95%;
   resize: none;
 }
+.error-message {
+  color: red;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
