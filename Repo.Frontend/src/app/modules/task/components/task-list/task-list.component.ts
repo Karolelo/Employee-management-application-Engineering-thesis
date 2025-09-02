@@ -1,35 +1,40 @@
-import {Component, EventEmitter, Output} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import { NgClass } from '@angular/common';
 import {MatDialog} from '@angular/material/dialog';
 import {TaskService} from '../../services/task/task.service';
 import {Task} from '../../interfaces/task'
 import {TaskDetailsComponent} from '../task-details/task-details.component';
 import {UserStoreService} from '../../../login/services/user_data/user-store.service';
+import {Observable, tap,async} from 'rxjs';
 
 @Component({
   selector: 'app-task-list',
   standalone: false,
   templateUrl: './task-list.component.html',
   styleUrl: './task-list.component.css',
-  providers: [TaskService]
+  providers: []
 })
-export class TaskListComponent {
+export class TaskListComponent implements OnInit{
   loading = false;
   errorMessage: string | null = null;
-  tasks!: Task[];
+  tasks$!: Observable<Task[]>;
   @Output() editTask = new EventEmitter<Task>();
   constructor(private taskService: TaskService,private userDataStore: UserStoreService, private dialog: MatDialog) {
   }
   ngOnInit(): void {
     this.loading = true;
+    this.tasks$ = this.taskService.tasks$;
     this.userDataStore.getUserData().subscribe({
       next: (user) => {
         if (user) {
           this.taskService.getAllUserTask(user.id).subscribe({
             next: (task) => {
                 this.loading = false;
-                this.tasks=task;
                 console.log(task);
+            },
+            error: (error) => {
+              console.log(error);
+              this.loading = false;
             }
          })
         } else {
@@ -50,8 +55,12 @@ export class TaskListComponent {
   }
 
   onDeleteTask(taskId: number): void {
-    this.taskService.deleteTask(taskId);
-    this.tasks = this.tasks.filter(task => task.id !== taskId);
+    this.taskService.deleteTask(taskId).pipe(
+      tap({
+        next: (response) => console.log('Odpowiedź z serwera:', response),
+        error: (error) => console.error('Błąd:', error)
+      })
+    ).subscribe({});
   }
 
   onViewTask(task: Task): void {

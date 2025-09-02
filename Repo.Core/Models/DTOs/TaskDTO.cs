@@ -23,7 +23,7 @@ public class TaskDTO
     
     public DateTime Start_Time { get; set; }
 
-    public TimeSpan Estimated_Time { get; set; }
+    public int Estimated_Time { get; set; }
     
     public string Priority { get; set; }
 

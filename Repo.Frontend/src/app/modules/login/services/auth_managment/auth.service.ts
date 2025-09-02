@@ -23,25 +23,32 @@ export class AuthService {
 
       if (!token) {
         console.log('No token in local storage');
+
         this.isAuthenticatedSubject.next(false);
         return;
       }
 
       if (this.jwtHelper.isTokenExpired(token)) {
         console.log('tokenExpire');
+
         this.isAuthenticatedSubject.next(false);
         localStorage.removeItem(this.TOKEN_KEY);
+
         this.router.navigate(['/login']);
         return;
       }
 
       console.log('Old token still valid');
+
       this.storeService.storeUserData(token);
       this.isAuthenticatedSubject.next(true);
+
     } catch (error) {
       console.error('Error durring validation of token:', error);
+
       this.isAuthenticatedSubject.next(false);
       localStorage.removeItem(this.TOKEN_KEY);
+
       this.router.navigate(['/login']);
     }
   }
@@ -51,11 +58,13 @@ export class AuthService {
     return this.http.post<TokenResponse>('/api/auth/login', creditals)
       .pipe(  tap(response => {
           console.log('login response '+response);
+
           this.storeTokens(response);
           this.isAuthenticatedSubject.next(true);
         }),
         catchError(error => {
           console.error('Error during login:', error);
+
           return throwError(() => error);
         })
       );
@@ -103,6 +112,7 @@ export class AuthService {
     localStorage.removeItem(this.TOKEN_KEY);
     localStorage.removeItem(this.REFRESH_TOKEN_KEY);
     this.isAuthenticatedSubject.next(false);
+
     this.router.navigate(['/login']);
   }
 }

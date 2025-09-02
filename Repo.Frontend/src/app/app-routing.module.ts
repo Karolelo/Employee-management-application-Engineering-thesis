@@ -6,15 +6,17 @@ import {MainLayoutComponent} from './layouts/main-layout/main-layout.component';
 import {CalendarModule} from './modules/calendar-module/calendar.module';
 import {TaskPageComponent} from './modules/task/pages/task-page/task-page.component';
 import {TaskModule} from './modules/task/task.module';
+import {AuthGuardService} from './guard/AuthGuard/auth-guard.service';
 const routes: Routes = [
   {
     path: '',
     component: MainLayoutComponent,
+    canActivate: [AuthGuardService],
     children: [
       { path: 'tasks', loadChildren: () => TaskModule,
-      data: { title: 'Tasks module' }},
+      data: { title: 'Tasks module',expectedRole:'User'}},
       { path: 'calendar', loadChildren: () => CalendarModule,
-      data: { title: 'Calendar module' }},
+      data: { title: 'Calendar module',expectedRole:'User' }},
     ]
   },
   {

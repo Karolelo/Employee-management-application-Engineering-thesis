@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.VisualBasic.CompilerServices;
 using Repo.Core.MyAttributes;
 
 namespace Repo.Core.Models.task;
@@ -12,8 +13,8 @@ public class CreateTaskModel
     public string Description { get; set; } = null!;
     [FutureDate]
     public DateTime Start_Time { get; set; }
-    [Range(typeof(TimeSpan), "00:1:00", "365:00:00")]
-    public TimeSpan Estimated_Time { get; set; }
+    [Range(1,1000, ErrorMessage = "Estimated time must be between 1 and 1000")]
+    public int Estimated_Time { get; set; }
     
     public string Priority { get; set; }
 

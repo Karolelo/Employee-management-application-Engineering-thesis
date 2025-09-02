@@ -12,7 +12,7 @@ import {UserStoreService} from '../../../login/services/user_data/user-store.ser
   templateUrl: './task-form.component.html',
   styleUrl: './task-form.component.css'
 })
-//TODO dodać potem dynamiczne priority oraz jak ID usera przekazywać
+
 export class TaskFormComponent implements OnChanges{
   @Input() taskToEdit?: Task;
   taskForm: FormGroup;
@@ -34,37 +34,60 @@ export class TaskFormComponent implements OnChanges{
 
   onSubmit(): void {
     const formValue = this.taskForm.value;
-    const now = new Date().toLocaleString();
 
     if (this.taskToEdit) {
-      const updatedTask: Task = {
-        ...this.taskToEdit,
-        ...formValue
-      };
-      this.taskService.updateTask(this.taskToEdit.id, updatedTask);
-      this.taskToEdit = undefined;
-    } else {
-      const timeSpanString = `${formValue.estimatedTime}:00:00.0000000`;
+
       const dateString = formValue.startDate.toLocaleString();
       const date = new Date(dateString);
+
+      const updatedTask: Task = {
+        ...this.taskToEdit,
+        ...formValue,
+        start_Time: date,
+      };
+
+      this.taskService.updateTask(this.taskToEdit.id, updatedTask).subscribe(
+        {
+          next: (response) => {
+            console.log('Task updated:', response);
+          },
+          error: (error) => {
+            console.error('Error durring updating task:', error);
+          },
+          complete: () => {
+            this.taskForm.reset();
+          }
+        }
+      );
+
+      this.taskToEdit = undefined;
+
+    } else {
+
+      const dateString = formValue.startDate.toLocaleString();
+      const date = new Date(dateString);
+
       const newTask: Task = {
         ...formValue,
         start_Time: date,
-        estimated_Time: timeSpanString
       };
-      console.log('Added task'+ newTask);
-      const value = this.userDataStore.getUserId()
-      if(value) {
-        this.taskService.createTaskForUser(value, newTask).subscribe({
+
+      const userId = this.userDataStore.getUserId()
+
+      if(userId) {
+        this.taskService.createTaskForUser(userId, newTask).subscribe({
           next: (response) => {
             console.log('Task dodany:', response);
           },
           error: (error) => {
             console.error('Error durring adding task:', error);
-            throw error;
+          },
+          complete: () => {
+            this.taskForm.reset();
           }
         });
       }
+
     }
   }
 

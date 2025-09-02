@@ -3,7 +3,7 @@ export interface Task {
   name: string;
   description: string;
   Start_Time: Date;
-  estimated_Time: string;
+  estimated_Time: number;
   creator: string;
   deleted: boolean;
   priority: string;

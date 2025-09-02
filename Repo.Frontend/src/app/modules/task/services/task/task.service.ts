@@ -1,23 +1,36 @@
-import {catchError, Observable, throwError} from 'rxjs';
+import {BehaviorSubject, catchError, map, Observable, tap, throwError} from 'rxjs';
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Task} from '../../interfaces/task';
+//Everu class posibble was change for map, for better angular assert to Angular convention
 @Injectable({
   providedIn: 'root'
 })
 export class TaskService {
+  private taskSubject = new BehaviorSubject<Task[]>([]);
+  tasks$ = this.taskSubject.asObservable();
   private readonly apiUrl = 'api/Task';
 
   constructor(private http: HttpClient) { }
   //Getters
   getAllUserTask(id: number): Observable<Task[]> {
+    /*return this.http.get<Task[]>(`${this.apiUrl}/user/${id}`)
+      .pipe(tap(task =>{
+        this.taskSubject.next(task);
+      }),catchError(this.handleError));*/
     return this.http.get<Task[]>(`${this.apiUrl}/user/${id}`)
-      .pipe(catchError(this.handleError));
+      .pipe(map(userTasks=>{
+        this.taskSubject.next(userTasks);
+        return this.taskSubject.getValue();
+      }),catchError(this.handleError))
   }
 
   getAllGroupTask(id: number): Observable<Task[]> {
     return this.http.get<Task[]>(`${this.apiUrl}/group/${id}`)
-      .pipe(catchError(this.handleError));
+      .pipe(map(groupTasks=>{
+        this.taskSubject.next(groupTasks);
+        return this.taskSubject.getValue();
+      }),catchError(this.handleError));
   }
 
   getRelatedTasksByTaskId(id: number): Observable<Task[]> {
@@ -26,8 +39,24 @@ export class TaskService {
   }
   //Posts
   createTaskForUser(userId: number, task: Task): Observable<Task> {
+    /*return this.http.post<Task>(`${this.apiUrl}/user/add/${userId}`, task).pipe(
+      tap({
+        next: (newTask: Task) => {
+          const currentTasks = this.taskSubject.getValue();
+          this.taskSubject.next([...currentTasks, newTask]);
+          console.log('Po aktualizacji:', this.taskSubject.getValue());
+        },
+        error: (error) => {{catchError(this.handleError)}
+        }
+      }),
+    );*/
+
     return this.http.post<Task>(`${this.apiUrl}/user/add/${userId}`, task)
-      .pipe(catchError(this.handleError));
+      .pipe(map(newTask => {
+        const currentTasks = this.taskSubject.getValue();
+        this.taskSubject.next([...currentTasks, newTask]);
+        return newTask;
+      }),catchError(this.handleError));
   }
 
   createTaskForGroup(groupId: number, task: Task): Observable<Task> {
@@ -42,16 +71,30 @@ export class TaskService {
   //Deletes
   deleteTask(taskId: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${taskId}`)
-      .pipe(catchError(this.handleError));
+      .pipe(tap({
+        next: () => {const currentTasks = this.
+        taskSubject
+          .getValue()
+          .filter(task => task.id !== taskId);
+          this.taskSubject.next(currentTasks);},
+        error: (error) => {catchError(this.handleError)}
+      }));
   }
-
+  //TODO przekminić jak to dalej obsłużyć, na razie nie mam relacji, pomiędzy zadaniami
   deleteTaskRelation(taskId: number, otherTaskId: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${taskId}/relations/${otherTaskId}`)
+      .pipe(catchError(this.handleError));
   }
 
   //UpdatesTask
   updateTask(taskId: number, task: Task): Observable<Task> {
     return this.http.put<Task>(`${this.apiUrl}/${taskId}`, task)
+      .pipe(map(updatedTask=>{
+        const currentTasks = this.taskSubject.getValue();
+        const updatedTasks = currentTasks.map(task => task.id === updatedTask.id ? updatedTask : task);
+        this.taskSubject.next(updatedTasks);
+        return updatedTask;
+      }),catchError(this.handleError));
   }
   private handleError(error: any) {
     console.error('Wystąpił błąd:', error);
