@@ -9,7 +9,7 @@ using Repo.Server.GradeModule.Interfaces;
 namespace Repo.Server.GradeModule.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 [Authorize]
 public class CourseController : ControllerBase
 {
