@@ -30,5 +30,8 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "dependencies": {
+    "mat-icon-button-sizes": "^1.0.6"
   }
 }

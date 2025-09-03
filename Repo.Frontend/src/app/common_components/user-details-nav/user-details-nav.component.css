@@ -1,0 +1,25 @@
+mat-toolbar {
+  background: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+}
+
+#openButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /*width: 60px;*/
+  height: 60px;
+  line-height: 60px;
+  min-width: min-content;
+
+  .mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    line-height: 48px;
+  }
+
+}
