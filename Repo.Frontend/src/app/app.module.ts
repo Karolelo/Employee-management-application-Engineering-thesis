@@ -25,9 +25,13 @@ import {HTTP_INTERCEPTORS} from '@angular/common/http';
 import {AuthInterceptorService} from './common_services/auth-interceptor-services.service';
 import {TaskModule} from './modules/task/task.module';
 import {JwtHelperService, JwtModule} from '@auth0/angular-jwt';
-import { SidenavbarComponent } from './common_components/sidenavbar/sidenavbar/sidenavbar.component';
 import {MatListItem, MatNavList} from '@angular/material/list';
 import {CommonModule, NgClass} from '@angular/common';
+import {SidenavbarComponent} from './common_components/sidenavbar/sidenavbar.component';
+import {UserDetailsNavComponent} from './common_components/user-details-nav/user-details-nav.component';
+import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
+import {MatToolbar} from '@angular/material/toolbar';
+import {MatIconButtonSizesModule} from 'mat-icon-button-sizes';
 
 export function tokenGetter() {
   return localStorage.getItem('auth_token');
@@ -40,6 +44,7 @@ export function tokenGetter() {
     AuthLayoutComponent,
     MainLayoutComponent,
     SidenavbarComponent,
+    UserDetailsNavComponent,
   ],
   imports: [
     CommonModule,
@@ -73,7 +78,11 @@ export function tokenGetter() {
     MatListItem,
     MatIcon,
     MatSidenavModule,
-    NgClass
+    NgClass,
+    MatMenu,
+    MatToolbar,
+    MatMenuTrigger,
+    MatMenuItem
   ],
   providers: [
     {

@@ -8,7 +8,7 @@ import {BehaviorSubject, filter, map} from 'rxjs';
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 }) //TODO sprawdzić czy tak lepiej działa
-export class NavbarComponent implements OnInit {
+export class NavbarComponent {
   moduleName: string = "Basic module";
 
   constructor(
@@ -17,11 +17,6 @@ export class NavbarComponent implements OnInit {
   ) {
     this.initNavbar()
   }
-
-  ngOnInit() {
-
-  }
-
   initNavbar(){
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd),
