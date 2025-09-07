@@ -15,6 +15,5 @@
     <Folder Include="src\app\modules\login\services\user_data\" />
     <Folder Include="src\app\modules\task\components\" />
     <Folder Include="src\app\modules\task\pages\" />
-    <Folder Include="src\app\modules\task\services\priority\" />
   </ItemGroup>
 </Project>

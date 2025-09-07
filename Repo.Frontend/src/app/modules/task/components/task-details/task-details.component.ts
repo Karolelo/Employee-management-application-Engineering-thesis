@@ -14,4 +14,8 @@ export class TaskDetailsComponent {
   close(){
     this.dialogRef.close();
   }
+
+  showDetails() {
+
+  }
 }

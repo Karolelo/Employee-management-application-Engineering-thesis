@@ -2,6 +2,7 @@ import {BehaviorSubject, catchError, map, Observable, tap, throwError} from 'rxj
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Task} from '../../interfaces/task';
+import {RelatedTasks} from '../../interfaces/related-tasks';
 //Everu class posibble was change for map, for better angular assert to Angular convention
 @Injectable({
   providedIn: 'root'
@@ -12,17 +13,14 @@ export class TaskService {
   private readonly apiUrl = 'api/Task';
 
   constructor(private http: HttpClient) { }
+
   //Getters
   getAllUserTask(id: number): Observable<Task[]> {
-    /*return this.http.get<Task[]>(`${this.apiUrl}/user/${id}`)
-      .pipe(tap(task =>{
-        this.taskSubject.next(task);
-      }),catchError(this.handleError));*/
     return this.http.get<Task[]>(`${this.apiUrl}/user/${id}`)
       .pipe(map(userTasks=>{
         this.taskSubject.next(userTasks);
         return this.taskSubject.getValue();
-      }),catchError(this.handleError))
+      }));
   }
 
   getAllGroupTask(id: number): Observable<Task[]> {
@@ -30,44 +28,31 @@ export class TaskService {
       .pipe(map(groupTasks=>{
         this.taskSubject.next(groupTasks);
         return this.taskSubject.getValue();
-      }),catchError(this.handleError));
+      }));
   }
 
-  getRelatedTasksByTaskId(id: number): Observable<Task[]> {
-    return this.http.get<Task[]>(`${this.apiUrl}/${id}/relations`)
-      .pipe(catchError(this.handleError));
+  getRelatedTasksByTaskId(id: number): Observable<RelatedTasks> {
+    return this.http.get<RelatedTasks>(`${this.apiUrl}/${id}/relations`);
   }
+
   //Posts
   createTaskForUser(userId: number, task: Task): Observable<Task> {
-    /*return this.http.post<Task>(`${this.apiUrl}/user/add/${userId}`, task).pipe(
-      tap({
-        next: (newTask: Task) => {
-          const currentTasks = this.taskSubject.getValue();
-          this.taskSubject.next([...currentTasks, newTask]);
-          console.log('Po aktualizacji:', this.taskSubject.getValue());
-        },
-        error: (error) => {{catchError(this.handleError)}
-        }
-      }),
-    );*/
-
     return this.http.post<Task>(`${this.apiUrl}/user/add/${userId}`, task)
       .pipe(map(newTask => {
         const currentTasks = this.taskSubject.getValue();
         this.taskSubject.next([...currentTasks, newTask]);
         return newTask;
-      }),catchError(this.handleError));
+      }));
   }
 
   createTaskForGroup(groupId: number, task: Task): Observable<Task> {
-    return this.http.post<Task>(`${this.apiUrl}/group/add/${groupId}`, task)
-      .pipe(catchError(this.handleError));
+    return this.http.post<Task>(`${this.apiUrl}/group/add/${groupId}`, task);
   }
 
-  createTaskRelation(taskId: number, otherTaskId: number): Observable<Task> {
-    return this.http.post<Task>(`${this.apiUrl}/${taskId}/relations`, { otherTaskId })
-      .pipe(catchError(this.handleError));
+  createTaskRelation(taskId: number, relatedTaskId: number): Observable<Task> {
+    return this.http.post<Task>(`${this.apiUrl}/${taskId}/relations`, { relatedTaskId });
   }
+
   //Deletes
   deleteTask(taskId: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${taskId}`)
@@ -77,13 +62,11 @@ export class TaskService {
           .getValue()
           .filter(task => task.id !== taskId);
           this.taskSubject.next(currentTasks);},
-        error: (error) => {catchError(this.handleError)}
       }));
   }
-  //TODO przekminić jak to dalej obsłużyć, na razie nie mam relacji, pomiędzy zadaniami
+
   deleteTaskRelation(taskId: number, otherTaskId: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${taskId}/relations/${otherTaskId}`)
-      .pipe(catchError(this.handleError));
+    return this.http.delete<void>(`${this.apiUrl}/${taskId}/relations/${otherTaskId}`);
   }
 
   //UpdatesTask
@@ -94,10 +77,6 @@ export class TaskService {
         const updatedTasks = currentTasks.map(task => task.id === updatedTask.id ? updatedTask : task);
         this.taskSubject.next(updatedTasks);
         return updatedTask;
-      }),catchError(this.handleError));
-  }
-  private handleError(error: any) {
-    console.error('Wystąpił błąd:', error);
-    return throwError(() => new Error(error.message || 'Wystąpił błąd serwera'));
+      }));
   }
 }

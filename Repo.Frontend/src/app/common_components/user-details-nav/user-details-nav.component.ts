@@ -1,5 +1,6 @@
 import {Component, ViewChild} from '@angular/core';
 import {MatSidenav} from '@angular/material/sidenav';
+import {AuthService} from '../../modules/login/services/auth_managment/auth.service';
 
 @Component({
   selector: 'app-user-details-nav',
@@ -8,9 +9,11 @@ import {MatSidenav} from '@angular/material/sidenav';
   styleUrl: './user-details-nav.component.css'
 })
 export class UserDetailsNavComponent {
-  /*@ViewChild('userDetailsNav') userDetailsNav!: MatSidenav;*/
+
+  constructor(private authService: AuthService,){
+  }
 
   logout() {
-
+    this.authService.logout();
   }
 }

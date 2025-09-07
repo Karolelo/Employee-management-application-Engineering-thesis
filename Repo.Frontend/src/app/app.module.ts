@@ -12,7 +12,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+import {MatInputModule, MatLabel} from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
@@ -31,7 +31,6 @@ import {SidenavbarComponent} from './common_components/sidenavbar/sidenavbar.com
 import {UserDetailsNavComponent} from './common_components/user-details-nav/user-details-nav.component';
 import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 import {MatToolbar} from '@angular/material/toolbar';
-import {MatIconButtonSizesModule} from 'mat-icon-button-sizes';
 
 export function tokenGetter() {
   return localStorage.getItem('auth_token');
@@ -82,7 +81,9 @@ export function tokenGetter() {
     MatMenu,
     MatToolbar,
     MatMenuTrigger,
-    MatMenuItem
+    MatMenuItem,
+    MatLabel,
+    MatSelectModule
   ],
   providers: [
     {

@@ -26,20 +26,6 @@
   --completed-status: #2ecc71;
 }
 
-.btn-primary {
-  background-color: var(--primary-color);
-  border: none;
-  border-radius: 5px;
-  padding: 10px;
-  color: white;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 1rem;
-}
-
--btn-primary:hover {
-  background-color: #7b39c9;
-}
 
 
 

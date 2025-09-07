@@ -23,3 +23,8 @@ mat-toolbar {
   }
 
 }
+
+button[mat-menu-item]{
+  cursor: pointer;
+}
+

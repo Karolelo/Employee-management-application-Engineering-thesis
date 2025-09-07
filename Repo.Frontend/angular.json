@@ -39,9 +39,10 @@
             "styles": [
               "@angular/material/prebuilt-themes/magenta-violet.css",
               "src/styles.css",
-              "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+              "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css",
             ],
-            "scripts": []
+            "scripts": [
+            ]
           },
           "configurations": {
             "production": {

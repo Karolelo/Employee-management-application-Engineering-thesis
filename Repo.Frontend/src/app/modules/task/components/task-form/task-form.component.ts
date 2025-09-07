@@ -1,10 +1,11 @@
-import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {FormBuilder, FormGroup, ValidationErrors, Validators} from '@angular/forms';
 import {futureDateValidation} from '../../../../common_validators/fututreDateValidation';
 import {Task} from '../../interfaces/task'
 import {NgClass} from '@angular/common';
 import {TaskService} from '../../services/task/task.service';
 import {UserStoreService} from '../../../login/services/user_data/user-store.service';
+import {firstValueFrom, lastValueFrom, map, Observable, of} from 'rxjs';
 
 @Component({
   selector: 'app-task-form',
@@ -13,84 +14,196 @@ import {UserStoreService} from '../../../login/services/user_data/user-store.ser
   styleUrl: './task-form.component.css'
 })
 
-export class TaskFormComponent implements OnChanges{
+
+export class TaskFormComponent implements OnChanges {
+
+  tasksAvailableForRelation$!: Observable<Task[]>;
+  tasksAvailableForRemoveRelation$!: Observable<Task[]>;
+
   @Input() taskToEdit?: Task;
-  taskForm: FormGroup;
-  constructor(private fb: FormBuilder,private taskService: TaskService,private userDataStore: UserStoreService) {
-    this.taskForm=fb.group({
-      name:  ['', Validators.required],
-      description: ['',Validators.compose([Validators.required, Validators.minLength(20)])],
-      startDate: [Date.now(),futureDateValidation],
-      estimatedTime: [0,Validators.compose([Validators.required, Validators.min(1)])],
-      priority: ['',Validators.required],
-      status: ['',Validators.required]
-    })
+  @Output() taskUpdated = new EventEmitter<void>();
+
+  taskForm!: FormGroup;
+  enableTaskRelations = false;
+
+  constructor(
+    private fb: FormBuilder,
+    private taskService: TaskService,
+    private userDataStore: UserStoreService
+  ) {
+    this.initializeForm();
+    this.loadAvailableTasks();
   }
+
+
+  private initializeForm(): void {
+    this.taskForm = this.fb.group({
+      name: ['', Validators.required],
+      description: ['', [Validators.required, Validators.minLength(20)]],
+      start_Time: [Date.now(), futureDateValidation],
+      estimated_Time: [0, [Validators.required, Validators.min(1)]],
+      priority: ['', Validators.required],
+      status: ['', Validators.required],
+      tasksToConnect: [[]],
+      connectedTasks: [[]]
+    });
+  }
+
+  private loadAvailableTasks(): void {
+    this.tasksAvailableForRelation$ = this.taskService.tasks$;
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['taskToEdit'] && this.taskToEdit) {
-      this.taskForm.patchValue(this.taskToEdit);
+    if (this.shouldUpdateForm(changes)) {
+      this.updateFormWithTaskData();
     }
   }
 
-  onSubmit(): void {
-    const formValue = this.taskForm.value;
+  private shouldUpdateForm(changes: SimpleChanges): boolean {
+    return changes['taskToEdit'] && this.taskToEdit !== undefined;
+  }
 
+  private updateFormWithTaskData(): void {
+    const formattedTask = this.formatTaskData();
+    this.taskForm.patchValue(formattedTask);
+
+    this.setUpTasks();
+  }
+
+  private formatTaskData(): any {
+    return {
+      ...this.taskToEdit,
+      start_Time: new Date(this.taskToEdit!.start_Time).toISOString().split('T')[0]
+    };
+  }
+
+  private setUpTasks(): void
+  {
+    this.loadRelatedTasks();
+    this.updateAvailableTasks()
+  }
+
+  private async updateAvailableTasks(): Promise<void> {
+
+
+    const currentTasks = await firstValueFrom(this.tasksAvailableForRemoveRelation$);
+    console.log(currentTasks);
+    const allTasksToSkip = [...currentTasks];
     if (this.taskToEdit) {
+      allTasksToSkip.push(this.taskToEdit);
+    }
 
-      const dateString = formValue.startDate.toLocaleString();
-      const date = new Date(dateString);
+    this.tasksAvailableForRelation$ = this.taskService.tasks$.pipe(
+      map(tasks => tasks.filter(task =>
+        !allTasksToSkip.some(skipTask => skipTask.id === task.id)
+      ))
+    );
+  }
 
-      const updatedTask: Task = {
-        ...this.taskToEdit,
-        ...formValue,
-        start_Time: date,
-      };
+  private loadRelatedTasks(): void {
+    this.taskService.getRelatedTasksByTaskId(this.taskToEdit!.id).subscribe({
+      next: (relatedTasks) => {
+        console.log(relatedTasks);
+        const tasks = relatedTasks.relatedTasks;
+        if(tasks.length > 0)
+          this.tasksAvailableForRemoveRelation$ = of(tasks);
+        else
+          this.tasksAvailableForRemoveRelation$ = of([]);
+      },
+      error: (error) => {
+        console.error('Error durring loading tasks:', error);
+      }
+    });
+  }
 
-      this.taskService.updateTask(this.taskToEdit.id, updatedTask).subscribe(
-        {
-          next: (response) => {
-            console.log('Task updated:', response);
-          },
-          error: (error) => {
-            console.error('Error durring updating task:', error);
-          },
-          complete: () => {
-            this.taskForm.reset();
-          }
-        }
-      );
+  // Managing of submit
 
-      this.taskToEdit = undefined;
+  async onSubmit(): Promise<void> {
+    if (!this.taskForm.valid) {
+      console.error('Form has error');
+      return;
+    }
 
-    } else {
+    try {
+      const formValue = this.taskForm.value;
+      const date = new Date(formValue.start_Time.toLocaleString());
 
-      const dateString = formValue.startDate.toLocaleString();
-      const date = new Date(dateString);
-
-      const newTask: Task = {
-        ...formValue,
-        start_Time: date,
-      };
-
-      const userId = this.userDataStore.getUserId()
-
-      if(userId) {
-        this.taskService.createTaskForUser(userId, newTask).subscribe({
-          next: (response) => {
-            console.log('Task dodany:', response);
-          },
-          error: (error) => {
-            console.error('Error durring adding task:', error);
-          },
-          complete: () => {
-            this.taskForm.reset();
-          }
-        });
+      if (this.taskToEdit) {
+        await this.updateExistingTask(formValue, date);
+      } else {
+        await this.createNewTask(formValue, date);
       }
 
+      this.resetFormState();
+    } catch (error) {
+      console.error('Error durring saving tasks:', error);
     }
   }
 
+  private async updateExistingTask(formValue: any, date: Date): Promise<void> {
+    const updatedTask: Task = {
+      ...this.taskToEdit,
+      ...formValue,
+      start_Time: date,
+    };
+
+    await firstValueFrom(
+      this.taskService.updateTask(this.taskToEdit!.id, updatedTask)
+    );
+
+    if(this.enableTaskRelations) {
+      if(formValue.connectedTasks && formValue.connectedTasks.length>0)
+        await this.deleteTaskRelations(this.taskToEdit!.id, formValue.connectedTasks);
+      if(formValue.tasksToConnect && formValue.tasksToConnect.length>0)
+        await this.createTaskRelations(this.taskToEdit!.id, formValue.tasksToConnect);
+    }
+    this.taskUpdated.emit();
+  }
+
+  private async createNewTask(formValue: any, date: Date): Promise<void> {
+    const userId = this.userDataStore.getUserId();
+    if (!userId) {
+      throw new Error('No user with this id');
+    }
+
+    const newTask: Task = {
+      ...formValue,
+      start_Time: date,
+    };
+
+    const createdTask = await firstValueFrom(
+      this.taskService.createTaskForUser(userId, newTask)
+    );
+
+    if (this.enableTaskRelations && formValue.tasksToConnect) {
+      await this.createTaskRelations(createdTask.id, formValue.tasksToConnect);
+    }
+  }
+
+  private async createTaskRelations(taskId: number, selectedTaskIds: number[]): Promise<void> {
+    const relationPromises = selectedTaskIds.map(relatedTaskId =>
+      firstValueFrom(this.taskService.createTaskRelation(taskId, relatedTaskId))
+    );
+
+    await Promise.all(relationPromises);
+  }
+
+  private async deleteTaskRelations(taskId:number, selectedTaskIds: number[]): Promise<void> {
+    const relationPromises = selectedTaskIds.map(relatedTaskId =>
+      firstValueFrom(this.taskService.deleteTaskRelation(taskId, relatedTaskId))
+    );
+
+    await Promise.all(relationPromises);
+  }
+
+
+  private resetFormState(): void {
+    this.taskForm.reset();
+    this.tasksAvailableForRelation$ = this.taskService.tasks$;
+    this.tasksAvailableForRemoveRelation$ = of([]);
+    this.taskToEdit = undefined;
+    this.enableTaskRelations = false;
+  }
+
+
 }
-
-
