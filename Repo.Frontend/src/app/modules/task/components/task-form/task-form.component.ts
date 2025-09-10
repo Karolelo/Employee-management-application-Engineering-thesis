@@ -77,30 +77,26 @@ export class TaskFormComponent implements OnChanges {
     };
   }
 
-  private setUpTasks(): void
+  /*private setUpTasks(): void
   {
     this.loadRelatedTasks();
     this.updateAvailableTasks()
-  }
+  }*/
 
   private async updateAvailableTasks(): Promise<void> {
-
-
     const currentTasks = await firstValueFrom(this.tasksAvailableForRemoveRelation$);
-    console.log(currentTasks);
-    const allTasksToSkip = [...currentTasks];
-    if (this.taskToEdit) {
-      allTasksToSkip.push(this.taskToEdit);
-    }
+
+    const taskIdsToSkip = new Set([
+      ...currentTasks.map(task => task.id),
+      ...(this.taskToEdit ? [this.taskToEdit.id] : [])
+    ]);
 
     this.tasksAvailableForRelation$ = this.taskService.tasks$.pipe(
-      map(tasks => tasks.filter(task =>
-        !allTasksToSkip.some(skipTask => skipTask.id === task.id)
-      ))
+      map(tasks => tasks.filter(task => !taskIdsToSkip.has(task.id)))
     );
   }
 
-  private loadRelatedTasks(): void {
+  private setUpTasks(): void {
     this.taskService.getRelatedTasksByTaskId(this.taskToEdit!.id).subscribe({
       next: (relatedTasks) => {
         console.log(relatedTasks);
@@ -109,6 +105,8 @@ export class TaskFormComponent implements OnChanges {
           this.tasksAvailableForRemoveRelation$ = of(tasks);
         else
           this.tasksAvailableForRemoveRelation$ = of([]);
+      },complete: () => {
+        this.updateAvailableTasks();
       },
       error: (error) => {
         console.error('Error durring loading tasks:', error);
@@ -197,7 +195,7 @@ export class TaskFormComponent implements OnChanges {
   }
 
 
-  private resetFormState(): void {
+  protected resetFormState(): void {
     this.taskForm.reset();
     this.tasksAvailableForRelation$ = this.taskService.tasks$;
     this.tasksAvailableForRemoveRelation$ = of([]);

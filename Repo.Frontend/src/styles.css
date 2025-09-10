@@ -3,8 +3,6 @@
   src: url('../public/fonts/Raleway-VariableFont_wght.ttf') format('truetype');
 }
 :root {
- /* --primary-color: #9940d8;*/
-/*  --secondary-color: #6c757d;*/
   --font-main: 'Railway', sans-serif;
   --font-headers: 'RobotSlab', serif;
 }

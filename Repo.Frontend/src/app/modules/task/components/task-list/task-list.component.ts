@@ -6,6 +6,7 @@ import {Task} from '../../interfaces/task'
 import {TaskDetailsComponent} from '../task-details/task-details.component';
 import {UserStoreService} from '../../../login/services/user_data/user-store.service';
 import {Observable, tap,async} from 'rxjs';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-task-list',
@@ -19,7 +20,8 @@ export class TaskListComponent implements OnInit{
   errorMessage: string | null = null;
   tasks$!: Observable<Task[]>;
   @Output() editTask = new EventEmitter<Task>();
-  constructor(private taskService: TaskService,private userDataStore: UserStoreService, private dialog: MatDialog) {
+  constructor(private taskService: TaskService,private userDataStore: UserStoreService, private dialog: MatDialog,
+              private router: Router) {
   }
   ngOnInit(): void {
     this.loading = true;
@@ -67,6 +69,10 @@ export class TaskListComponent implements OnInit{
     this.dialog.open(TaskDetailsComponent, {
       data: task,
     });
+  }
+
+  onShowDetails(task: Task): void {
+    this.router.navigate(['/tasks/task-details', task.id]);
   }
 
   setProgressBarValue(value: string): number {

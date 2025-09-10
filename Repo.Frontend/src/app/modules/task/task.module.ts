@@ -11,6 +11,18 @@ import {MatProgressBar} from "@angular/material/progress-bar";
 import {MatSlideToggle} from '@angular/material/slide-toggle';
 import {MatLabel} from '@angular/material/input';
 import {MatOption, MatSelect} from '@angular/material/select';
+import { TasksDetailPageComponent } from './pages/tasks-detail-page/tasks-detail-page.component';
+import {
+  MatCell, MatCellDef,
+  MatColumnDef,
+  MatHeaderCell, MatHeaderCellDef,
+  MatHeaderRow,
+  MatHeaderRowDef,
+  MatRow,
+  MatRowDef,
+  MatTable
+} from "@angular/material/table";
+import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
 
 
 @NgModule({
@@ -18,7 +30,8 @@ import {MatOption, MatSelect} from '@angular/material/select';
     TaskDetailsComponent,
     TaskListComponent,
     TaskFormComponent,
-    TaskPageComponent
+    TaskPageComponent,
+    TasksDetailPageComponent
   ],
   imports: [
     CommonModule,
@@ -28,13 +41,22 @@ import {MatOption, MatSelect} from '@angular/material/select';
     MatProgressBar,
     NgIf,
     NgClass,
-    NgClass,
-    NgClass,
     MatSlideToggle,
     MatSelect,
     MatLabel,
     MatOption,
-    FormsModule
+    FormsModule,
+    MatTable,
+    MatColumnDef,
+    MatHeaderCell,
+    MatCell,
+    MatHeaderRow,
+    MatRow,
+    MatRowDef,
+    MatHeaderRowDef,
+    MatHeaderCellDef,
+    MatCellDef,
+    MatPaginator,
   ]
 })
 export class TaskModule { }

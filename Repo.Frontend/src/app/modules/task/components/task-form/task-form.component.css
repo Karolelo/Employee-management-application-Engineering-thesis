@@ -225,6 +225,26 @@ select[formControlName="status"]:has(option[value="Finished"]:checked) {
   font-weight: 1000;
 }
 
+.refresh-icon {
+  color: #2ecc71;
+}
+
+#restart-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  margin-left: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  font-size: 1.2rem;
+}
+
+#restart-button:hover {
+  background-color: rgba(108, 92, 231, 0.1);
+  transform: scale(1.1);
+}
+
 /*Some css for angular component*/
 ::ng-deep .mat-mdc-form-field {
   width: 100%;

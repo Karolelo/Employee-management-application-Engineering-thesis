@@ -1,0 +1,120 @@
+.task-details {
+  width: 90%;
+  margin: 1rem auto;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  border-radius: 16px;
+  background: white;
+  box-shadow: 20px 40px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.task-details:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+h2 {
+  font-family: monospace;
+  color: var(--primary-color);
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  position: relative;
+  padding-bottom: 0.5rem;
+  font-weight: 1000;
+}
+
+h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background-color: var(--accent-color);
+}
+
+h3 {
+  font-family: monospace;
+  color: var(--primary-color);
+  font-size: 1.2rem;
+  margin: 1rem 0 0.5rem;
+  font-weight: 600;
+}
+
+p {
+  color: var(--text-color);
+  font-family: var(--font-main);
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  background-color: var(--input-bg);
+  border-radius: 10px;
+}
+
+#description {
+  min-height: 100px;
+  white-space: pre-wrap;
+}
+
+/* Stylizacja tabeli */
+table[mat-table] {
+  width: 100%;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 1rem 0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.mat-mdc-header-cell {
+  background-color: var(--primary-color);
+  color: var(--text-color);
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 1rem;
+  text-transform: capitalize;
+}
+
+.mat-mdc-cell {
+  padding: 1rem;
+  font-family: var(--font-main);
+  color: var(--text-color);
+}
+
+.mat-mdc-row {
+  transition: background-color 0.3s;
+}
+
+.mat-mdc-row:hover {
+  background-color: rgba(108, 92, 231, 0.1);
+  cursor: pointer;
+}
+
+.hidden {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .task-details {
+    margin: 1rem;
+    padding: 1.5rem;
+    width: 95%;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  h3 {
+    font-size: 1.1rem;
+  }
+
+  .mat-mdc-header-cell,
+  .mat-mdc-cell {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
+}
