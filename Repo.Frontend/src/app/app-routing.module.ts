@@ -7,6 +7,7 @@ import {CalendarModule} from './modules/calendar-module/calendar.module';
 import {TaskPageComponent} from './modules/task/pages/task-page/task-page.component';
 import {TaskModule} from './modules/task/task.module';
 import {AuthGuardService} from './guard/AuthGuard/auth-guard.service';
+import {GradeModule} from './modules/grade/grade.module';
 const routes: Routes = [
   {
     path: '',
@@ -17,6 +18,8 @@ const routes: Routes = [
       data: { title: 'Tasks module',expectedRole:'User'}},
       { path: 'calendar', loadChildren: () => CalendarModule,
       data: { title: 'Calendar module',expectedRole:'User' }},
+      { path: 'grades', loadChildren: () => GradeModule,
+      data: { title: 'Grades module', expectedRole: 'User'}}
     ]
   },
   {

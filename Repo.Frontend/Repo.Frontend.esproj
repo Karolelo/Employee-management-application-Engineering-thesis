@@ -13,6 +13,10 @@
     <Folder Include="src\app\layouts\" />
     <Folder Include="src\app\modules\" />
     <Folder Include="src\app\modules\calendar-module\components\" />
+    <Folder Include="src\app\modules\grade\components\" />
+    <Folder Include="src\app\modules\grade\interfaces\" />
+    <Folder Include="src\app\modules\grade\pages\" />
+    <Folder Include="src\app\modules\grade\services\" />
     <Folder Include="src\app\modules\login\services\user_data\" />
     <Folder Include="src\app\modules\task\components\" />
     <Folder Include="src\app\modules\task\pages\" />

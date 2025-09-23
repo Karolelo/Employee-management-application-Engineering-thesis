@@ -31,6 +31,7 @@ import {SidenavbarComponent} from './common_components/sidenavbar/sidenavbar.com
 import {UserDetailsNavComponent} from './common_components/user-details-nav/user-details-nav.component';
 import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 import {MatToolbar} from '@angular/material/toolbar';
+import {GradeModule} from './modules/grade/grade.module';
 
 export function tokenGetter() {
   return localStorage.getItem('auth_token');
@@ -66,6 +67,7 @@ export function tokenGetter() {
     MatIcon,
     CalendarModule,
     TaskModule,
+    GradeModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,
