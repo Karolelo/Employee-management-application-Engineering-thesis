@@ -1,0 +1,37 @@
+<main class="grade-wrapper">
+  <ng-container *ngIf="!errorMessage; else errorTpl">
+    <div *ngIf="loading" class="loading">
+      <mat-spinner></mat-spinner>
+    </div>
+
+    <ng-container *ngIf="!loading">
+      <header class="page-header">
+        <button class="back-btn" routerLink="/"><i class="fa fa-arrow-left"></i></button>
+        <h1>Grades</h1>
+      </header>
+
+      <section class="user-header">
+        <div class="avatar">
+          <div class="avatar-circle">{{ userInitial }}</div>
+        </div>
+        <div class="user-name">{{ userName }}</div>
+      </section>
+
+      <section class="grade-list">
+        <ul>
+          <li *ngFor="let g of grades$ | async" (click)="openDetails(g)">
+            <div class="grade-circle">
+              <mat-progress-spinner [value]="g.grade" mode="determinate" diameter="44"></mat-progress-spinner>
+              <span class="circle-value">{{ displayValue(g) }}</span>
+            </div>
+            <div class="date-pill">{{ formatDate(g.finish_Date) }}</div>
+          </li>
+        </ul>
+      </section>
+    </ng-container>
+  </ng-container>
+
+  <ng-template #errorTpl>
+    <div class="error">{{ errorMessage }}</div>
+  </ng-template>
+</main>
