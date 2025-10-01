@@ -8,10 +8,13 @@
     <BuildOutputFolder>$(MSBuildProjectDirectory)\dist\Repo.Frontend\browser\</BuildOutputFolder>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="src\app\common_models\" />
-    <Folder Include="src\app\common_services\" />
+    <Folder Include="src\app\common_interafaces\" />
+    <Folder Include="src\app\guard\AuthGuard\" />
     <Folder Include="src\app\layouts\" />
-    <Folder Include="src\app\login\services\" />
-    <Folder Include="src\app\task_module\components\" />
+    <Folder Include="src\app\modules\" />
+    <Folder Include="src\app\modules\calendar-module\components\" />
+    <Folder Include="src\app\modules\login\services\user_data\" />
+    <Folder Include="src\app\modules\task\components\" />
+    <Folder Include="src\app\modules\task\pages\" />
   </ItemGroup>
 </Project>

@@ -10,6 +10,7 @@ public class RegistrationModel
     
     [Login]
     public string Login { get; set; }
+    
     [EmailAddress]
     [Required(ErrorMessage = "Email is required")]
     public string? Email { get; set; }
@@ -18,5 +19,5 @@ public class RegistrationModel
     public string? Password { get; set; }
     public string? Name { get; set; }
     public string? Surname { get; set; }
-
+    public ICollection<string>? Role { get; set; }
 }

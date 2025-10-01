@@ -1,11 +1,10 @@
 using System.Text;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.SqlClient;
 using Microsoft.IdentityModel.Tokens;
 using Repo.Core.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Repo.Server.Controllers;
 using Repo.Server.Controllers.Interfaces;
@@ -106,10 +105,19 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAngularDevServer",
         builder =>
         {
-            builder.WithOrigins("http://localhost:55399")
+            builder.WithOrigins("http://localhost:4200")
                 .AllowAnyHeader()
                 .AllowAnyMethod();
         });
+});
+//adding basic roles
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+    options.AddPolicy("UserOnly", policy => policy.RequireRole("User","TeamLeader","Admin","Accountant"));
+    options.AddPolicy("TeamLeader",policy => policy.RequireRole("TeamLeader"));
+    options.AddPolicy("Accountant", policy => policy.RequireRole("Admin", "Accountant"));
+    
 });
 var app = builder.Build();
 
@@ -147,13 +155,21 @@ static async Task<(string Name, string Conn)> ChooseFirstWorkingAsync(
 
     throw new InvalidOperationException("Failed to find a working ConnectionString");
 }
-app.UseCors("AllowAngularDevServer");
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
 app.UseRouting();
+
+app.UseCors("AllowAngularDevServer");
 app.UseAuthentication();
 app.UseAuthorization();
-app.MapControllerRoute(
+
+app.MapControllers();
+// Hmmm we could use it, but i read that is more appropriate for MVC
+// and we prefere more explicit api
+/*app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "api/{controller=Home}/{action=Index}/{id?}");*/
+
 app.Run();

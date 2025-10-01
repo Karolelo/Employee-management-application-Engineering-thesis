@@ -26,6 +26,37 @@ public class PriorityService : IPriorityService
             .FirstOrDefaultAsync();
         return result == null ? Response<PriorityDTO>.Fail("Priority not found") : Response<PriorityDTO>.Ok(result);
     }
+
+    public async Task<Response<IEnumerable<PriorityDTO>>> GetAllPriority()
+    {
+        var list = await _context.Priorities
+            .AsNoTracking()
+            .OrderBy(p => p.Priority1)
+            .Select(p => new PriorityDTO { Priority = p.Priority1})
+            .ToListAsync();
+
+        return list.Count == 0
+            ? Response<IEnumerable<PriorityDTO>>.Fail("No priorities found")
+            : Response<IEnumerable<PriorityDTO>>.Ok(list);
+    }
+
+    public async Task<Response<IEnumerable<PriorityDTO>>> GetPriorityByName(string name)
+    {
+        var term = (name ?? string.Empty).Trim();
+        if (string.IsNullOrWhiteSpace(term))
+            return Response<IEnumerable<PriorityDTO>>.Fail("Name cannot be empty");
+        
+        var list = await _context.Priorities
+            .AsNoTracking()
+            .Where(p => EF.Functions.Like(p.Priority1, $"%{term}%"))
+            .OrderBy(p => p.Priority1)
+            .Select(p => new PriorityDTO { Priority = p.Priority1 })
+            .ToListAsync();
+        
+        return list.Count == 0
+            ? Response<IEnumerable<PriorityDTO>>.Fail("No priorities match the query")
+            : Response<IEnumerable<PriorityDTO>>.Ok(list);
+    }
     
     //Methods for creating priority
     public async Task<Response<Priority>> AddPriority(PriorityDTO priorityModel)

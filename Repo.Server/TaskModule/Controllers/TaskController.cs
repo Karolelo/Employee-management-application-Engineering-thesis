@@ -1,13 +1,12 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using Repo.Core.Models.DTOs;
 using Repo.Core.Models.task;
 using Repo.Server.TaskModule.interafaces;
 
-namespace Repo.Server.TaskModule;
+namespace Repo.Server.TaskModule.Controllers;
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 [Authorize]
 public class TaskController : ControllerBase
 {
@@ -72,7 +71,7 @@ public class TaskController : ControllerBase
         var task = response.Data;
 
         return response.Success
-            ? CreatedAtAction(nameof(GetTaskById), new {id = task.ID}, $"Added new task with ID: {task.ID}")
+            ? CreatedAtAction(nameof(GetTaskById), new {id = task.ID}, task)
             : BadRequest(new { Message = response.Error });
     }
 
@@ -89,7 +88,7 @@ public class TaskController : ControllerBase
         var task = response.Data;
 
         return response.Success
-            ? CreatedAtAction(nameof(GetTaskById), new {id = task.ID}, $"Added new Task with ID: {task.ID}" + $"\nAssigned User with id {userId} to the task")
+            ? CreatedAtAction(nameof(GetTaskById), new {id = task.ID}, task)
             : BadRequest(new { Message = response.Error });
     }
 
@@ -106,7 +105,7 @@ public class TaskController : ControllerBase
         var task = response.Data;
 
         return response.Success
-            ? CreatedAtAction(nameof(GetTaskById), new {id = task.ID}, $"Added new Task with ID: {task.ID}" + $"\nAssigned Group with id {groupId} to the task")
+            ? CreatedAtAction(nameof(GetTaskById), new {id = task.ID},task)
             : BadRequest(new { Message = response.Error });
     }
 

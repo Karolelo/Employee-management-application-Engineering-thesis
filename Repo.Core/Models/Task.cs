@@ -13,7 +13,7 @@ public partial class Task
 
     public DateTime Start_Time { get; set; }
 
-    public TimeSpan Estimated_Time { get; set; }
+    public int Estimated_Time { get; set; }
 
     public int Creator_ID { get; set; }
 
@@ -22,6 +22,8 @@ public partial class Task
     public int Priority_ID { get; set; }
 
     public int Status_ID { get; set; }
+
+    public virtual ICollection<Event> Events { get; set; } = new List<Event>();
 
     public virtual Priority Priority { get; set; } = null!;
 

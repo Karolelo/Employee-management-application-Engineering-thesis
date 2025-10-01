@@ -29,8 +29,6 @@ public partial class User
 
     public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
 
-    public virtual ICollection<Target> Targets { get; set; } = new List<Target>();
-
     public virtual ICollection<WorkTable> WorkTables { get; set; } = new List<WorkTable>();
 
     public virtual ICollection<Application> Applications { get; set; } = new List<Application>();
@@ -46,6 +44,8 @@ public partial class User
     public virtual ICollection<Role> Roles { get; set; } = new List<Role>();
 
     public virtual ICollection<Skill> Skills { get; set; } = new List<Skill>();
+
+    public virtual ICollection<Target> Targets { get; set; } = new List<Target>();
 
     public virtual ICollection<Task> Tasks { get; set; } = new List<Task>();
 }

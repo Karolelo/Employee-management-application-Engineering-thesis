@@ -1,16 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Repo.Core.Models;
 using Repo.Core.Models.DTOs;
 using Repo.Server.TaskModule.interafaces;
-
-namespace Repo.Server.TaskModule;
+namespace Repo.Server.TaskModule.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 [Authorize]
 public class PriorityController : ControllerBase
 {
+    //Stary no przydała by się metoda zwracająca wszystkie priority i ewentuallnie szukająca tego priority po nazwie !
     private readonly IPriorityService _priorityService;
     private readonly ITaskService _taskService;
     
@@ -35,6 +34,24 @@ public class PriorityController : ControllerBase
     public async Task<IActionResult> GetTasksForPriority(int id)
     {
         var response = await _taskService.GetTasksByPriorityId(id);
+        return response.Success
+            ? Ok(response.Data)
+            : NotFound(new { Message = response.Error });
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAllPriority()
+    {
+        var response = await _priorityService.GetAllPriority();
+        return response.Success
+            ? Ok(response.Data)
+            : NotFound(new { Message = response.Error });
+    }
+
+    [HttpGet("search")]
+    public async Task<IActionResult> GetPriorityByName([FromQuery] string name)
+    {
+        var response = await _priorityService.GetPriorityByName(name);
         return response.Success
             ? Ok(response.Data)
             : NotFound(new { Message = response.Error });

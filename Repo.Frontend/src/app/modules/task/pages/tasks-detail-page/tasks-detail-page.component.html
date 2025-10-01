@@ -1,0 +1,46 @@
+<div class="task-details">
+  <h2>Task details:</h2>
+  <h3>Task name:</h3>
+  <p>
+    {{taskDetail.task.name}}
+  </p>
+  <h3>Task description:</h3>
+  <p id="description">
+    {{taskDetail.task.description}}
+  </p>
+  <h3>Task starting time:</h3>
+  <p>
+    {{taskDetail.task.start_Time}}
+  </p>
+  <h3>Estimated time for task in hours:</h3>
+  <p>
+    {{taskDetail.task.estimated_Time}}
+  </p>
+  <h3>Related tasks:</h3>
+  <table mat-table [dataSource]="dataSource">
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef class="hidden"> ID </th>
+      <td mat-cell *matCellDef="let element" class="hidden"> {{element.id}} </td>
+    </ng-container>
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef> name </th>
+      <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+    </ng-container>
+    <ng-container matColumnDef="priority">
+      <th mat-header-cell *matHeaderCellDef> priority </th>
+      <td mat-cell *matCellDef="let element"> {{element.priority}} </td>
+    </ng-container>
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef> status </th>
+      <td mat-cell *matCellDef="let element"> {{element.status}} </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+    (click)="onRowClick(row)"></tr>
+  </table>
+  <mat-paginator [pageSizeOptions]="[5, 10, 20]"
+                 showFirstLastButtons
+                 aria-label="Select page of periodic elements">
+  </mat-paginator>
+</div>
+

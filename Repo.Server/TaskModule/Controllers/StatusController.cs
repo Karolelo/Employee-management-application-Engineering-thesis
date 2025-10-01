@@ -1,13 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Repo.Core.Models.DTOs;
 using Repo.Server.TaskModule.interafaces;
 
-namespace Repo.Server.TaskModule;
-
+namespace Repo.Server.TaskModule.Controllers;
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 [Authorize]
 public class StatusController : ControllerBase
 {
@@ -36,6 +34,24 @@ public class StatusController : ControllerBase
     {
         var response = await _taskService.GetTasksByStatusId(id);
 
+        return response.Success
+            ? Ok(response.Data)
+            : NotFound(new { Message = response.Error });
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAllStatus()
+    {
+        var response = await _statusService.GetAllStatus();
+        return response.Success
+            ? Ok(response.Data)
+            : NotFound(new { Message = response.Error });
+    }
+
+    [HttpGet("search")]
+    public async Task<IActionResult> GetStatusByName([FromQuery] string name)
+    {
+        var response = await _statusService.GetStatusByName(name);
         return response.Success
             ? Ok(response.Data)
             : NotFound(new { Message = response.Error });

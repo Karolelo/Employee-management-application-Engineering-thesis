@@ -1,0 +1,83 @@
+.task-detail {
+  background: linear-gradient(135deg, #cfd9df, #e2ebf0);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.task-detail h2
+{
+  display: flex;
+  align-items: center;
+}
+
+.task-detail h2 .detail-icon
+ {
+  margin-left: 10px;
+  color: #5bc0de;
+}
+
+.task-detail p {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.task-detail p i {
+  margin-left: 10px;
+  color: #5bc0de;
+}
+
+.task-detail .close-btn {
+  background: #ff6b6b;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.task-detail .show-details-btn {
+  background: #2ecc71;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.task-detail .close-btn .close-icon {
+  margin-left: 10px;
+}
+
+.task-detail .show-details-btn .show-icon {
+  margin-left: 10px;
+}
+
+.completed{
+  color: #ff6b6b;
+  min-width: 100px;
+}
+
+.started{
+  color: #5bc0de;
+  min-width: 50px;
+}
+
+.progress{
+  color: #f0ad4e;
+  min-width: 75px;
+}
+
+.button-container{
+  display: flex;
+  justify-content: flex-end;
+}

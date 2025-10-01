@@ -7,7 +7,7 @@ namespace Repo.Server.Controllers.Interfaces;
 public interface IAuthUserService
 {
     Task<Response<User>> CreateUser(RegistrationModel model);
-    Task<Response<string>> Login(LoginModel model);
+    Task<Response<TokenModel>> Login(LoginModel model);
     Task<Response<TokenModel>> RefreshToken(TokenModel tokenModel);
 
 }

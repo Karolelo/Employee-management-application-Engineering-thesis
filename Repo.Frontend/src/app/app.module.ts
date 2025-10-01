@@ -4,29 +4,37 @@ import {ReactiveFormsModule, FormBuilder, Validators, FormsModule} from '@angula
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { LoginComponent } from './login/login.component';
-import { NavbarComponent } from './navbar/navbar.component';
+import { LoginComponent } from './modules/login/login.component';
+import { NavbarComponent } from './common_components/navbar/navbar.component';
 import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
-import { TasksComponent } from './task_module/tasks/tasks.component';
-import { TaskListComponent } from './task_module/components/task-list/task-list.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import {TaskCreatorComponent} from './task_module/task-creator/task-creator.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+import {MatInputModule, MatLabel} from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
-import { TaskDetailsComponent} from './task_module/components/task-details/task-details.component';
 import { MatOptionModule } from '@angular/material/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTableModule } from '@angular/material/table';
 import {MatIcon} from '@angular/material/icon';
-import {CalendarModule} from './calendar-module/calendar.module';
+import {CalendarModule} from './modules/calendar-module/calendar.module';
 import {HTTP_INTERCEPTORS} from '@angular/common/http';
 import {AuthInterceptorService} from './common_services/auth-interceptor-services.service';
+import {TaskModule} from './modules/task/task.module';
+import {JwtHelperService, JwtModule} from '@auth0/angular-jwt';
+import {MatListItem, MatNavList} from '@angular/material/list';
+import {CommonModule, NgClass} from '@angular/common';
+import {SidenavbarComponent} from './common_components/sidenavbar/sidenavbar.component';
+import {UserDetailsNavComponent} from './common_components/user-details-nav/user-details-nav.component';
+import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
+import {MatToolbar} from '@angular/material/toolbar';
+
+export function tokenGetter() {
+  return localStorage.getItem('auth_token');
+}
 @NgModule({
   declarations: [
     AppComponent,
@@ -34,12 +42,11 @@ import {AuthInterceptorService} from './common_services/auth-interceptor-service
     NavbarComponent,
     AuthLayoutComponent,
     MainLayoutComponent,
-    TasksComponent,
-    TaskListComponent,
-    TaskCreatorComponent,
-    TaskDetailsComponent
+    SidenavbarComponent,
+    UserDetailsNavComponent,
   ],
   imports: [
+    CommonModule,
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
@@ -57,7 +64,26 @@ import {AuthInterceptorService} from './common_services/auth-interceptor-service
     MatDividerModule,
     MatTableModule,
     MatIcon,
-    CalendarModule
+    CalendarModule,
+    TaskModule,
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: tokenGetter,
+        allowedDomains: ["localhost:4200"],
+        disallowedRoutes: []
+      }
+    }),
+    MatNavList,
+    MatListItem,
+    MatIcon,
+    MatSidenavModule,
+    NgClass,
+    MatMenu,
+    MatToolbar,
+    MatMenuTrigger,
+    MatMenuItem,
+    MatLabel,
+    MatSelectModule
   ],
   providers: [
     {
@@ -69,6 +95,6 @@ import {AuthInterceptorService} from './common_services/auth-interceptor-service
   exports: [
 
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule { }

@@ -15,5 +15,7 @@ public partial class Course
 
     public DateOnly Finish_Date { get; set; }
 
+    public virtual ICollection<Event> Events { get; set; } = new List<Event>();
+
     public virtual ICollection<User> Users { get; set; } = new List<User>();
 }
