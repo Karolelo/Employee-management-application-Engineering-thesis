@@ -23,6 +23,8 @@ public partial class Task
 
     public int Status_ID { get; set; }
 
+    public virtual ICollection<Event> Events { get; set; } = new List<Event>();
+
     public virtual Priority Priority { get; set; } = null!;
 
     public virtual ICollection<RelatedTask> RelatedTaskMain_Tasks { get; set; } = new List<RelatedTask>();

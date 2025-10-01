@@ -57,6 +57,9 @@ import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
     MatHeaderCellDef,
     MatCellDef,
     MatPaginator,
+  ],
+  providers: [
+    TaskModule
   ]
 })
 export class TaskModule { }

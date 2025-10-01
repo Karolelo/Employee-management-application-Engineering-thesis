@@ -12,6 +12,7 @@
     <Folder Include="src\app\guard\AuthGuard\" />
     <Folder Include="src\app\layouts\" />
     <Folder Include="src\app\modules\" />
+    <Folder Include="src\app\modules\calendar-module\components\" />
     <Folder Include="src\app\modules\login\services\user_data\" />
     <Folder Include="src\app\modules\task\components\" />
     <Folder Include="src\app\modules\task\pages\" />

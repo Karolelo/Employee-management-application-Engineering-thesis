@@ -27,7 +27,7 @@ public class PriorityService : IPriorityService
         return result == null ? Response<PriorityDTO>.Fail("Priority not found") : Response<PriorityDTO>.Ok(result);
     }
 
-    public async Task<Response<ICollection<PriorityDTO>>> GetAllPriority()
+    public async Task<Response<IEnumerable<PriorityDTO>>> GetAllPriority()
     {
         var list = await _context.Priorities
             .AsNoTracking()
@@ -36,15 +36,15 @@ public class PriorityService : IPriorityService
             .ToListAsync();
 
         return list.Count == 0
-            ? Response<ICollection<PriorityDTO>>.Fail("No priorities found")
-            : Response<ICollection<PriorityDTO>>.Ok(list);
+            ? Response<IEnumerable<PriorityDTO>>.Fail("No priorities found")
+            : Response<IEnumerable<PriorityDTO>>.Ok(list);
     }
 
-    public async Task<Response<ICollection<PriorityDTO>>> GetPriorityByName(string name)
+    public async Task<Response<IEnumerable<PriorityDTO>>> GetPriorityByName(string name)
     {
         var term = (name ?? string.Empty).Trim();
         if (string.IsNullOrWhiteSpace(term))
-            return Response<ICollection<PriorityDTO>>.Fail("Name cannot be empty");
+            return Response<IEnumerable<PriorityDTO>>.Fail("Name cannot be empty");
         
         var list = await _context.Priorities
             .AsNoTracking()
@@ -54,8 +54,8 @@ public class PriorityService : IPriorityService
             .ToListAsync();
         
         return list.Count == 0
-            ? Response<ICollection<PriorityDTO>>.Fail("No priorities match the query")
-            : Response<ICollection<PriorityDTO>>.Ok(list);
+            ? Response<IEnumerable<PriorityDTO>>.Fail("No priorities match the query")
+            : Response<IEnumerable<PriorityDTO>>.Ok(list);
     }
     
     //Methods for creating priority

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Repo.Core.Models;
-using Task = Repo.Core.Models.Task;
 using Type = Repo.Core.Models.Type;
-using User = Repo.Core.Models.User;
+using Task = Repo.Core.Models.Task;
+
 namespace Repo.Core.Infrastructure;
 
 public partial class MyDbContext : DbContext
@@ -33,6 +33,8 @@ public partial class MyDbContext : DbContext
     public virtual DbSet<Document> Documents { get; set; }
 
     public virtual DbSet<DocumentType> DocumentTypes { get; set; }
+
+    public virtual DbSet<Event> Events { get; set; }
 
     public virtual DbSet<Grade> Grades { get; set; }
 
@@ -66,9 +68,9 @@ public partial class MyDbContext : DbContext
 
     public virtual DbSet<WorkTask> WorkTasks { get; set; }
 
-//     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-// #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-//         => optionsBuilder.UseSqlServer("Server=localhost,1433;Database=Tmp;User=sa;Password=Haslo1234*;TrustServerCertificate=True;");
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Server=localhost,1433;Database=Tmp;User=sa;Password=Haslo1234*;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -76,9 +78,12 @@ public partial class MyDbContext : DbContext
         {
             entity.HasKey(e => e.ID).HasName("AbsenceDay_pk");
 
-            entity.ToTable("AbsenceDay");
-
-            entity.Property(e => e.ID).ValueGeneratedNever();
+            entity.ToTable("AbsenceDay", tb =>
+                {
+                    tb.HasTrigger("absenceDay_event_add");
+                    tb.HasTrigger("absenceDay_event_delete");
+                    tb.HasTrigger("absenceDay_event_update");
+                });
 
             entity.HasOne(d => d.WorkTable).WithMany(p => p.AbsenceDays)
                 .HasForeignKey(d => d.WorkTable_ID)
@@ -92,7 +97,6 @@ public partial class MyDbContext : DbContext
 
             entity.ToTable("Application");
 
-            entity.Property(e => e.ID).ValueGeneratedNever();
             entity.Property(e => e.Name).HasMaxLength(100);
             entity.Property(e => e.Template).HasColumnType("xml");
 
@@ -125,7 +129,6 @@ public partial class MyDbContext : DbContext
 
             entity.ToTable("Benefit");
 
-            entity.Property(e => e.ID).ValueGeneratedNever();
             entity.Property(e => e.Cost).HasColumnType("decimal(5, 2)");
             entity.Property(e => e.Name).HasMaxLength(100);
 
@@ -158,7 +161,6 @@ public partial class MyDbContext : DbContext
 
             entity.ToTable("BenefitType");
 
-            entity.Property(e => e.ID).ValueGeneratedNever();
             entity.Property(e => e.Type).HasMaxLength(100);
         });
 
@@ -166,7 +168,6 @@ public partial class MyDbContext : DbContext
         {
             entity.HasKey(e => e.ID).HasName("Contributions_pk");
 
-            entity.Property(e => e.ID).ValueGeneratedNever();
             entity.Property(e => e.Name).HasMaxLength(100);
             entity.Property(e => e.Value).HasColumnType("decimal(5, 2)");
         });
@@ -175,9 +176,12 @@ public partial class MyDbContext : DbContext
         {
             entity.HasKey(e => e.ID).HasName("Course_pk");
 
-            entity.ToTable("Course");
+            entity.ToTable("Course", tb =>
+                {
+                    tb.HasTrigger("course_event_add");
+                    tb.HasTrigger("course_event_update");
+                });
 
-            entity.Property(e => e.ID).ValueGeneratedNever();
             entity.Property(e => e.Name).HasMaxLength(100);
 
             entity.HasMany(d => d.Users).WithMany(p => p.Courses)
@@ -204,7 +208,6 @@ public partial class MyDbContext : DbContext
 
             entity.ToTable("Document");
 
-            entity.Property(e => e.ID).ValueGeneratedNever();
             entity.Property(e => e.Title).HasMaxLength(100);
 
             entity.HasOne(d => d.DocumentType).WithMany(p => p.Documents)
@@ -224,8 +227,35 @@ public partial class MyDbContext : DbContext
 
             entity.ToTable("DocumentType");
 
-            entity.Property(e => e.ID).ValueGeneratedNever();
             entity.Property(e => e.Type).HasMaxLength(100);
+        });
+
+        modelBuilder.Entity<Event>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__Events__3214EC27D5B263BB");
+
+            entity.Property(e => e.BackColor)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.End).HasColumnType("datetime");
+            entity.Property(e => e.Start).HasColumnType("datetime");
+            entity.Property(e => e.Text)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+
+            entity.HasOne(d => d.AbsenceDay).WithMany(p => p.Events)
+                .HasForeignKey(d => d.AbsenceDay_ID)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_Events_AbsenceDay");
+
+            entity.HasOne(d => d.Course).WithMany(p => p.Events)
+                .HasForeignKey(d => d.Course_ID)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_Events_Course");
+
+            entity.HasOne(d => d.Task).WithMany(p => p.Events)
+                .HasForeignKey(d => d.Task_ID)
+                .HasConstraintName("FK__Events__Task_ID__29221CFB");
         });
 
         modelBuilder.Entity<Grade>(entity =>
@@ -234,7 +264,6 @@ public partial class MyDbContext : DbContext
 
             entity.ToTable("Grade");
 
-            entity.Property(e => e.ID).ValueGeneratedNever();
             entity.Property(e => e.Grade1)
                 .HasColumnType("decimal(2, 2)")
                 .HasColumnName("Grade");
@@ -263,7 +292,6 @@ public partial class MyDbContext : DbContext
 
             entity.ToTable("Group");
 
-            entity.Property(e => e.ID).ValueGeneratedNever();
             entity.Property(e => e.Name).HasMaxLength(100);
 
             entity.HasMany(d => d.Tasks).WithMany(p => p.Groups)
@@ -307,7 +335,6 @@ public partial class MyDbContext : DbContext
 
             entity.ToTable("HireHelper");
 
-            entity.Property(e => e.ID).ValueGeneratedNever();
             entity.Property(e => e.Hourly_Rate).HasColumnType("decimal(5, 2)");
             entity.Property(e => e.Netto_Salary).HasColumnType("decimal(5, 2)");
 
@@ -338,9 +365,12 @@ public partial class MyDbContext : DbContext
         {
             entity.HasKey(e => e.ID).HasName("Priority_pk");
 
-            entity.ToTable("Priority");
+            entity.ToTable("Priority", tb =>
+                {
+                    tb.HasTrigger("TR_Priority_BlockInsert");
+                    tb.HasTrigger("TR_Priority_BlockUpdate");
+                });
 
-            entity.Property(e => e.ID).ValueGeneratedOnAdd();
             entity.Property(e => e.Priority1)
                 .HasMaxLength(100)
                 .HasColumnName("Priority");
@@ -352,7 +382,6 @@ public partial class MyDbContext : DbContext
 
             entity.ToTable("RefreshToken");
 
-            entity.Property(e => e.ID).ValueGeneratedOnAdd();
             entity.Property(e => e.CreatedAt).HasColumnType("datetime");
             entity.Property(e => e.ExpireDate).HasColumnType("datetime");
             entity.Property(e => e.RevokedAt).HasColumnType("datetime");
@@ -384,7 +413,6 @@ public partial class MyDbContext : DbContext
 
             entity.ToTable("Role");
 
-            entity.Property(e => e.ID).ValueGeneratedNever();
             entity.Property(e => e.Role_Name).HasMaxLength(100);
         });
 
@@ -392,7 +420,6 @@ public partial class MyDbContext : DbContext
         {
             entity.HasKey(e => e.ID).HasName("Skills_pk");
 
-            entity.Property(e => e.ID).ValueGeneratedNever();
             entity.Property(e => e.Name).HasMaxLength(100);
 
             entity.HasOne(d => d.Type).WithMany(p => p.Skills)
@@ -424,7 +451,6 @@ public partial class MyDbContext : DbContext
 
             entity.ToTable("Status");
 
-            entity.Property(e => e.ID).ValueGeneratedOnAdd();
             entity.Property(e => e.Status1)
                 .HasMaxLength(100)
                 .HasColumnName("Status");
@@ -446,7 +472,6 @@ public partial class MyDbContext : DbContext
 
             entity.ToTable("Target");
 
-            entity.Property(e => e.ID).ValueGeneratedNever();
             entity.Property(e => e.Finish_Time).HasColumnType("datetime");
             entity.Property(e => e.Name).HasMaxLength(100);
             entity.Property(e => e.Start_Time).HasColumnType("datetime");
@@ -455,19 +480,34 @@ public partial class MyDbContext : DbContext
                 .HasForeignKey(d => d.Tag_ID)
                 .HasConstraintName("Target_Tag");
 
-            entity.HasOne(d => d.User).WithMany(p => p.Targets)
-                .HasForeignKey(d => d.User_ID)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("Target_User");
+            entity.HasMany(d => d.Users).WithMany(p => p.Targets)
+                .UsingEntity<Dictionary<string, object>>(
+                    "TargetUser",
+                    r => r.HasOne<User>().WithMany()
+                        .HasForeignKey("User_ID")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("TargetUser_User"),
+                    l => l.HasOne<Target>().WithMany()
+                        .HasForeignKey("Target_ID")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("TargetUser_Target"),
+                    j =>
+                    {
+                        j.HasKey("Target_ID", "User_ID").HasName("TargetUser_pk");
+                        j.ToTable("TargetUser");
+                    });
         });
 
         modelBuilder.Entity<Task>(entity =>
         {
             entity.HasKey(e => e.ID).HasName("Task_pk");
 
-            entity.ToTable("Task");
+            entity.ToTable("Task", tb =>
+                {
+                    tb.HasTrigger("task_event_add");
+                    tb.HasTrigger("task_event_update");
+                });
 
-            entity.Property(e => e.ID).ValueGeneratedOnAdd();
             entity.Property(e => e.Name).HasMaxLength(100);
             entity.Property(e => e.Start_Time).HasColumnType("datetime");
 
@@ -551,7 +591,6 @@ public partial class MyDbContext : DbContext
 
             entity.ToTable("WorkTable");
 
-            entity.Property(e => e.ID).ValueGeneratedNever();
             entity.Property(e => e.Account_Number).HasMaxLength(28);
             entity.Property(e => e.Hourly_Rate).HasColumnType("decimal(5, 2)");
 

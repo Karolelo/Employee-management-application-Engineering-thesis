@@ -13,5 +13,7 @@ public partial class AbsenceDay
 
     public DateOnly Finish_Date { get; set; }
 
+    public virtual ICollection<Event> Events { get; set; } = new List<Event>();
+
     public virtual WorkTable WorkTable { get; set; } = null!;
 }
