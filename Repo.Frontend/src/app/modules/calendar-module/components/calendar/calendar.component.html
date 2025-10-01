@@ -1,0 +1,16 @@
+<div class="container">
+  <div class="navigator">
+    <daypilot-navigator [config]="configNavigator" [events]="events" [(date)]="date" (dateChange)="changeDate($event)" #navigator></daypilot-navigator>
+  </div>
+  <div class="content">
+    <div class="buttons">
+      <button (click)="viewDay()" [class]="this.configNavigator.selectMode == 'Day' ? 'selected' : ''">Day</button>
+      <button (click)="viewWeek()" [class]="this.configNavigator.selectMode == 'Week' ? 'selected' : ''">Week</button>
+      <button (click)="viewMonth()" [class]="this.configNavigator.selectMode == 'Month' ? 'selected' : ''">Month</button>
+    </div>
+
+    <daypilot-calendar [config]="configDay" [events]="events" #day></daypilot-calendar>
+    <daypilot-calendar [config]="configWeek" [events]="events" #week></daypilot-calendar>
+    <daypilot-month [config]="configMonth" [events]="events" #month></daypilot-month>
+  </div>
+</div>

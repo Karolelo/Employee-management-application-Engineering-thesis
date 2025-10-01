@@ -1,12 +1,12 @@
-//Możliwe będą zmiany tego potem
 export interface Task {
   id: number;
-  Name: string;
-  Description: string;
-  StartDate: Date;
-  EstimatedTime: number;
-  Creator: string;
-  Deleted: boolean;
-  Priority: string;
-  Status: string;
+  name: string;
+  description: string;
+  start_Time: Date;
+  estimated_Time: number;
+  creator: string;
+  deleted: boolean;
+  priority: string;
+  status: string;
 }
+

@@ -1,49 +1,44 @@
-import {Component, EventEmitter, Output} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import { NgClass } from '@angular/common';
 import {MatDialog} from '@angular/material/dialog';
-import {TaskService} from '../../services/task.service';
+import {TaskService} from '../../services/task/task.service';
 import {Task} from '../../interfaces/task'
-import {Observable, Subject, takeUntil} from 'rxjs';
 import {TaskDetailsComponent} from '../task-details/task-details.component';
 import {UserStoreService} from '../../../login/services/user_data/user-store.service';
-import { tap, catchError, of,async } from 'rxjs';
+import {Observable, tap,async} from 'rxjs';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-task-list',
   standalone: false,
   templateUrl: './task-list.component.html',
   styleUrl: './task-list.component.css',
-  providers: [TaskService]
+  providers: []
 })
-export class TaskListComponent {
+export class TaskListComponent implements OnInit{
   loading = false;
   errorMessage: string | null = null;
   tasks$!: Observable<Task[]>;
   @Output() editTask = new EventEmitter<Task>();
-  constructor(private taskService: TaskService,private userDataStore: UserStoreService, private dialog: MatDialog) {
-    /*console.log('User data store ');
-    this.userDataStore.getUserData().subscribe(user => {
-      console.log('User data store ', user);
-    })*/
+  constructor(private taskService: TaskService,private userDataStore: UserStoreService, private dialog: MatDialog,
+              private router: Router) {
   }
   ngOnInit(): void {
     this.loading = true;
+    this.tasks$ = this.taskService.tasks$;
     this.userDataStore.getUserData().subscribe({
       next: (user) => {
         if (user) {
-
-          this.tasks$ = this.taskService.getAllUserTask(user.id).pipe(
-            tap(() => {
+          this.taskService.getAllUserTask(user.id).subscribe({
+            next: (task) => {
+                this.loading = false;
+                console.log(task);
+            },
+            error: (error) => {
+              console.log(error);
               this.loading = false;
-              this.errorMessage = null;
-            }),
-            catchError((error) => {
-              this.loading = false;
-              this.errorMessage = 'Failed to load tasks: ' + error.message;
-              console.error('Failed to load tasks: ', error);
-              return of([]);
-            })
-          );
+            }
+         })
         } else {
           this.loading = false;
           this.errorMessage = 'no data of user';
@@ -62,7 +57,12 @@ export class TaskListComponent {
   }
 
   onDeleteTask(taskId: number): void {
-    this.taskService.deleteTask(taskId);
+    this.taskService.deleteTask(taskId).pipe(
+      tap({
+        next: (response) => console.log('Odpowiedź z serwera:', response),
+        error: (error) => console.error('Błąd:', error)
+      })
+    ).subscribe({});
   }
 
   onViewTask(task: Task): void {
@@ -70,5 +70,19 @@ export class TaskListComponent {
       data: task,
     });
   }
+
+  onShowDetails(task: Task): void {
+    this.router.navigate(['/tasks/task-details', task.id]);
+  }
+
+  setProgressBarValue(value: string): number {
+      switch(value.toLowerCase()) {
+      case 'to-do' : return 25;
+      case 'in-progress' : return 50;
+      case 'done' : return 100;
+      default: return 0;
+    }
+  }
+
 
 }

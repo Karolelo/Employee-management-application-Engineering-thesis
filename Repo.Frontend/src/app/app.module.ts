@@ -12,7 +12,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+import {MatInputModule, MatLabel} from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
@@ -25,6 +25,12 @@ import {HTTP_INTERCEPTORS} from '@angular/common/http';
 import {AuthInterceptorService} from './common_services/auth-interceptor-services.service';
 import {TaskModule} from './modules/task/task.module';
 import {JwtHelperService, JwtModule} from '@auth0/angular-jwt';
+import {MatListItem, MatNavList} from '@angular/material/list';
+import {CommonModule, NgClass} from '@angular/common';
+import {SidenavbarComponent} from './common_components/sidenavbar/sidenavbar.component';
+import {UserDetailsNavComponent} from './common_components/user-details-nav/user-details-nav.component';
+import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
+import {MatToolbar} from '@angular/material/toolbar';
 
 export function tokenGetter() {
   return localStorage.getItem('auth_token');
@@ -36,8 +42,11 @@ export function tokenGetter() {
     NavbarComponent,
     AuthLayoutComponent,
     MainLayoutComponent,
+    SidenavbarComponent,
+    UserDetailsNavComponent,
   ],
   imports: [
+    CommonModule,
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
@@ -63,7 +72,18 @@ export function tokenGetter() {
         allowedDomains: ["localhost:4200"],
         disallowedRoutes: []
       }
-    })
+    }),
+    MatNavList,
+    MatListItem,
+    MatIcon,
+    MatSidenavModule,
+    NgClass,
+    MatMenu,
+    MatToolbar,
+    MatMenuTrigger,
+    MatMenuItem,
+    MatLabel,
+    MatSelectModule
   ],
   providers: [
     {

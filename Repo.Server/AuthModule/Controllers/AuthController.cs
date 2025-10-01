@@ -1,28 +1,20 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using Repo.Core.Models;
-using Repo.Core.Models.api;
 using Repo.Core.Models.auth;
-using Repo.Core.Infrastructure;
 using Repo.Server.Controllers.Interfaces;
 
-namespace Repo.Server.Controllers;
+namespace Repo.Server.AuthModule.Controllers;
 
-[Route("api/[controller]")]
 [ApiController]
+[Route("api/[controller]")]
 [AllowAnonymous]
 public class AuthController : ControllerBase
 {
    private readonly IAuthUserService _authService;
     
-   public AuthController(IAuthUserService _authService)
+   public AuthController(IAuthUserService authService)
    {
-      this._authService = _authService;
+      this._authService = authService;
    }
    
    [HttpPost("register")]

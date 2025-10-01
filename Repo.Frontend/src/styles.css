@@ -3,8 +3,6 @@
   src: url('../public/fonts/Raleway-VariableFont_wght.ttf') format('truetype');
 }
 :root {
- /* --primary-color: #9940d8;*/
-/*  --secondary-color: #6c757d;*/
   --font-main: 'Railway', sans-serif;
   --font-headers: 'RobotSlab', serif;
 }
@@ -26,20 +24,6 @@
   --completed-status: #2ecc71;
 }
 
-.btn-primary {
-  background-color: var(--primary-color);
-  border: none;
-  border-radius: 5px;
-  padding: 10px;
-  color: white;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 1rem;
-}
-
--btn-primary:hover {
-  background-color: #7b39c9;
-}
 
 
 

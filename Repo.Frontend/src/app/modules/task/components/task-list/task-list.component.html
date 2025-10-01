@@ -1,3 +1,5 @@
+<!--suppress ALL-->
+<!--only add this because of idea error with ngClass-->
 <main class="task-list">
   <ng-container *ngIf="!errorMessage; else errorTpl">
     <div *ngIf="loading" class="loading-spinner">
@@ -5,10 +7,11 @@
     </div>
 
     <ng-container *ngIf="!loading">
+      <ul>
       <li *ngFor="let task of tasks$ | async">
-        <div>
-          <span class="status-indicator" [ngClass]="task.Status"></span>
-          {{ task.Name }} - <span [ngClass]="task.Priority">{{ task.Priority }}</span> - {{ task.Status }}
+        <div class="task-info">
+          <h2>{{task.name}}</h2>
+          <mat-progress-bar [value]="setProgressBarValue(task.status)"></mat-progress-bar>
         </div>
         <div>
           <button (click)="onEditTask(task)">
@@ -20,8 +23,12 @@
           <button (click)="onViewTask(task)">
             <i class="fa fa-eye view-icon"></i>
           </button>
+          <button (click)="onShowDetails(task)">
+            <i class="fa fa-search show-icon"></i>
+          </button>
         </div>
       </li>
+      </ul>
     </ng-container>
   </ng-container>
 

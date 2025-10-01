@@ -8,8 +8,8 @@ public interface IPriorityService
 {
     //Methods for getting priority
     Task<Response<PriorityDTO>> GetPriorityById(int id);
-    Task<Response<ICollection<PriorityDTO>>> GetAllPriority();
-    Task <Response<ICollection<PriorityDTO>>>  GetPriorityByName(string name);
+    Task<Response<IEnumerable<PriorityDTO>>> GetAllPriority();
+    Task <Response<IEnumerable<PriorityDTO>>>  GetPriorityByName(string name);
     
     //Methods for creating priority
     Task<Response<Priority>> AddPriority(PriorityDTO priority);

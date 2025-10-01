@@ -1,61 +1,107 @@
 <div class="task-form">
+  <button id="restart-button" (click)="resetFormState()">
+    <i class="fa fa-refresh refresh-icon"></i>
+  </button>
   <h2>{{ taskToEdit ? 'Edit Task' : 'Add Task' }}</h2>
   <form [formGroup]="taskForm" (ngSubmit)="onSubmit()">
     <div class="floating-label">
       <input formControlName="name" placeholder=" ">
       <label>Title</label>
-      <div *ngIf="taskForm.get('name')?.invalid && taskForm.get('name')?.touched" class="error-message">
+      <span *ngIf="taskForm.get('name')?.invalid && taskForm.get('name')?.touched" class="error-message">
         Title is required.
-      </div>
+      </span>
     </div>
 
     <div class="floating-label">
-      <input formControlName="description" placeholder=" ">
+      <textarea formControlName="description" placeholder=" " rows="4" class="task-description"></textarea>
       <label>Description</label>
-      <div *ngIf="taskForm.get('description')?.invalid && taskForm.get('description')?.touched" class="error-message">
-        Description is required.
+      <div *ngIf="taskForm.get('description')?.invalid
+        && taskForm.get('description')?.touched
+        && taskForm.get('description')?.errors as error" class="error-message">
+        <span *ngIf="error['required']">
+          Description is required.
+        </span>
+        <span *ngIf="error['minlength']">
+          Description must be at least 20 characters long.
+        </span>
       </div>
     </div>
 
     <div class="floating-label">
-      <input formControlName="startDate" type="date" placeholder=" ">
+      <input formControlName="start_Time" type="date" placeholder="">
       <label>Task start date</label>
-      <div *ngIf="taskForm.get('startDate')?.invalid && taskForm.get('startDate')?.touched" class="error-message">
-        Start date is required.
+      <span *ngIf="taskForm.get('start_Time')?.invalid
+      && taskForm.get('start_Time')?.touched" class="error-message">
+        Start date needs in in future
+      </span>
+    </div>
+
+    <div class="floating-label">
+      <input formControlName="estimated_Time" type="number" placeholder="">
+      <label>Estimated time for task in hours</label>
+      <div *ngIf="taskForm.get('estimated_Time')?.invalid
+      && taskForm.get('estimated_Time')?.touched
+       && taskForm.get('estimated_Time')?.errors as error" class="error-message">
+       <span *ngIf="error['required']">
+         Estimated time is required.
+       </span>
+        <span *ngIf="error['min']">
+          Estimated time must be at least 1 hour.
+        </span>
       </div>
     </div>
 
     <div class="floating-label">
-      <input formControlName="estimatedTime" type="number" placeholder="">
-      <label>Task start date</label>
-      <div *ngIf="taskForm.get('startDate')?.invalid
-      && taskForm.get('startDate')?.touched && taskForm.get('descritpion')?.errors" class="error-message">
-        Start date is required and must be greater than 0 .
-      </div>
-    </div>
-
-    <div class="floating-label">
+      <label>Priority</label>
       <select formControlName="priority" placeholder=" ">
-        <option value="">Select Priority</option>
         <option value="low">Low</option>
         <option value="normal">Normal</option>
         <option value="high">High</option>
       </select>
       <label></label>
-      <div *ngIf="taskForm.get('priority')?.invalid && taskForm.get('priority')?.touched" class="error-message">
+      <span *ngIf="taskForm.get('priority')?.invalid && taskForm.get('priority')?.touched" class="error-message">
         Priority is required.
-      </div>
+      </span>
     </div>
-
+    <!--Tutaj zmieniaja się wartości w zaleznosci co do bazy danych sie wrzuci-->
     <div class="floating-label">
-      <select formControlName="status" placeholder=" ">
-        <option value="to-do">To-Do</option>
-        <option value="in-progress">In-Progress</option>
-        <option value="finished">Finished</option>
+      <label>Status</label>
+      <select formControlName="status" placeholder="">
+        <option value="To-Do">To-Do</option>
+        <option value="In-Progress">In-Progress</option>
+        <option value="Finished">Finished</option>
       </select>
       <label></label>
     </div>
-
+    <span *ngIf="taskForm.get('status')?.invalid && taskForm.get('status')?.touched" class="error-message">
+        Status is required.
+      </span>
+    <h2>Relations</h2>
+    <mat-slide-toggle
+      [(ngModel)]="enableTaskRelations"
+      [ngModelOptions]="{standalone: true}"
+    >Want to add/remove relation?</mat-slide-toggle>
+    <div class="floating-label">
+      <mat-label>Select Tasks to creat relation</mat-label>
+      <mat-select formControlName="tasksToConnect" multiple [disabled]="!enableTaskRelations">
+        <mat-option *ngFor="let subtask of tasksAvailableForRelation$ | async" [value]="subtask.id">
+          {{ subtask.name }}
+        </mat-option>
+      </mat-select>
+    </div>
+    @if(taskToEdit) {
+      <div class="floating-label">
+        <mat-label>Select tasks to remove relation</mat-label>
+        <mat-select formControlName="connectedTasks" multiple [disabled]="!enableTaskRelations">
+          <mat-option *ngFor="let subtask of tasksAvailableForRemoveRelation$ | async" [value]="subtask.id">
+            {{ subtask.name }}
+          </mat-option>
+        </mat-select>
+      </div>
+    }
+    @else {
+      <p class="blocked">You can delete relation when you creating task</p>
+    }
     <button type="submit"
             [disabled]="taskForm.invalid"
             [ngClass]="{'valid': taskForm.valid, 'invalid': taskForm.invalid}">

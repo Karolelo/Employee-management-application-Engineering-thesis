@@ -42,6 +42,42 @@
   align-items: center;
 }
 
+.task-detail .show-details-btn {
+  background: #2ecc71;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+}
+
 .task-detail .close-btn .close-icon {
   margin-left: 10px;
+}
+
+.task-detail .show-details-btn .show-icon {
+  margin-left: 10px;
+}
+
+.completed{
+  color: #ff6b6b;
+  min-width: 100px;
+}
+
+.started{
+  color: #5bc0de;
+  min-width: 50px;
+}
+
+.progress{
+  color: #f0ad4e;
+  min-width: 75px;
+}
+
+.button-container{
+  display: flex;
+  justify-content: flex-end;
 }
