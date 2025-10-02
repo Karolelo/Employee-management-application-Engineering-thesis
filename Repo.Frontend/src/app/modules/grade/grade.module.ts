@@ -9,6 +9,8 @@ import { GradeFormComponent } from './components/grade-form/grade-form.component
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
+import { GradeDetailsComponent } from './components/grade-details/grade-details.component';
+import { GradeDetailPageComponent } from './pages/grade-detail-page/grade-detail-page.component';
 
 
 
@@ -16,7 +18,9 @@ import {MatButtonModule} from '@angular/material/button';
   declarations: [
     UserGradeListComponent,
     GradePageComponent,
-    GradeFormComponent
+    GradeFormComponent,
+    GradeDetailsComponent,
+    GradeDetailPageComponent
   ],
   imports: [
     CommonModule,
