@@ -1,0 +1,8 @@
+<main class="grade-page">
+  <section class="left">
+    <app-user-grade-list></app-user-grade-list>
+  </section>
+  <section class="right">
+    <app-grade-form [gradeToEdit]="selected" (changed)="onChanged()"></app-grade-form>
+  </section>
+</main>
