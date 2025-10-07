@@ -91,6 +91,9 @@ public class GradeService : IGradeService
         {
             var user = await _context.Users.Include(u => u.Grades).FirstOrDefaultAsync(u => u.ID == userId);
             if (user == null) return Response<GradeDTO>.Fail("User not found");
+            
+            if (dto.Grade > 5 || dto.Grade < 0)
+                return Response<GradeDTO>.Fail("Grade value must be between 0 and 5");
 
             if (dto.Finish_Date < dto.Start_Date)
                 return Response<GradeDTO>.Fail("Finish date cannot be earlier than start date");
@@ -148,6 +151,9 @@ public class GradeService : IGradeService
                 .FirstOrDefaultAsync(g => g.ID == id);
 
             if (grade == null) return Response<GradeDTO>.Fail("Grade not found");
+            
+            if (dto.Grade > 5 || dto.Grade < 0)
+                return Response<GradeDTO>.Fail("Grade value must be between 0 and 5");
 
             if (dto.Finish_Date < dto.Start_Date)
                 return Response<GradeDTO>.Fail("Finish date cannot be earlier than start date");
