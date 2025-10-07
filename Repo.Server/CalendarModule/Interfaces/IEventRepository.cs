@@ -1,6 +1,7 @@
 using Repo.Core.Models;
 using Repo.Core.Models.api;
 using Repo.Core.Models.calendar;
+using Task = System.Threading.Tasks.Task;
 
 namespace Repo.Server.CalendarModule.Interfaces;
 
@@ -10,6 +11,7 @@ public interface IEventRepository
     Task<List<UserEventsDisplayable>> GetUserEventsFromDate(int id, DateTime date);
     Task<List<UserEventsDisplayable>> GetUserEventsToDate(int id, DateTime date);
     Task<List<UserEventsDisplayable>> GetUserEventsFromTo(int id,DateTime from, DateTime to);
+    Task<bool> ChangeEventColor(int eventId, string color);
     //We were thinking about implementing this
     //but the calendar should not be modifed directly but through adding task etc.
     /*Task<Event> AddGlobalEvent(Event @event);

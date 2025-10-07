@@ -50,5 +50,24 @@ public class EventRepo : IEventRepository
             .ToList();
         return events;
     }
+
+    public async Task<bool> ChangeEventColor(int eventId, string color)
+    {
+        try
+        {
+         var eventToUpdate = await _context.Events.FirstOrDefaultAsync(e => e.ID == eventId);
+         if (eventToUpdate == null)
+         {
+             return false;
+         }
+         
+         eventToUpdate.BackColor = color;
+         await _context.SaveChangesAsync();
+         return true;
+        }catch (Exception e)
+        {
+            return false;
+        }
+    }
     
 }

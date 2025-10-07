@@ -9,7 +9,7 @@ import {EventsData} from '../interfaces/events-data';
   providedIn: 'root'
 })
 export class EventsService {
-  private readonly ApiUrl = "api/calendar/events/user/"
+  private readonly ApiUrl = "api/Calendar/events/"
   static colors = {
     green: "#6aa84f",
     yellow: "#f1c232",
@@ -24,51 +24,21 @@ export class EventsService {
   //end: DayPilot.Date.today().addHours(2)
   /*exampleDate= new Date(Date.now());
   //DayPilot.Date.parse(this.exampleDate.toISOString().substring(0,19),"yyyy-MM-ddTHH:mm:ss")
-  events = [
-    {
-      id: 1,
-      text: "Event 1",
-      start: DayPilot.Date.today().firstDayOfWeek().addHours(10),
-      end: DayPilot.Date.today().firstDayOfWeek().addHours(13),
-      participants: 2,
-    },
-    {
-      id: 2,
-      text: "Event 2",
-      start: DayPilot.Date.today().firstDayOfWeek().addDays(1).addHours(12),
-      end: DayPilot.Date.today().firstDayOfWeek().addDays(1).addHours(13),
-      backColor: this.getRandomColor(),
-      participants: 1,
-    },
-    {
-      id: 3,
-      text: "Event 3",
-      start: DayPilot.Date.today().firstDayOfWeek().addDays(2).addHours(13),
-      end: DayPilot.Date.parse(this.exampleDate.toISOString().substring(0,19),"yyyy-MM-ddTHH:mm:ss"),
-      backColor: this.getRandomColor(),
-      participants: 3,
-    },
-    {
-      id: 4,
-      text: "Event 4",
-      start: DayPilot.Date.today().firstDayOfWeek().addDays(2).addHours(11),
-      end: DayPilot.Date.parse(this.exampleDate.toISOString().substring(0,19),"yyyy-MM-ddTHH:mm:ss"),
-      backColor: this.getRandomColor(),
-      participants: 4,
-    },
-  ];*/
-
+  */
   constructor(private http : HttpClient){
   }
 
   getEvents(userId: number,from: DayPilot.Date, to: DayPilot.Date): Observable<any[]> {
-    return this.http.get<EventsData[]>(`api/calendar/events/user/${userId}`,
+    return this.http.get<EventsData[]>(this.ApiUrl+`/user/${userId}`,
       {
         params: {
           from: from.toString(),
           to: to.toString()
         }
       })
+  }
+  changeEventColor(eventId: number, color: string): Observable<any> {
+    return this.http.put(this.ApiUrl+`${eventId}/color`,{color: color},)
   }
 
   getColors(): any[] {

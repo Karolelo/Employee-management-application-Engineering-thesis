@@ -5,7 +5,7 @@ export interface EventsData {
   start: DayPilot.Date;
   end: DayPilot.Date;
   backColor: string;
-  task_id?: number;
-  absenceDay_id?: number;
-  course_id?: number;
+  task_ID?: number;
+  absenceDay_ID?: number;
+  course_ID?: number;
 }

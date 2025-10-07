@@ -1,12 +1,9 @@
 using Microsoft.Data.SqlClient;
-using Repo.Core.Models;
 using Repo.Core.Models.api;
 using Repo.Core.Models.calendar;
 using Repo.Server.CalendarModule.Interfaces;
 
 namespace Repo.Server.CalendarModule.Services;
-//TODO zrobić może repo z userem i tam metody inne metody do walidacji, np sprawdzenie
-//istnienia user w GetAllUser, teraz to zrobie przez try catcha, bo queryy rzuca bład 
 public class CalendarService : ICalendarService
 {
     private readonly IEventRepository _eventRepository;
@@ -24,8 +21,7 @@ public class CalendarService : ICalendarService
         }
         catch (SqlException e) when (e.Number == 50001)
         {
-            return Response<List<UserEventsDisplayable>>.Fail(
-                "User not found");
+            return Response<List<UserEventsDisplayable>>.Fail("User not found");
         }
         
     }
@@ -39,8 +35,7 @@ public class CalendarService : ICalendarService
         }
         catch (SqlException e) when (e.Number == 50001)
         {
-            return Response<List<UserEventsDisplayable>>.Fail(
-                "User not found");
+            return Response<List<UserEventsDisplayable>>.Fail("User not found");
         }
     }
 
@@ -53,8 +48,7 @@ public class CalendarService : ICalendarService
         }
         catch (SqlException e) when (e.Number == 50001)
         {
-            return Response<List<UserEventsDisplayable>>.Fail(
-                "User not found");
+            return Response<List<UserEventsDisplayable>>.Fail("User not found");
         }
     }
 
@@ -67,10 +61,14 @@ public class CalendarService : ICalendarService
         }
         catch (SqlException e) when (e.Number == 50001)
         {
-            return Response<List<UserEventsDisplayable>>.Fail(
-                "User not found");
+            return Response<List<UserEventsDisplayable>>.Fail("User not found");
         }
     }
 
-    
+    public async Task<Response<bool>> ChangeEventColor(int eventId, string color)
+    {
+       var result = await _eventRepository.ChangeEventColor(eventId, color);
+       return result ? Response<bool>.Ok(result)
+           : Response<bool>.Fail("Something went wrong");
+    }
 }

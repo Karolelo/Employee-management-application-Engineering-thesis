@@ -11,6 +11,7 @@ public interface ICalendarService
     Task<Response<List<UserEventsDisplayable>>> GetUserEventsFromDate(int id, DateTime date);
     Task<Response<List<UserEventsDisplayable>>> GetUserEventsToDate(int id, DateTime date);
     Task<Response<List<UserEventsDisplayable>>> GetUserEventsFromTo(int id, DateTime from, DateTime to);
+    Task<Response<bool>> ChangeEventColor(int eventId, string color);
 
     /*//Methods for posting events
     Task<Response<Event>> AddGlobalEvent(Event @event);
