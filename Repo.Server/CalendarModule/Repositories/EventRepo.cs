@@ -1,5 +1,3 @@
-using System.Data;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Repo.Core.Infrastructure;
 using Repo.Core.Models;
@@ -30,33 +28,27 @@ public class EventRepo : IEventRepository
     {
         var result = await GetAllUserEvents(id);
         var events = result
-            .Where(e=>e.Start.CompareTo(date) >= 0 && e.End.CompareTo(date) <= 0)
+            .Where(e=>e.Start.CompareTo(date) >= 0)
             .ToList();
         return events;
     }
 
-    public Task<IEnumerable<Event>> GetUserEventsToDate(int id, DateTime date)
+    public async Task<List<UserEventsDisplayable>> GetUserEventsToDate(int id, DateTime date)
     {
-        throw new NotImplementedException();
+        var result = await GetAllUserEvents(id);
+        var events = result
+            .Where(e=>e.End <= date)
+            .ToList();
+        return events;
     }
 
-    public Task<Event> AddGlobalEvent(Event @event)
+    public async Task<List<UserEventsDisplayable>> GetUserEventsFromTo(int id, DateTime from, DateTime to)
     {
-        throw new NotImplementedException();
+        var result = await GetAllUserEvents(id);
+        var events = result
+            .Where(e=>e.Start.CompareTo(from) >= 0 && e.End <= to)
+            .ToList();
+        return events;
     }
-
-    public Task<Event> AddUserEvent(Event @event, int id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<Event> UpdateEvent(Event @event, int id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<Event> DeleteEvent(int id)
-    {
-        throw new NotImplementedException();
-    }
+    
 }

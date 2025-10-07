@@ -2,11 +2,14 @@ import {Injectable} from "@angular/core";
 import {Observable} from "rxjs";
 import { DayPilot } from "@daypilot/daypilot-lite-angular";
 import {HttpClient} from "@angular/common/http";
+import {Task} from '../../task/interfaces/task';
+import {EventsData} from '../interfaces/events-data';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EventsService {
+  private readonly ApiUrl = "api/calendar/events/user/"
   static colors = {
     green: "#6aa84f",
     yellow: "#f1c232",
@@ -19,7 +22,8 @@ export class EventsService {
   // DayPilot.Date.parse(this.exampleDate.toISOString().substring(0, 19))
   //DayPilot.Date.fromYearMonthDay
   //end: DayPilot.Date.today().addHours(2)
-  exampleDate= new Date(Date.now());
+  /*exampleDate= new Date(Date.now());
+  //DayPilot.Date.parse(this.exampleDate.toISOString().substring(0,19),"yyyy-MM-ddTHH:mm:ss")
   events = [
     {
       id: 1,
@@ -52,21 +56,19 @@ export class EventsService {
       backColor: this.getRandomColor(),
       participants: 4,
     },
-  ];
+  ];*/
 
   constructor(private http : HttpClient){
   }
 
-  getEvents(from: DayPilot.Date, to: DayPilot.Date): Observable<any[]> {
-
-    // simulating an HTTP request
-    /*return new Observable(observer => {
-      setTimeout(() => {
-        observer.next(this.events);
-      }, 200);
-    });*/
-
-    // return this.http.get("/api/events?from=" + from.toString() + "&to=" + to.toString());
+  getEvents(userId: number,from: DayPilot.Date, to: DayPilot.Date): Observable<any[]> {
+    return this.http.get<EventsData[]>(`api/calendar/events/user/${userId}`,
+      {
+        params: {
+          from: from.toString(),
+          to: to.toString()
+        }
+      })
   }
 
   getColors(): any[] {

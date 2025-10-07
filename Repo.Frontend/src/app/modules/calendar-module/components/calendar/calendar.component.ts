@@ -1,4 +1,4 @@
-import {Component, ViewChild, AfterViewInit} from "@angular/core";
+import {Component, ViewChild,OnInit ,AfterViewInit} from "@angular/core";
 import {
   DayPilot,
   DayPilotCalendarComponent,
@@ -6,13 +6,14 @@ import {
   DayPilotNavigatorComponent
 } from "@daypilot/daypilot-lite-angular";
 import {EventsService} from '../../services/events.service'
+import {UserStoreService} from '../../../login/services/user_data/user-store.service';
 @Component({
   selector: 'calendar-component',
   standalone: false,
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.css']
 })
-export class CalendarComponent implements AfterViewInit {
+export class CalendarComponent implements OnInit,AfterViewInit {
 
   @ViewChild("day") day!: DayPilotCalendarComponent;
   @ViewChild("week") week!: DayPilotCalendarComponent;
@@ -25,29 +26,6 @@ export class CalendarComponent implements AfterViewInit {
 
   contextMenu = new DayPilot.Menu({
     items: [
-      {
-        text: "Delete",
-        onClick: args => {
-          const event = args.source;
-          const dp = event.calendar;
-          dp.events.remove(event);
-        }
-      },
-      {
-        text: "Edit...",
-        onClick: async args => {
-          const event = args.source;
-          const dp = event.calendar;
-
-          const modal = await DayPilot.Modal.prompt("Edit event text:", event.data.text);
-          dp.clearSelection();
-          if (!modal.result) {
-            return;
-          }
-          event.data.text = modal.result;
-          dp.events.update(event);
-        }
-      },
       {
         text: "-"
       },
@@ -90,7 +68,6 @@ export class CalendarComponent implements AfterViewInit {
           dp.events.update(event);
         }
       },
-
       {
         text: "Gray",
         onClick: args => {
@@ -103,6 +80,9 @@ export class CalendarComponent implements AfterViewInit {
       }
     ]
   });
+  constructor(private ds: EventsService, private eventsService: EventsService,private userDataStore: UserStoreService) {
+    this.viewWeek();
+  }
 
   configNavigator: DayPilot.NavigatorConfig = {
     showMonths: 3,
@@ -112,6 +92,13 @@ export class CalendarComponent implements AfterViewInit {
       this.loadEvents();
     }
   };
+  ngAfterViewInit(): void {
+    this.loadEvents();
+  }
+  ngOnInit(): void {
+    this.userDataStore.getUserData().subscribe({
+    })
+  }
 
   selectTomorrow() {
     this.date = DayPilot.Date.today().addDays(1);
@@ -146,23 +133,38 @@ export class CalendarComponent implements AfterViewInit {
     onTimeRangeSelected: this.onTimeRangeSelected.bind(this),
     onEventClick: this.onEventClick.bind(this),
   };
-
-  constructor(private ds: EventsService) {
-    this.viewWeek();
-  }
-
-  ngAfterViewInit(): void {
-    this.loadEvents();
-  }
-
   loadEvents(): void {
     const from = this.nav.control.visibleStart();
     const to = this.nav.control.visibleEnd();
-    this.ds.getEvents(from, to).subscribe((result: DayPilot.EventData[]) => {
-      this.events = result;
-    });
-    console.log(new Date(Date.now()).toString())
-    console.log(DayPilot.Date.today().firstDayOfWeek().addDays(2).addHours(16))
+    const userId = this.userDataStore.getUserId();
+
+    if (userId) {
+      this.eventsService.getEvents(userId, from, to)
+        .subscribe({
+          next: (events) => {
+            this.events = events.map(event => ({
+              id: event.id,
+              text: event.text,
+              start: new DayPilot.Date(event.start),
+              end: new DayPilot.Date(event.end),
+              backColor: event.backColor || this.eventsService.getRandomColor()
+            }));
+
+            if (this.day && this.day.control) {
+              this.day.control.update();
+            }
+            if (this.week && this.week.control) {
+              this.week.control.update();
+            }
+            if (this.month && this.month.control) {
+              this.month.control.update();
+            }
+          },
+          error: (error) => {
+            console.error('Error during loading of events:', error);
+          }
+        });
+    }
   }
 
   viewDay(): void {

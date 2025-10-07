@@ -5,7 +5,7 @@ using Repo.Server.CalendarModule.Interfaces;
 namespace Repo.Server.CalendarModule.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/[controller]/events/user/{userId:int}")]
 [Authorize(Policy = "UserOnly")]
 public class CalendarController : ControllerBase 
 {
@@ -16,7 +16,7 @@ public class CalendarController : ControllerBase
         this._calendarService = calendarService;
     }
     
-    [HttpGet("events/user/{userId:int}")]
+    [HttpGet]
      public async Task<IActionResult> GetAllUserEvents(int userId)
      {
          var response = await _calendarService.GetAllUserEvents(userId);
@@ -25,4 +25,36 @@ public class CalendarController : ControllerBase
              ? Ok(response.Data)
              : NotFound(new { Message = response.Error }); 
      }
+
+    [HttpGet("from")]
+    public async Task<IActionResult> GetUserEventsFromDate(int userId,[FromQuery] DateTime date)
+    {
+        var response = await _calendarService.GetUserEventsFromDate(userId, date);
+        
+        return response.Success 
+            ? Ok(response.Data)
+            : NotFound(new { Message = response.Error });
+    }
+    
+    [HttpGet("to")]
+    public async Task<IActionResult> GetUserEventsToDate(int userId,[FromQuery] DateTime date)
+    {
+        var response = await _calendarService.GetUserEventsToDate(userId, date);
+        
+        return response.Success 
+            ? Ok(response.Data)
+            : NotFound(new { Message = response.Error });
+    }
+    
+    [HttpGet("from-to")]
+    public async Task<IActionResult> GetUserEventsFromToDates(int userId, [FromQuery] DateTime fromDate,
+        [FromQuery] DateTime toDate)
+    {
+        var response = await _calendarService.GetUserEventsFromTo(userId, fromDate, toDate);
+        
+        return response.Success
+            ? Ok(response.Data)
+            : NotFound(new { Message = response.Error });
+    }
+    
 }
