@@ -23,6 +23,7 @@ builder.Services.AddScoped<IPriorityService, PriorityService>();
 builder.Services.AddScoped<IStatusService, StatusService>();
 builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<IGradeService, GradeService>();
+builder.Services.AddScoped<ITargetService, TargetService>();
 builder.Services.AddScoped<AuthenticationHelpers>();
 
 // Connection priority - changeable if needed
