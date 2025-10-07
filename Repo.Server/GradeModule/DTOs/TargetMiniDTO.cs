@@ -13,5 +13,7 @@ public class TargetMiniDTO
     [Required]
     public DateTime Start_Time { get; set; }
     
-    public DateTime Finish_Time { get; set; }
+    public DateTime? Finish_Time { get; set; }
+    
+    public string? Tag { get; set; }
 }

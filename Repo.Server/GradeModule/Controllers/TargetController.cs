@@ -36,4 +36,28 @@ public class TargetController : ControllerBase
             ? Ok(response.Data)
             : NotFound(new { message = response.Error });
     }
+    
+    //[HttpPost] methods
+    [HttpPost]
+    public async Task<IActionResult> CreateTarget(int userId, [FromBody] TargetMiniDTO dto)
+    {
+        var response = await _targetService.CreateTarget(userId, dto);
+        return response.Success
+            ? CreatedAtAction(nameof(GetTargetById), new { id = response.Data!.ID }, response.Data)
+            : BadRequest(new { message = response.Error });
+    }
+    
+    //[HttpPut] methods
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> UpdateTarget(int id, [FromBody] TargetMiniDTO dto)
+    {
+        var response = await _targetService.UpdateTarget(id, dto);
+        if (!response.Success)
+            return response.Error switch
+            {
+                "Target not found" => NotFound(new { message = response.Error }),
+                _                  => BadRequest(new { message = response.Error })
+            };
+        return NoContent();
+    }
 }

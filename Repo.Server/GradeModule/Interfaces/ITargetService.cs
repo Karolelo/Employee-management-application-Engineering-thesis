@@ -14,7 +14,7 @@ public interface ITargetService
     Task<Response<TargetDTO>> CreateTarget(int userId, TargetMiniDTO dto);
     
     //[HttpPut] methods
-    Task<Response<TargetDTO>> UpdateTarget(int userId, TargetDTO dto);
+    Task<Response<TargetDTO>> UpdateTarget(int id, TargetMiniDTO dto);
     
     //[HttpDelete] methods
     Task<Response<TargetDTO>> DeleteTarget(int targetId);

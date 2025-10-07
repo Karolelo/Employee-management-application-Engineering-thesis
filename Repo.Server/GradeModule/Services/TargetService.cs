@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Repo.Core.Infrastructure;
+using Repo.Core.Models;
 using Repo.Core.Models.api;
 using Repo.Server.GradeModule.DTOs;
 using Repo.Server.GradeModule.Interfaces;
@@ -62,12 +63,109 @@ public class TargetService : ITargetService
 
     public async Task<Response<TargetDTO>> CreateTarget(int userId, TargetMiniDTO dto)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var user = await _context.Users.Include(u => u.Targets).FirstOrDefaultAsync(u => u.ID == userId);
+            if (user == null)
+                return Response<TargetDTO>.Fail("User not found");
+            
+            var name = (dto.Name ?? string.Empty).Trim();
+            var desc = (dto.Description ?? string.Empty).Trim();
+
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return Response<TargetDTO>.Fail("Name is required");
+            }
+
+            if (string.IsNullOrWhiteSpace(desc))
+            {
+                return Response<TargetDTO>.Fail("Description is required");
+            }
+
+            if (dto.Finish_Time < dto.Start_Time)
+            {
+                return Response<TargetDTO>.Fail("Finish time cannot be earlier than Start time");
+            }
+
+            var exists = await _context.Targets.AnyAsync(t => t.Name == name);
+            if (exists)
+            {
+                return Response<TargetDTO>.Fail("Target with this name already exists");
+            }
+
+            var target = new Target
+            {
+                Name = name,
+                Description = desc,
+                Start_Time = dto.Start_Time,
+                Finish_Time = dto.Finish_Time
+            };
+
+            target.Users.Add(user);
+            _context.Targets.Add(target);
+            await _context.SaveChangesAsync();
+
+            var result = new TargetDTO
+            {
+                ID = target.ID,
+                Name = target.Name,
+                Description = target.Description,
+                Start_Time = target.Start_Time,
+                Finish_Time = target.Finish_Time
+            };
+            return Response<TargetDTO>.Ok(result);
+        }
+        catch (DbUpdateException e)
+        {
+            return Response<TargetDTO>.Fail($"DB error: {e.Message}");
+        }
+        catch (Exception e)
+        {
+            return Response<TargetDTO>.Fail($"Error during create target: {e.Message}");
+        }
     }
 
-    public async Task<Response<TargetDTO>> UpdateTarget(int userId, TargetDTO dto)
+    //[HttpPut] methods
+    public async Task<Response<TargetDTO>> UpdateTarget(int id, TargetMiniDTO dto)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var target = await _context.Targets
+                .Include(t => t.Tag)
+                .FirstOrDefaultAsync(e => e.ID == id);
+            if (target == null)
+            {
+                return Response<TargetDTO>.Fail("Target not found");
+            }
+            
+            var tag = await _context.Set<Tag>().FirstOrDefaultAsync(e => e.Name == dto.Tag);
+            
+            target.Name = dto.Name;
+            target.Description = dto.Description;
+            target.Start_Time = dto.Start_Time;
+            target.Finish_Time = dto.Finish_Time;
+            //target.Tag = tag;
+            await _context.SaveChangesAsync();
+
+            var newTarget = new TargetDTO
+            {
+                ID = target.ID,
+                Name = target.Name,
+                Description = target.Description,
+                Start_Time = target.Start_Time,
+                Finish_Time = target.Finish_Time,
+                //Tag = target.Tag.Name
+            };
+            return Response<TargetDTO>.Ok(newTarget);
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            return Response<TargetDTO>.Fail("Concurrency conflict");
+        }
+        catch (Exception e)
+        {
+            return Response<TargetDTO>.Fail($"Error during updating target: {e.Message}");
+        }
     }
 
     public async Task<Response<TargetDTO>> DeleteTarget(int targetId)
