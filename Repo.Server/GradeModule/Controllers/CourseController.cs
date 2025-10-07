@@ -58,7 +58,6 @@ public class CourseController : ControllerBase
             : BadRequest(new { message = response.Error });
     }
     
-    //TODO: move EnrollUser to UserModule when created
     [HttpPost("{id:int}/enroll")]
     public async Task<IActionResult> EnrollUser(int id)
     {
@@ -102,7 +101,6 @@ public class CourseController : ControllerBase
         };
     }
     
-    //TODO: move UnenrollUser to UserModule when created
     [HttpDelete("{id:int}/enroll")]
     public async Task<IActionResult> UnenrollUser(int id)
     {
