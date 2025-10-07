@@ -55,7 +55,7 @@ export class UserGradeListComponent implements OnInit {
   }
 
   displayValue(grade: Grade): string {
-    return (Math.round((grade.grade / 20) * 10) / 10)
+    return (grade.grade)
       .toFixed(1)
       .replace('.0', '');
   }

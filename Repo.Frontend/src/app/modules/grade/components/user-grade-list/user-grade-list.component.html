@@ -21,7 +21,7 @@
         <ul>
           <li *ngFor="let g of grades$ | async" (click)="openDetails(g)">
             <div class="grade-circle">
-              <mat-progress-spinner [value]="g.grade" mode="determinate" diameter="44"></mat-progress-spinner>
+              <mat-progress-spinner [value]="g.grade*20" mode="determinate" diameter="44"></mat-progress-spinner>
               <span class="circle-value">{{ displayValue(g) }}</span>
             </div>
             <div class="date-pill">{{ formatDate(g.finish_Date) }}</div>

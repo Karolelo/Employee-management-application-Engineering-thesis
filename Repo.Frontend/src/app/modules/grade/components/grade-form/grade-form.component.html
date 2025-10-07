@@ -2,11 +2,11 @@
   <h2 class="section-title">{{ gradeToEdit ? 'Edit grade' : 'New grade' }}</h2>
 
   <mat-form-field appearance="outline" class="full">
-    <mat-label>Grade (0–100)</mat-label>
+    <mat-label>Grade (0–5)</mat-label>
     <input type="number" matInput formControlName="grade" />
     <mat-error *ngIf="form.get('grade')?.hasError('required')">Required</mat-error>
     <mat-error *ngIf="form.get('grade')?.hasError('min') || form.get('grade')?.hasError('max')">
-      Range 0–100
+      Range 0–5
     </mat-error>
   </mat-form-field>
 

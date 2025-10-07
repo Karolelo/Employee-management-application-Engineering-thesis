@@ -5,7 +5,7 @@ namespace Repo.Server.GradeModule.DTOs;
 public class GradeMiniDTO
 {
     [Required]
-    [Range(0, 100)]
+    [Range(0, 5)]
     public decimal Grade { get; set; }
     
     [Required]

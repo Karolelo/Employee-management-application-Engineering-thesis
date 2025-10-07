@@ -26,7 +26,7 @@ export class GradeFormComponent implements OnInit, OnChanges{
 
   ngOnInit(): void {
     this.form = this.fb.group({
-      grade: [null, [Validators.required, Validators.min(0), Validators.max(100)]],
+      grade: [null, [Validators.required, Validators.min(0), Validators.max(5)]],
       description: ['', [Validators.required]],
       start_Date: ['', [Validators.required]],
       finish_Date: ['', [Validators.required]],
