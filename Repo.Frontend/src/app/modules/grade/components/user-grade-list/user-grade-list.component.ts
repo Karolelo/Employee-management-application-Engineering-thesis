@@ -55,7 +55,7 @@ export class UserGradeListComponent implements OnInit {
   }
 
   displayValue(grade: Grade): string {
-    return (grade.grade)
+    return grade.grade
       .toFixed(1)
       .replace('.0', '');
   }
