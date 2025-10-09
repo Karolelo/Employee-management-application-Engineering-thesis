@@ -35,6 +35,10 @@ export class TaskService {
     return this.http.get<RelatedTasks>(`${this.apiUrl}/${id}/relations`);
   }
 
+  getTask(id: number): Observable<Task> {
+    return this.http.get<Task>(`${this.apiUrl}/${id}`);
+  }
+
   //Posts
   createTaskForUser(userId: number, task: Task): Observable<Task> {
     return this.http.post<Task>(`${this.apiUrl}/user/add/${userId}`, task)

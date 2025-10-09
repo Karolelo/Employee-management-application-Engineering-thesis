@@ -6,6 +6,9 @@ using Repo.Core.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using Repo.Server.CalendarModule.Interfaces;
+using Repo.Server.CalendarModule.Repositories;
+using Repo.Server.CalendarModule.Services;
 using Repo.Server.Controllers;
 using Repo.Server.Controllers.Interfaces;
 using Repo.Server.TaskModule;
@@ -20,6 +23,8 @@ builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<IPriorityService, PriorityService>();
 builder.Services.AddScoped<IStatusService, StatusService>();
 builder.Services.AddScoped<AuthenticationHelpers>();
+builder.Services.AddScoped<IEventRepository, EventRepo>();
+builder.Services.AddScoped<ICalendarService,CalendarService>();
 
 // Connection priority - changeable if needed
 var candidateNames = new[] { "Mroziu-workspace", "DefaultConnection" };

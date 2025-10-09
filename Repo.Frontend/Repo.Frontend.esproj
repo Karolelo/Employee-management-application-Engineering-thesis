@@ -8,7 +8,6 @@
     <BuildOutputFolder>$(MSBuildProjectDirectory)\dist\Repo.Frontend\browser\</BuildOutputFolder>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="src\app\common_interafaces\" />
     <Folder Include="src\app\guard\AuthGuard\" />
     <Folder Include="src\app\layouts\" />
     <Folder Include="src\app\modules\" />

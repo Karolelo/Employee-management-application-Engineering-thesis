@@ -1,22 +1,25 @@
 using Repo.Core.Models;
 using Repo.Core.Models.api;
+using Repo.Core.Models.calendar;
 
 namespace Repo.Server.CalendarModule.Interfaces;
 
 public interface ICalendarService
 {
     //Methods for getting events
-    Response<IEnumerable<Event>> GetAllUserEvents(int id);
-    Response<IEnumerable<Event>> GetUserEventsFromDate(int id,DateTime date);
-    Response<IEnumerable<Event>> GetUserEventsToDate(int id,DateTime date);
-    
-    //Methods for posting evetns
-    Response<Event> AddGlobalEvent(Event @event);
-    Response<Event> AddUserEvent(Event @event, int id);
-    
+    Task<Response<List<UserEventsDisplayable>>> GetAllUserEvents(int id);
+    Task<Response<List<UserEventsDisplayable>>> GetUserEventsFromDate(int id, DateTime date);
+    Task<Response<List<UserEventsDisplayable>>> GetUserEventsToDate(int id, DateTime date);
+    Task<Response<List<UserEventsDisplayable>>> GetUserEventsFromTo(int id, DateTime from, DateTime to);
+    Task<Response<bool>> ChangeEventColor(int eventId, string color);
+
+    /*//Methods for posting events
+    Task<Response<Event>> AddGlobalEvent(Event @event);
+    Task<Response<Event>> AddUserEvent(Event @event, int id);
+
     //Methods for update
-    Response<Event> UpdateEvent(Event @event, int id);
-    
+    Task<Response<Event>> UpdateEvent(Event @event, int id);
+
     //Methods for deleting
-    Response<Event> DeleteEvent(int id);
+    Task<Response<Event>> DeleteEvent(int id);*/
 }

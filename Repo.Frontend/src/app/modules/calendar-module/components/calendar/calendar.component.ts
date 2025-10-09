@@ -1,4 +1,4 @@
-import {Component, ViewChild, AfterViewInit} from "@angular/core";
+import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
 import {
   DayPilot,
   DayPilotCalendarComponent,
@@ -6,13 +6,15 @@ import {
   DayPilotNavigatorComponent
 } from "@daypilot/daypilot-lite-angular";
 import {EventsService} from '../../services/events.service'
+import {UserStoreService} from '../../../login/services/user_data/user-store.service';
+import {Router} from '@angular/router';
 @Component({
   selector: 'calendar-component',
   standalone: false,
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.css']
 })
-export class CalendarComponent implements AfterViewInit {
+export class CalendarComponent implements OnInit,AfterViewInit {
 
   @ViewChild("day") day!: DayPilotCalendarComponent;
   @ViewChild("week") week!: DayPilotCalendarComponent;
@@ -26,26 +28,24 @@ export class CalendarComponent implements AfterViewInit {
   contextMenu = new DayPilot.Menu({
     items: [
       {
-        text: "Delete",
-        onClick: args => {
-          const event = args.source;
-          const dp = event.calendar;
-          dp.events.remove(event);
-        }
-      },
-      {
         text: "Edit...",
         onClick: async args => {
           const event = args.source;
           const dp = event.calendar;
 
-          const modal = await DayPilot.Modal.prompt("Edit event text:", event.data.text);
+          const path = this.determinePath(event.data.text);
+          this.router.navigate([path], {
+            queryParams: {
+              taskId: event.data.resource
+            }
+          })
+          /*const modal = await DayPilot.Modal.prompt("Edit event text:", event.data.text);
           dp.clearSelection();
           if (!modal.result) {
             return;
           }
           event.data.text = modal.result;
-          dp.events.update(event);
+          dp.events.update(event);*/
         }
       },
       {
@@ -57,6 +57,18 @@ export class CalendarComponent implements AfterViewInit {
           const event = args.source;
           const dp = event.calendar;
           event.data.backColor = EventsService.colors.red;
+          this.eventsService.changeEventColor(
+            event.data.id,
+            "Red"
+          ).subscribe({
+            next: (response) => {
+              console.log(response);
+              console.log(`Change event to color: Red, eventId: ${event.data.id}`);
+            },
+            error: (error) => {
+              console.log(error);
+            }
+          });
           dp.events.update(event);
         }
       },
@@ -66,7 +78,18 @@ export class CalendarComponent implements AfterViewInit {
           const event = args.source;
           const dp = event.calendar;
           event.data.backColor = EventsService.colors.green;
-
+          this.eventsService.changeEventColor(
+            event.data.id,
+            "Green"
+          ).subscribe({
+            next: (response) => {
+              console.log(response);
+              console.log(`Change event to color: Green, eventId: ${event.data.id}`);
+            },
+            error: (error) => {
+              console.log(error);
+            }
+          });
           dp.events.update(event);
         }
       },
@@ -76,7 +99,18 @@ export class CalendarComponent implements AfterViewInit {
           const event = args.source;
           const dp = event.calendar;
           event.data.backColor = EventsService.colors.blue;
-
+          this.eventsService.changeEventColor(
+            event.data.id,
+            "Blue"
+          ).subscribe({
+            next: (response) => {
+              console.log(response);
+              console.log(`Change event to color: Blue, eventId: ${event.data.id}`);
+            },
+            error: (error) => {
+              console.log(error);
+            }
+          });
           dp.events.update(event);
         }
       },
@@ -86,18 +120,39 @@ export class CalendarComponent implements AfterViewInit {
           const event = args.source;
           const dp = event.calendar;
           event.data.backColor = EventsService.colors.yellow;
-
+          this.eventsService.changeEventColor(
+            event.data.id,
+            "Yellow"
+          ).subscribe({
+            next: (response) => {
+              console.log(response);
+              console.log(`Change event to color: Yellow, eventId: ${event.data.id}`);
+            },
+            error: (error) => {
+              console.log(error);
+            }
+          });
           dp.events.update(event);
         }
       },
-
       {
         text: "Gray",
         onClick: args => {
           const event = args.source;
           const dp = event.calendar;
           event.data.backColor = EventsService.colors.gray;
-
+          this.eventsService.changeEventColor(
+            event.data.id,
+            "Gray"
+          ).subscribe({
+            next: (response) => {
+              console.log(response);
+              console.log(`Change event to color: Gray, eventId: ${event.data.id}`);
+            },
+            error: (error) => {
+              console.log(error);
+            }
+          });
           dp.events.update(event);
         }
       }
@@ -112,6 +167,28 @@ export class CalendarComponent implements AfterViewInit {
       this.loadEvents();
     }
   };
+  constructor(private ds: EventsService, private eventsService: EventsService,private userDataStore: UserStoreService,
+  private router: Router) {
+    this.viewWeek();
+  }
+  //TODO zrobić obsługę tych rzeczy
+  determinePath(name: string): string{
+    if(name.startsWith('Course'))
+      return '/courses/course-details' ;
+    if(name.startsWith('Task'))
+      return '/tasks'
+    if(name.startsWith('AbsenceDay'))
+      return 'dashboard/absence-day-details'
+
+    return '/notFound'
+  }
+  ngAfterViewInit(): void {
+    this.loadEvents();
+  }
+  ngOnInit(): void {
+    this.userDataStore.getUserData().subscribe({
+    })
+  }
 
   selectTomorrow() {
     this.date = DayPilot.Date.today().addDays(1);
@@ -126,45 +203,67 @@ export class CalendarComponent implements AfterViewInit {
   configDay: DayPilot.CalendarConfig = {
     durationBarVisible: false,
     contextMenu: this.contextMenu,
-    onTimeRangeSelected: this.onTimeRangeSelected.bind(this),
+    /*onTimeRangeSelected: this.onTimeRangeSelected.bind(this),*/
     onBeforeEventRender: this.onBeforeEventRender.bind(this),
     onEventClick: this.onEventClick.bind(this),
+    eventMoveHandling: "Disabled",
+    eventResizeHandling: "Disabled",
   };
 
   configWeek: DayPilot.CalendarConfig = {
     viewType: "Week",
     durationBarVisible: false,
     contextMenu: this.contextMenu,
-    onTimeRangeSelected: this.onTimeRangeSelected.bind(this),
+    /*onTimeRangeSelected: this.onTimeRangeSelected.bind(this),*/
     onBeforeEventRender: this.onBeforeEventRender.bind(this),
     onEventClick: this.onEventClick.bind(this),
+    eventMoveHandling: "Disabled",
+    eventResizeHandling: "Disabled"
   };
 
   configMonth: DayPilot.MonthConfig = {
     contextMenu: this.contextMenu,
     eventBarVisible: false,
-    onTimeRangeSelected: this.onTimeRangeSelected.bind(this),
+    /*onTimeRangeSelected: this.onTimeRangeSelected.bind(this),*/
     onEventClick: this.onEventClick.bind(this),
+    eventMoveHandling: "Disabled",
+    eventResizeHandling: "Disabled"
   };
-
-  constructor(private ds: EventsService) {
-    this.viewWeek();
-  }
-
-  ngAfterViewInit(): void {
-    this.loadEvents();
-  }
-
   loadEvents(): void {
     const from = this.nav.control.visibleStart();
     const to = this.nav.control.visibleEnd();
-    this.ds.getEvents(from, to).subscribe((result: DayPilot.EventData[]) => {
-      this.events = result;
-    });
-    console.log(new Date(Date.now()).toString())
-    console.log(DayPilot.Date.today().firstDayOfWeek().addDays(2).addHours(16))
-  }
+    const userId = this.userDataStore.getUserId();
 
+    if (userId) {
+      this.eventsService.getEvents(userId, from, to)
+        .subscribe({
+          next: (events) => {
+            this.events = events.map(event => ({
+              id: event.id,
+              text: event.text,
+              start: new DayPilot.Date(event.start),
+              end: new DayPilot.Date(event.end),
+              backColor: event.backColor || this.eventsService.getRandomColor(),
+              resource: event.task_ID ?? event.course_ID ?? event.absenceDay_ID
+            }));
+
+            if (this.day && this.day.control) {
+              this.day.control.update();
+            }
+            if (this.week && this.week.control) {
+              this.week.control.update();
+            }
+            if (this.month && this.month.control) {
+              this.month.control.update();
+            }
+            console.log(this.events);
+          },
+          error: (error) => {
+            console.error('Error during loading of events:', error);
+          }
+        });
+    }
+  }
   viewDay(): void {
     this.configNavigator.selectMode = "Day";
     this.configDay.visible = true;
@@ -224,8 +323,8 @@ export class CalendarComponent implements AfterViewInit {
       style: "border-radius: 50%; border: 2px solid #fff; overflow: hidden;",
     });
   }
-
-  async onTimeRangeSelected(args: any) {
+  //We disable this function to not allow creating evetns outside certain module
+  /* async onTimeRangeSelected(args: any) {
     const modal = await DayPilot.Modal.prompt("Create a new event:", "Event 1");
     const dp = args.control;
     dp.clearSelection();
@@ -238,26 +337,38 @@ export class CalendarComponent implements AfterViewInit {
       id: DayPilot.guid(),
       text: modal.result
     }));
-  }
+  }*/
 
+  //We disable direct editing in calendar, because we think is not suitable options
+  //but left code if future developemnt thought is usefull
   async onEventClick(args: any) {
-    const form = [
-      {name: "Text", id: "text"},
-      {name: "Start", id: "start", dateFormat: "MM/dd/yyyy", type: "datetime"},
-      {name: "End", id: "end", dateFormat: "MM/dd/yyyy", type: "datetime"},
-      {name: "Color", id: "backColor", type: "select", options: this.ds.getColors()},
-    ];
+    /*const form = [
+      {name: "Text", id: "text",readonly: true, editable: false},
+      {name: "Start", id: "start", dateFormat: "MM/dd/yyyy", type: "datetime",readonly: true, editable: false},
+      {name: "End", id: "end", dateFormat: "MM/dd/yyyy", type: "datetime",readonly: true,editable: false },
+      {name: "Color", id: "backColor",readonly: true,editable: false},
+    ];*/
 
     const data = args.e.data;
 
-    const modal = await DayPilot.Modal.form(form, data);
-
+    /*const modal = await DayPilot.Modal.form(form, data);*/
+    //const message = `Event name: ${data.text}<br>Start: ${data.start.toString()}<br>End: ${data.end.toString()}`;
+    const message = `
+      <div style="text-align: center">
+        <div style="font-size: 24px">📅 ${data.text}</div>
+        <div style="margin-top: 10px">
+          <span>🕐 Start: ${data.start.toString()}</span><br>
+          <span>🔚 End: ${data.end.toString()}</span>
+        </div>
+      </div>
+    `;
+    const modal = await DayPilot.Modal.alert(message);
     if (modal.canceled) {
       return;
     }
 
     const dp = args.control;
 
-    dp.events.update(modal.result);
+    //dp.events.update(modal.result);
   }
 }

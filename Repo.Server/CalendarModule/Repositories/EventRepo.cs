@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Repo.Core.Infrastructure;
 using Repo.Core.Models;
 using Repo.Core.Models.api;
+using Repo.Core.Models.calendar;
 using Repo.Server.CalendarModule.Interfaces;
 
 namespace Repo.Server.CalendarModule.Repositories;
@@ -15,41 +16,58 @@ public class EventRepo : IEventRepository
         _context = context;
     }
     
-    public Response<IEnumerable<Event>> GetAllUserEvents(int id)
+    public async Task<List<UserEventsDisplayable>> GetAllUserEvents(int id)
     {
-        _context.Events
-            .AsNoTracking()
-            .Where(e=> e.Course. == id)
+        var events = await _context.Database
+            .SqlQuery<UserEventsDisplayable>($"Exec sp_getUserEvents @userID = {id}")
+            .ToListAsync();
+        return events;
+    }
+
+    public async Task<List<UserEventsDisplayable>> GetUserEventsFromDate(int id, DateTime date)
+    {
+        var result = await GetAllUserEvents(id);
+        var events = result
+            .Where(e=>e.Start.CompareTo(date) >= 0)
             .ToList();
+        return events;
     }
 
-    public Response<IEnumerable<Event>> GetUserEventsFromDate(int id, DateTime date)
+    public async Task<List<UserEventsDisplayable>> GetUserEventsToDate(int id, DateTime date)
     {
-        throw new NotImplementedException();
+        var result = await GetAllUserEvents(id);
+        var events = result
+            .Where(e=>e.End <= date)
+            .ToList();
+        return events;
     }
 
-    public Response<IEnumerable<Event>> GetUserEventsToDate(int id, DateTime date)
+    public async Task<List<UserEventsDisplayable>> GetUserEventsFromTo(int id, DateTime from, DateTime to)
     {
-        throw new NotImplementedException();
+        var result = await GetAllUserEvents(id);
+        var events = result
+            .Where(e=>e.Start.CompareTo(from) >= 0 && e.End <= to)
+            .ToList();
+        return events;
     }
 
-    public Response<Event> AddGlobalEvent(Event @event)
+    public async Task<bool> ChangeEventColor(int eventId, string color)
     {
-        throw new NotImplementedException();
+        try
+        {
+         var eventToUpdate = await _context.Events.FirstOrDefaultAsync(e => e.ID == eventId);
+         if (eventToUpdate == null)
+         {
+             return false;
+         }
+         
+         eventToUpdate.BackColor = color;
+         await _context.SaveChangesAsync();
+         return true;
+        }catch (Exception e)
+        {
+            return false;
+        }
     }
-
-    public Response<Event> AddUserEvent(Event @event, int id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Response<Event> UpdateEvent(Event @event, int id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Response<Event> DeleteEvent(int id)
-    {
-        throw new NotImplementedException();
-    }
+    
 }

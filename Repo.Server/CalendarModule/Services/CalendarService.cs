@@ -1,43 +1,74 @@
-using Repo.Core.Models;
+using Microsoft.Data.SqlClient;
 using Repo.Core.Models.api;
+using Repo.Core.Models.calendar;
 using Repo.Server.CalendarModule.Interfaces;
 
 namespace Repo.Server.CalendarModule.Services;
-
 public class CalendarService : ICalendarService
 {
-    public Response<IEnumerable<Event>> GetAllUserEvents(int id)
+    private readonly IEventRepository _eventRepository;
+    
+    public CalendarService(IEventRepository eventRepository)
     {
-        throw new NotImplementedException();
+        _eventRepository = eventRepository;
+    }
+    public async Task<Response<List<UserEventsDisplayable>>> GetAllUserEvents(int id)
+    {
+        try
+        {
+            var events = await _eventRepository.GetAllUserEvents(id);
+            return Response<List<UserEventsDisplayable>>.Ok(events);
+        }
+        catch (SqlException e) when (e.Number == 50001)
+        {
+            return Response<List<UserEventsDisplayable>>.Fail("User not found");
+        }
+        
     }
 
-    public Response<IEnumerable<Event>> GetUserEventsFromDate(int id, DateTime date)
+    public async Task<Response<List<UserEventsDisplayable>>> GetUserEventsFromDate(int id, DateTime date)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var events = await _eventRepository.GetUserEventsFromDate(id, date);
+            return Response<List<UserEventsDisplayable>>.Ok(events);
+        }
+        catch (SqlException e) when (e.Number == 50001)
+        {
+            return Response<List<UserEventsDisplayable>>.Fail("User not found");
+        }
     }
 
-    public Response<IEnumerable<Event>> GetUserEventsToDate(int id, DateTime date)
+    public async Task<Response<List<UserEventsDisplayable>>> GetUserEventsToDate(int id, DateTime date)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var events = await _eventRepository.GetUserEventsToDate(id, date);
+            return Response<List<UserEventsDisplayable>>.Ok(events);
+        }
+        catch (SqlException e) when (e.Number == 50001)
+        {
+            return Response<List<UserEventsDisplayable>>.Fail("User not found");
+        }
     }
 
-    public Response<Event> AddGlobalEvent(Event @event)
+    public async Task<Response<List<UserEventsDisplayable>>> GetUserEventsFromTo(int id, DateTime from, DateTime to)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var events = await _eventRepository.GetUserEventsFromTo(id, from,to);
+            return Response<List<UserEventsDisplayable>>.Ok(events);
+        }
+        catch (SqlException e) when (e.Number == 50001)
+        {
+            return Response<List<UserEventsDisplayable>>.Fail("User not found");
+        }
     }
 
-    public Response<Event> AddUserEvent(Event @event, int id)
+    public async Task<Response<bool>> ChangeEventColor(int eventId, string color)
     {
-        throw new NotImplementedException();
-    }
-
-    public Response<Event> UpdateEvent(Event @event, int id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Response<Event> DeleteEvent(int id)
-    {
-        throw new NotImplementedException();
+       var result = await _eventRepository.ChangeEventColor(eventId, color);
+       return result ? Response<bool>.Ok(result)
+           : Response<bool>.Fail("Something went wrong");
     }
 }
