@@ -59,40 +59,6 @@ p {
   white-space: pre-wrap;
 }
 
-/* Stylizacja tabeli */
-table[mat-table] {
-  width: 100%;
-  background: white;
-  border-radius: 10px;
-  overflow: hidden;
-  margin: 1rem 0;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-}
-
-.mat-mdc-header-cell {
-  background-color: var(--primary-color);
-  color: var(--text-color);
-  font-weight: 600;
-  font-size: 1rem;
-  padding: 1rem;
-  text-transform: capitalize;
-}
-
-.mat-mdc-cell {
-  padding: 1rem;
-  font-family: var(--font-main);
-  color: var(--text-color);
-}
-
-.mat-mdc-row {
-  transition: background-color 0.3s;
-}
-
-.mat-mdc-row:hover {
-  background-color: rgba(108, 92, 231, 0.1);
-  cursor: pointer;
-}
-
 .hidden {
   display: none;
 }

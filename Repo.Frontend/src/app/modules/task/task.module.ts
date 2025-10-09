@@ -59,7 +59,6 @@ import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
     MatPaginator,
   ],
   providers: [
-    TaskModule
   ]
 })
 export class TaskModule { }

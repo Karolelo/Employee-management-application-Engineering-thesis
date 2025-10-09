@@ -23,7 +23,7 @@ builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<IPriorityService, PriorityService>();
 builder.Services.AddScoped<IStatusService, StatusService>();
 builder.Services.AddScoped<AuthenticationHelpers>();
-builder.Services.AddScoped<IEventRepository, EventRepo>();
+builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<ICalendarService,CalendarService>();
 
 // Connection priority - changeable if needed

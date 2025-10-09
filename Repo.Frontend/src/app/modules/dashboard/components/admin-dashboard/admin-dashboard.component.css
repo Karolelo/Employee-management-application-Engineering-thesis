@@ -1,0 +1,45 @@
+.grid-container {
+  margin: 20px;
+}
+
+.dashboard-card {
+  background: linear-gradient(135deg, #f5f7fa, #e2ebf0);
+  border-radius: 8px;
+  box-shadow: 0 4px 8px var(--shadow-color);
+  margin: 15px;
+  width: calc(100% - 30px);
+  height: calc(100% - 30px);
+  transition: transform 0.3s ease;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-5px);
+}
+
+.mat-card-header {
+  background: linear-gradient(135deg, #cfd9df, #e2ebf0);
+  padding: 15px;
+  border-radius: 8px 8px 0 0;
+}
+
+.mat-card-title {
+  color: var(--text-color);
+  font-family: var(--font-main);
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.dashboard-card-content {
+  padding: 20px;
+  font-family: var(--font-main);
+}
+
+.grid-container {
+  margin: 20px;
+}
+
+.mat-h1 {
+  font-family: var(--font-headers);
+  color: var(--text-color);
+  margin-bottom: 20px;
+}

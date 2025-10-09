@@ -1,3 +1,4 @@
+@use '@angular/material' as mat;
 @font-face {
   font-family: 'Railway';
   src: url('../public/fonts/Raleway-VariableFont_wght.ttf') format('truetype');
@@ -5,6 +6,9 @@
 :root {
   --font-main: 'Railway', sans-serif;
   --font-headers: 'RobotSlab', serif;
+  --mdc-filled-text-field-container-color: --secondary-color;
+  --mdc-filled-text-field-input-text-color: --input-bg;
+
 }
 :root {
   --primary-color: #6c5ce7;
@@ -23,6 +27,76 @@
   --inprogress-status: #f1c40f;
   --completed-status: #2ecc71;
 }
+
+.mat-mdc-table {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 16px 0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+table[mat-table] {
+  width: 100%;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 1rem 0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.mat-mdc-header-cell {
+  background-color: var(--primary-color);
+  color: var(--text-color);
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 1rem;
+  text-transform: capitalize;
+}
+
+.mat-mdc-cell {
+  padding: 1rem;
+  font-family: var(--font-main);
+  color: var(--text-color);
+}
+
+.mat-mdc-row {
+  transition: background-color 0.3s;
+}
+
+.mat-mdc-paginator {
+  border-radius: 0 0 12px 12px;
+  background: transparent !important;
+  color: var(--text-color);
+}
+.mat-mdc-paginator-page-size-label,
+.mat-mdc-paginator-range-label {
+  color: var(--text-color);
+}
+
+.mat-mdc-row:hover {
+  background-color: rgba(108, 92, 231, 0.1);
+  cursor: pointer;
+}
+
+.mat-mdc-select-panel {
+  background-color: white !important;
+  border-radius: 8px !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
+}
+
+.mat-mdc-option {
+  color: var(--text-color) !important;
+}
+
+.mat-mdc-option:hover:not(.mat-mdc-option-disabled) {
+  background-color: rgba(108, 92, 231, 0.1) !important;
+}
+.mat-mdc-option:active {
+  background-color: var(--primary-color) !important;
+  opacity: 0.8;
+}
+
 
 
 

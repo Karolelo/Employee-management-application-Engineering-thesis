@@ -7,11 +7,11 @@ using Repo.Server.CalendarModule.Interfaces;
 
 namespace Repo.Server.CalendarModule.Repositories;
 
-public class EventRepo : IEventRepository
+public class EventRepository : IEventRepository
 {
     private readonly MyDbContext _context;
     
-    public EventRepo(MyDbContext context)
+    public EventRepository(MyDbContext context)
     {
         _context = context;
     }
