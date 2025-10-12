@@ -18,6 +18,8 @@ public class TargetController : ControllerBase
         _targetService = targetService;
     }
     
+    //TODO: GetTargets
+    
     //[HttpGet] methods
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetTargetById(int id)
@@ -38,7 +40,7 @@ public class TargetController : ControllerBase
     }
     
     //[HttpPost] methods
-    [HttpPost]
+    [HttpPost("user/{userId:int}")]
     public async Task<IActionResult> CreateTarget(int userId, [FromBody] TargetMiniDTO dto)
     {
         var response = await _targetService.CreateTarget(userId, dto);
@@ -59,5 +61,15 @@ public class TargetController : ControllerBase
                 _                  => BadRequest(new { message = response.Error })
             };
         return NoContent();
+    }
+    
+    //[HttpDelete] methods
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> DeleteTarget(int id)
+    {
+        var response = await _targetService.DeleteTarget(id);
+        return response.Success
+            ? NoContent()
+            : NotFound(new { message = response.Error });
     }
 }

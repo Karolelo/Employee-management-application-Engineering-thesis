@@ -15,10 +15,36 @@ public class TargetService : ITargetService
     {
         _context = context;
     }
-
+    
+    //[HttpGet] methods
     public async Task<Response<ICollection<TargetDTO>>> GetTargets(string? q, int page, int pageSize)
     {
-        throw new NotImplementedException();
+        var query = _context.Targets.AsNoTracking().AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(q))
+        {
+            query = query.Where(t => t.Name.Contains(q));
+        }
+        
+        var data = await query
+            .OrderByDescending(t => t.Start_Time)
+            .ThenByDescending(t => t.Finish_Time)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .Select(t => new TargetDTO
+            {
+                ID = t.ID,
+                Name = t.Name,
+                Description = t.Description,
+                Start_Time = t.Start_Time,
+                Finish_Time = t.Finish_Time,
+                //Tag = t.Tag.Name
+            })
+            .ToListAsync();
+
+        return data.Count == 0
+            ? Response<ICollection<TargetDTO>>.Fail("No targets found")
+            : Response<ICollection<TargetDTO>>.Ok(data);
     }
 
     public async Task<Response<TargetDTO>> GetTargetById(int id)
@@ -61,6 +87,7 @@ public class TargetService : ITargetService
             : Response<ICollection<TargetDTO>>.Ok(targets);
     }
 
+    //[HttpPost] methods
     public async Task<Response<TargetDTO>> CreateTarget(int userId, TargetMiniDTO dto)
     {
         try
@@ -168,8 +195,39 @@ public class TargetService : ITargetService
         }
     }
 
+    //[HttpDelete] methods
     public async Task<Response<TargetDTO>> DeleteTarget(int targetId)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var target = await _context.Targets
+                .Include(t => t.Users)
+                .FirstOrDefaultAsync(e => e.ID == targetId);
+
+            if (target == null)
+                return Response<TargetDTO>.Fail("Target not found");
+
+            target.Users.Clear();
+            _context.Targets.Remove(target);
+            await _context.SaveChangesAsync();
+
+            return Response<TargetDTO>.Ok(new TargetDTO
+            {
+                ID = target.ID,
+                Name = target.Name,
+                Description = target.Description,
+                Start_Time = target.Start_Time,
+                Finish_Time = target.Finish_Time,
+                //Tag = target.Tag.Name
+            });
+        }
+        catch (DbUpdateException e)
+        {
+            return Response<TargetDTO>.Fail($"DB error: {e.Message}");
+        }
+        catch (Exception e)
+        {
+            return Response<TargetDTO>.Fail($"Error during deleting target: {e.Message}");
+        }
     }
 }
