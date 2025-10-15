@@ -1,24 +1,20 @@
 using Repo.Core.Models;
 using Repo.Core.Models.auth;
+using Repo.Core.Models.user;
 
 namespace Repo.Server.UserManagmentModule.Interfaces;
 
 public interface IUserRepository
 {
     Task<List<User>> GetAllUsers();
-    Task<User> GetUserById(int id);
+    Task<User?> GetUserById(int id);
+    //This method I created for validation of user
+    //For example to not create same user x time
+    Task<User?> GetUserByEmail(string email);
+    Task<User?> GetUserByNickname(string nickname);
     //Registration we handle in authModule
+    //Because of addintional logic included in creating user like salting password etc ...
     /*Task<bool> CreateUser(RegistrationModel model);*/
-    Task<bool> UpdateUser(User user);
+    Task<User> UpdateUser(User user);
     Task<bool> DeleteUser(int id);
-    
-    //Group managment
-    Task<List<Group>> GetAllGroups();
-    Task<Group> GetGroupById(int id);
-    Task<bool> CreateGroup(Group group);
-    Task<bool> UpdateGroup(Group group);
-    Task<bool> DeleteGroup(int id);
-    Task<bool> AddUserToGroup(int userId, int groupId);
-    Task<bool> RemoveUserFromGroup(int userId, int groupId);
-    Task<bool> SetLeaderOfGroup(int userId, int groupId);
 }

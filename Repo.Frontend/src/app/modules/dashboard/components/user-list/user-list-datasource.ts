@@ -3,49 +3,43 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { map } from 'rxjs/operators';
 import { Observable, of as observableOf, merge } from 'rxjs';
-
-// TODO: Replace this with your own data model type
-export interface UserListItem {
-  name: string;
-  id: number;
-}
-
-// TODO: replace this with real data from your application
-const EXAMPLE_DATA: UserListItem[] = [
-  {id: 1, name: 'Hydrogen'},
-  {id: 2, name: 'Helium'},
-  {id: 3, name: 'Lithium'},
-  {id: 4, name: 'Beryllium'},
-  {id: 5, name: 'Boron'},
-  {id: 6, name: 'Carbon'},
-  {id: 7, name: 'Nitrogen'},
-  {id: 8, name: 'Oxygen'},
-  {id: 9, name: 'Fluorine'},
-  {id: 10, name: 'Neon'},
-  {id: 11, name: 'Sodium'},
-  {id: 12, name: 'Magnesium'},
-  {id: 13, name: 'Aluminum'},
-  {id: 14, name: 'Silicon'},
-  {id: 15, name: 'Phosphorus'},
-  {id: 16, name: 'Sulfur'},
-  {id: 17, name: 'Chlorine'},
-  {id: 18, name: 'Argon'},
-  {id: 19, name: 'Potassium'},
-  {id: 20, name: 'Calcium'},
-];
+import {User} from '../../interfaces/user';
+import { BehaviorSubject,finalize,combineLatest } from 'rxjs';
+import {UserService} from '../../services/user.service';
 
 /**
  * Data source for the UserList view. This class should
  * encapsulate all logic for fetching and manipulating the displayed data
  * (including sorting, pagination, and filtering).
  */
-export class UserListDataSource extends DataSource<UserListItem> {
-  data: UserListItem[] = EXAMPLE_DATA;
+export class UserListDataSource extends DataSource<User> {
+  dataSubject: BehaviorSubject<User[]> = new BehaviorSubject<User[]>([]);
+  loadingSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  loading$ = this.loadingSubject.asObservable();
+  filterSubject: BehaviorSubject<string> = new BehaviorSubject<string>('');
   paginator: MatPaginator | undefined;
   sort: MatSort | undefined;
-
-  constructor() {
+  constructor(private user_service: UserService) {
     super();
+    this.loadUser();
+  }
+
+  loadUser(){
+    this.loadingSubject.next(true);
+
+    this.user_service.getUsers().pipe(
+      finalize(() => this.loadingSubject.next(false)),
+    ).subscribe(
+      (users) => {
+        this.dataSubject.next(users);
+      },
+      (error) => {
+        console.error('Error durring loading users:', error);
+      },
+      () => {
+        console.log('Users loaded');
+      }
+    );
   }
 
   /**
@@ -53,30 +47,35 @@ export class UserListDataSource extends DataSource<UserListItem> {
    * the returned stream emits new items.
    * @returns A stream of the items to be rendered.
    */
-  connect(): Observable<UserListItem[]> {
+  connect(): Observable<User[]> {
     if (this.paginator && this.sort) {
       // Combine everything that affects the rendered data into one update
       // stream for the data-table to consume.
-      return merge(observableOf(this.data), this.paginator.page, this.sort.sortChange)
+      return merge(this.dataSubject.asObservable(), this.paginator.page, this.sort.sortChange)
         .pipe(map(() => {
-          return this.getPagedData(this.getSortedData([...this.data ]));
+          return this.getPagedData(this.getSortedData([...this.dataSubject.value]));
         }));
     } else {
       throw Error('Please set the paginator and sort on the data source before connecting.');
     }
   }
+  //Need to future implement this shit
+  /*deleteUser(id: number) {
+    this.data = this.data.filter(x => x.id !== id);
+  }*/
 
   /**
    *  Called when the table is being destroyed. Use this function, to clean up
    * any open connections or free any held resources that were set up during connect.
    */
-  disconnect(): void {}
+  disconnect(): void {
+  }
 
   /**
    * Paginate the data (client-side). If you're using server-side pagination,
    * this would be replaced by requesting the appropriate data from the server.
    */
-  private getPagedData(data: UserListItem[]): UserListItem[] {
+  private getPagedData(data: User[]): User[] {
     if (this.paginator) {
       const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
       return data.splice(startIndex, this.paginator.pageSize);
@@ -89,7 +88,7 @@ export class UserListDataSource extends DataSource<UserListItem> {
    * Sort the data (client-side). If you're using server-side sorting,
    * this would be replaced by requesting the appropriate data from the server.
    */
-  private getSortedData(data: UserListItem[]): UserListItem[] {
+  private getSortedData(data: User[]): User[] {
     if (!this.sort || !this.sort.active || this.sort.direction === '') {
       return data;
     }
@@ -97,15 +96,64 @@ export class UserListDataSource extends DataSource<UserListItem> {
     return data.sort((a, b) => {
       const isAsc = this.sort?.direction === 'asc';
       switch (this.sort?.active) {
-        case 'name': return compare(a.name, b.name, isAsc);
-        case 'id': return compare(+a.id, +b.id, isAsc);
-        default: return 0;
+        case 'Nickname':
+          return compare(a.nickname, b.nickname, isAsc);
+        case 'Name':
+          return compare(a.name, b.name, isAsc);
+        case 'Surname':
+          return compare(a.surname, b.surname, isAsc);
+        case 'Login':
+          return compare(a.login, b.login, isAsc);
+        case 'Email':
+          return compare(a.email, b.email, isAsc);
+        /*TODO zastanowić się jak to filtrować
+        case 'Role':
+          return compare(a.role, b.role, isAsc);*/
+        default:
+          return 0;
       }
     });
-  }
-}
 
-/** Simple sort comparator for example ID/Name columns (for client-side sorting). */
-function compare(a: string | number, b: string | number, isAsc: boolean): number {
-  return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+    /** Simple sort comparator for example ID/Name columns (for client-side sorting). */
+    function compare(a: string | number, b: string | number, isAsc: boolean): number {
+      return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+    }
+
+  }
+  filter(filterValue: string){
+   /* this.data = EXAMPLE_DATA.filter(item => {
+      return (
+        item.nickname.toLowerCase().includes(filterValue) ||
+        item.name.toLowerCase().includes(filterValue) ||
+        item.surname.toLowerCase().includes(filterValue) ||
+        item.login.toLowerCase().includes(filterValue) ||
+        item.email.toLowerCase().includes(filterValue) ||
+        item.role.toLowerCase().includes(filterValue)
+      );
+    });*/
+    this.filterSubject.next(filterValue);
+    combineLatest([
+      this.dataSubject,
+      this.filterSubject
+    ]).pipe(
+      map(([users, filterValue]) =>
+        users.filter(user =>
+          user.nickname.toLowerCase().includes(filterValue.toLowerCase()) ||
+          user.name.toLowerCase().includes(filterValue) ||
+          user.surname.toLowerCase().includes(filterValue) ||
+          user.login.toLowerCase().includes(filterValue) ||
+          user.email.toLowerCase().includes(filterValue)
+        )
+      )).subscribe(
+        filteredUsers => {
+          this.dataSubject.next(filteredUsers);
+        }
+    )
+  }
+
+  removeUsers(ids: number[]) {
+    const currentData = this.dataSubject.value;
+    const updatedData = currentData.filter(user => !ids.includes(user.id));
+    this.dataSubject.next(updatedData);
+  }
 }

@@ -1,6 +1,6 @@
 namespace Repo.Core.Models.task;
 
-public class UpdateTaskModel
+public class UpdateTaskDTO
 {
     public string Name { get; set; } = null!;
 

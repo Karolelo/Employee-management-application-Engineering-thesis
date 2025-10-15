@@ -13,6 +13,9 @@ using Repo.Server.Controllers;
 using Repo.Server.Controllers.Interfaces;
 using Repo.Server.TaskModule;
 using Repo.Server.TaskModule.interafaces;
+using Repo.Server.UserManagmentModule.Interfaces;
+using Repo.Server.UserManagmentModule.Repository;
+using Repo.Server.UserManagmentModule.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
@@ -25,6 +28,9 @@ builder.Services.AddScoped<IStatusService, StatusService>();
 builder.Services.AddScoped<AuthenticationHelpers>();
 builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<ICalendarService,CalendarService>();
+builder.Services.AddScoped<IUserRepository,UserRepository>();
+builder.Services.AddScoped<IUserService,UserService>();
+builder.Services.AddScoped<IRoleRepository,RoleRepository>();
 
 // Connection priority - changeable if needed
 var candidateNames = new[] { "Mroziu-workspace", "DefaultConnection" };
@@ -120,8 +126,8 @@ builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
     options.AddPolicy("UserOnly", policy => policy.RequireRole("User","TeamLeader","Admin","Accountant"));
-    options.AddPolicy("TeamLeader",policy => policy.RequireRole("TeamLeader"));
-    options.AddPolicy("Accountant", policy => policy.RequireRole("Admin", "Accountant"));
+    options.AddPolicy("TeamLeaderOnly",policy => policy.RequireRole("TeamLeader","Admin"));
+    options.AddPolicy("AccountantOnly", policy => policy.RequireRole("Admin", "Accountant"));
     
 });
 var app = builder.Build();

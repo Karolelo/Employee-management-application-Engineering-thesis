@@ -1,0 +1,15 @@
+using Repo.Core.Models;
+
+namespace Repo.Server.UserManagmentModule.Interfaces;
+
+public interface IGroupRepository
+{
+    Task<List<Group>> GetAllGroups();
+    Task<Group?> GetGroupById(int id);
+    Task<Group> CreateGroup(Group group);
+    Task<Group> UpdateGroup(Group group);
+    Task<bool> DeleteGroup(int id);
+    Task<bool> AddUserToGroup(int userId, int groupId);
+    Task<bool> RemoveUserFromGroup(int userId, int groupId);
+    Task<bool> SetLeaderOfGroup(int userId, int groupId);
+}

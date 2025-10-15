@@ -19,5 +19,6 @@ public class RegistrationModel
     public string? Password { get; set; }
     public string? Name { get; set; }
     public string? Surname { get; set; }
+    [Role]
     public ICollection<string>? Role { get; set; }
 }

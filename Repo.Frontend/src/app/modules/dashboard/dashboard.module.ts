@@ -13,13 +13,18 @@ import { UserListComponent } from './components/user-list/user-list.component';
 import {DashboardRoutingModule} from './dashboard-routing.module';
 import {MatToolbar} from '@angular/material/toolbar';
 import {MatFormField, MatInput, MatLabel, MatSuffix} from '@angular/material/input';
-
+import { DeleteUserDialogComponent } from './components/delete-user-dialog/delete-user-dialog.component';
+import { CreateUserStepperFormComponent } from './components/create-user-stepper-form/create-user-stepper-form.component';
+import { MatStepperModule } from '@angular/material/stepper';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
   declarations: [
     AdminDashboardComponent,
-    UserListComponent
+    UserListComponent,
+    DeleteUserDialogComponent,
+    CreateUserStepperFormComponent
   ],
   imports: [
     CommonModule,
@@ -36,7 +41,9 @@ import {MatFormField, MatInput, MatLabel, MatSuffix} from '@angular/material/inp
     MatLabel,
     MatInput,
     MatSuffix,
-    MatFormField
+    MatFormField,
+    MatStepperModule,
+    ReactiveFormsModule
   ]
 })
 export class DashboardModule { }

@@ -21,4 +21,10 @@
   flex: 0.2;
 }
 
+mat-icon:hover {
+  transform: scale(1.5);
+  color: var(--accent-color);
+  transition: transform 0.3s ease, color 0.3s ease;
+
+}
 

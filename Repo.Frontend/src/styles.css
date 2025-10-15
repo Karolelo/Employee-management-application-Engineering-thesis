@@ -1,4 +1,3 @@
-@use '@angular/material' as mat;
 @font-face {
   font-family: 'Railway';
   src: url('../public/fonts/Raleway-VariableFont_wght.ttf') format('truetype');

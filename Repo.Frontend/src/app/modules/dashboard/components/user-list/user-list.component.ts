@@ -1,9 +1,12 @@
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ViewChild,inject } from '@angular/core';
 import { MatTable } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { UserListDataSource, UserListItem } from './user-list-datasource';
-
+import { UserListDataSource} from './user-list-datasource';
+import {User} from '../../interfaces/user';
+import { MatDialog } from '@angular/material/dialog';
+import {DeleteUserDialogComponent} from '../delete-user-dialog/delete-user-dialog.component';
+import {UserService} from '../../services/user.service';
 @Component({
   selector: 'app-user-list',
   templateUrl: './user-list.component.html',
@@ -13,15 +16,55 @@ import { UserListDataSource, UserListItem } from './user-list-datasource';
 export class UserListComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
-  @ViewChild(MatTable) table!: MatTable<UserListItem>;
-  dataSource = new UserListDataSource();
+  @ViewChild(MatTable) table!: MatTable<User>;
+  dataSource!: UserListDataSource;
+  selectedIds: number[] = [];
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns = ['id', 'Nickname','Name','Surname','Login','Email','Role'];
+  displayedColumns = ['Nickname','Name','Surname','Login','Email','Role','Select'];
 
+  constructor(private dialog: MatDialog,private userService: UserService) {
+    this.dataSource = new UserListDataSource(userService)
+  }
   ngAfterViewInit(): void {
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
     this.table.dataSource = this.dataSource;
+  }
+
+  applyFilter(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.dataSource.filter(value.trim().toLowerCase());
+  }
+
+  selectUser(id: number,event: Event) {
+    const isChecked = (event.target as HTMLInputElement).checked;
+
+    if(isChecked) {
+      if(!this.selectedIds.includes(id)) {
+        this.selectedIds.push(id);
+      }
+    } else {
+      this.selectedIds = this.selectedIds.filter(x => x !== id);
+    }
+    console.log('Selected user id: ' + this.selectedIds);
+  }
+
+  onDelete() {
+    const dialogRef = this.dialog.open(DeleteUserDialogComponent);
+    dialogRef.afterClosed().subscribe(result => {
+      if (result?.confirmed) {
+        this.userService
+          .deleteUsers(this.selectedIds).subscribe({
+          next: () => {
+            this.dataSource.removeUsers(this.selectedIds);
+            this.selectedIds = [];
+            },
+          error: (error) => {
+            console.error('Error durring delete:', error);
+          }
+          });
+      }
+    });
   }
 }
