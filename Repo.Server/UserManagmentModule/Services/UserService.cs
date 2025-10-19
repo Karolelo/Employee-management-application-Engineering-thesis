@@ -94,7 +94,7 @@ public class UserService : IUserService
             }
             else
             {
-                updatedUser.Password = existingUser.Password; // zachowaj stare hasło
+                updatedUser.Password = existingUser.Password; //Zachowuje stare hasło 
             }
             
             var updated = await _userRepository.UpdateUser(updatedUser);

@@ -32,7 +32,6 @@ import {UserDetailsNavComponent} from './common_components/user-details-nav/user
 import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 import {MatToolbar} from '@angular/material/toolbar';
 import {MatStepperModule} from '@angular/material/stepper';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 export function tokenGetter() {
   return localStorage.getItem('auth_token');
 }
@@ -85,7 +84,7 @@ export function tokenGetter() {
     MatMenuItem,
     MatLabel,
     MatSelectModule,
-    MatStepperModule
+    MatStepperModule,
   ],
   providers: [
     {

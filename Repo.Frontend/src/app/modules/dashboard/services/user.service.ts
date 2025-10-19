@@ -9,10 +9,12 @@ export class UserService {
   private url = 'api/User';
   constructor(private http: HttpClient) { }
 
+  getUser(id: number): Observable<User>{
+    return this.http.get<User>(this.url+'/'+id);
+  }
   getUsers(): Observable<User[]>{
     return this.http.get<User[]>(this.url)
   }
-
   getUsersFromMyGroup(){
 
   }
@@ -24,5 +26,13 @@ export class UserService {
   deleteUsers(ids: number[]): Observable<void[]> {
     const deleteObservables = ids.map(id => this.deleteUser(id));
     return forkJoin(deleteObservables);
+  }
+
+  creteUser(data: any): Observable<User>{
+    return this.http.post<User>('api/Auth/register',data);
+  }
+
+  updateUser(data: User): Observable<User>{
+    return this.http.put<User>(this.url,data);
   }
 }

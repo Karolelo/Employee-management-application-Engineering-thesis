@@ -27,6 +27,28 @@
   --completed-status: #2ecc71;
 }
 
+.title-header {
+  font-family:monospace;
+  color: var(--primary-color);
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  position: relative;
+  padding-bottom: 0.5rem;
+  font-weight: 1000;
+}
+
+.title-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background-color: var(--accent-color);
+}
+
 .mat-mdc-table {
   background: white;
   border-radius: 12px;

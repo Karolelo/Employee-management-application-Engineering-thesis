@@ -16,15 +16,18 @@ import {MatFormField, MatInput, MatLabel, MatSuffix} from '@angular/material/inp
 import { DeleteUserDialogComponent } from './components/delete-user-dialog/delete-user-dialog.component';
 import { CreateUserStepperFormComponent } from './components/create-user-stepper-form/create-user-stepper-form.component';
 import { MatStepperModule } from '@angular/material/stepper';
-import { ReactiveFormsModule } from '@angular/forms';
-
-
+import { ReactiveFormsModule,FormGroup } from '@angular/forms';
+import {MatSelectModule} from '@angular/material/select';
+import { EditUserFormComponent } from './components/edit-user-form/edit-user-form.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { CdkStepperModule } from '@angular/cdk/stepper';
 @NgModule({
   declarations: [
     AdminDashboardComponent,
     UserListComponent,
     DeleteUserDialogComponent,
-    CreateUserStepperFormComponent
+    CreateUserStepperFormComponent,
+    EditUserFormComponent
   ],
   imports: [
     CommonModule,
@@ -43,7 +46,19 @@ import { ReactiveFormsModule } from '@angular/forms';
     MatSuffix,
     MatFormField,
     MatStepperModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatSelectModule,
+    MatSnackBarModule,
+    CdkStepperModule
   ]
 })
-export class DashboardModule { }
+export class DashboardModule {
+
+  //TODO wynieść może do share module
+  public static passwordMatchValidator(form: FormGroup) {
+    const password = form.get('Password')?.value;
+    const confirmed = form.get('ConfirmPassword')?.value;
+    return password === confirmed ? null : {passwordMismatch: true};
+  }
+
+}

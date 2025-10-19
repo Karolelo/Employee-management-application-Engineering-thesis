@@ -1,0 +1,43 @@
+form {
+  max-width: 800px;
+  width: 90%;
+  margin: 1rem auto;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 20px 40px 20px rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+form:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+mat-form-field {
+  margin-top: 1rem;
+}
+
+button[type="submit"] {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #ffffff;
+  background-color: var(--primary-color);
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+button[type="submit"].valid {
+  background-color: var(--success-color);
+}
+
+button[type="submit"].invalid {
+  background-color: var(--error-color);
+  cursor: not-allowed;
+}
+

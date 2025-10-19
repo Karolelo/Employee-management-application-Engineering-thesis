@@ -1,6 +1,7 @@
 <div class="mat-elevation-z2">
   <mat-toolbar class="small-toolbar">
-    <mat-icon>add</mat-icon>
+    <mat-icon (click)="onAdd()">add</mat-icon>
+    <mat-icon (click)="onEdit()">edit</mat-icon>
     <mat-icon (click)="onDelete()">delete</mat-icon>
     <span class="toolbar-spacer"></span>
     <mat-form-field class="search-field">

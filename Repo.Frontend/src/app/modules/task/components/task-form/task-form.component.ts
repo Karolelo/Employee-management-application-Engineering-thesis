@@ -77,12 +77,6 @@ export class TaskFormComponent implements OnChanges {
     };
   }
 
-  /*private setUpTasks(): void
-  {
-    this.loadRelatedTasks();
-    this.updateAvailableTasks()
-  }*/
-
   private async updateAvailableTasks(): Promise<void> {
     const currentTasks = await firstValueFrom(this.tasksAvailableForRemoveRelation$);
 

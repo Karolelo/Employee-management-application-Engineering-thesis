@@ -2,7 +2,7 @@
   <button id="restart-button" (click)="resetFormState()">
     <i class="fa fa-refresh refresh-icon"></i>
   </button>
-  <h2>{{ taskToEdit ? 'Edit Task' : 'Add Task' }}</h2>
+  <h2 class="title-header">{{ taskToEdit ? 'Edit Task' : 'Add Task' }}</h2>
   <form [formGroup]="taskForm" (ngSubmit)="onSubmit()">
     <div class="floating-label">
       <input formControlName="name" placeholder=" ">
