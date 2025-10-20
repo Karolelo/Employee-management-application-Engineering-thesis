@@ -31,6 +31,8 @@ builder.Services.AddScoped<ICalendarService,CalendarService>();
 builder.Services.AddScoped<IUserRepository,UserRepository>();
 builder.Services.AddScoped<IUserService,UserService>();
 builder.Services.AddScoped<IRoleRepository,RoleRepository>();
+builder.Services.AddScoped<IGroupRepository,GroupRepository>();
+builder.Services.AddScoped<IGroupService,GroupService>();
 
 // Connection priority - changeable if needed
 var candidateNames = new[] { "Mroziu-workspace", "DefaultConnection" };

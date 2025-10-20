@@ -32,6 +32,7 @@ import {UserDetailsNavComponent} from './common_components/user-details-nav/user
 import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 import {MatToolbar} from '@angular/material/toolbar';
 import {MatStepperModule} from '@angular/material/stepper';
+import { NotFoundPage404Component } from './common_components/not-found-page404/not-found-page404.component';
 export function tokenGetter() {
   return localStorage.getItem('auth_token');
 }

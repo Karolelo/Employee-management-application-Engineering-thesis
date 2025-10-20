@@ -37,6 +37,7 @@ export class UserListComponent implements AfterViewInit {
 
   applyFilter(event: Event) {
     const value = (event.target as HTMLInputElement).value;
+    console.log(value);
     this.dataSource.filter(value.trim().toLowerCase());
   }
 

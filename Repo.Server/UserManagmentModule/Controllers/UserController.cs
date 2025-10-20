@@ -7,7 +7,7 @@ namespace Repo.Server.UserManagmentModule.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize/*(policy: "TeamLeaderOnly")*/]
+[Authorize(policy: "TeamLeaderOnly")]
 public class UserController : ControllerBase
 {
     private readonly IUserService _userService;
@@ -47,7 +47,7 @@ public class UserController : ControllerBase
         var response = await _userService.UpdateUser(dto);
         return response.Success
             ? Ok(response.Data)
-            : NotFound(new { message = response.Error });
+            : BadRequest(new { message = response.Error });
     }
 
     [HttpDelete("{id}")]
@@ -58,7 +58,7 @@ public class UserController : ControllerBase
 
         var response = await _userService.DeleteUser(id);
         return response.Success
-            ? Ok(new { message = "User deleted successfully" })
-            : NotFound(new { message = response.Error });
+            ? NoContent()
+            : BadRequest(new { message = response.Error });
     }
 }

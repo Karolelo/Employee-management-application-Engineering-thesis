@@ -1,7 +1,7 @@
 import { DataSource } from '@angular/cdk/collections';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { map } from 'rxjs/operators';
+import { map,filter } from 'rxjs/operators';
 import { Observable, of as observableOf, merge } from 'rxjs';
 import {User} from '../../interfaces/user';
 import { BehaviorSubject,finalize,combineLatest } from 'rxjs';
@@ -13,24 +13,22 @@ import {UserService} from '../../services/user.service';
  * (including sorting, pagination, and filtering).
  */
 export class UserListDataSource extends DataSource<User> {
+
+  private originalData: User[] = [];
   dataSubject: BehaviorSubject<User[]> = new BehaviorSubject<User[]>([]);
-  loadingSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  loading$ = this.loadingSubject.asObservable();
-  filterSubject: BehaviorSubject<string> = new BehaviorSubject<string>('');
+  private filterSubject: BehaviorSubject<string> = new BehaviorSubject<string>('');
   paginator: MatPaginator | undefined;
   sort: MatSort | undefined;
   constructor(private user_service: UserService) {
     super();
     this.loadUser();
+    this.setupFilter()
   }
 
   loadUser(){
-    this.loadingSubject.next(true);
-
-    this.user_service.getUsers().pipe(
-      finalize(() => this.loadingSubject.next(false)),
-    ).subscribe(
+    this.user_service.getUsers().subscribe(
       (users) => {
+        this.originalData = users;
         this.dataSubject.next(users);
       },
       (error) => {
@@ -59,10 +57,6 @@ export class UserListDataSource extends DataSource<User> {
       throw Error('Please set the paginator and sort on the data source before connecting.');
     }
   }
-  //Need to future implement this shit
-  /*deleteUser(id: number) {
-    this.data = this.data.filter(x => x.id !== id);
-  }*/
 
   /**
    *  Called when the table is being destroyed. Use this function, to clean up
@@ -106,9 +100,8 @@ export class UserListDataSource extends DataSource<User> {
           return compare(a.login, b.login, isAsc);
         case 'Email':
           return compare(a.email, b.email, isAsc);
-        /*TODO zastanowić się jak to filtrować
         case 'Role':
-          return compare(a.role, b.role, isAsc);*/
+          return compare(a.roles[0], b.roles[0], isAsc);
         default:
           return 0;
       }
@@ -120,40 +113,35 @@ export class UserListDataSource extends DataSource<User> {
     }
 
   }
-  filter(filterValue: string){
-   /* this.data = EXAMPLE_DATA.filter(item => {
-      return (
-        item.nickname.toLowerCase().includes(filterValue) ||
-        item.name.toLowerCase().includes(filterValue) ||
-        item.surname.toLowerCase().includes(filterValue) ||
-        item.login.toLowerCase().includes(filterValue) ||
-        item.email.toLowerCase().includes(filterValue) ||
-        item.role.toLowerCase().includes(filterValue)
-      );
-    });*/
-    this.filterSubject.next(filterValue);
-    combineLatest([
-      this.dataSubject,
-      this.filterSubject
-    ]).pipe(
-      map(([users, filterValue]) =>
-        users.filter(user =>
-          user.nickname.toLowerCase().includes(filterValue.toLowerCase()) ||
-          user.name.toLowerCase().includes(filterValue) ||
-          user.surname.toLowerCase().includes(filterValue) ||
-          user.login.toLowerCase().includes(filterValue) ||
-          user.email.toLowerCase().includes(filterValue)
-        )
-      )).subscribe(
-        filteredUsers => {
-          this.dataSubject.next(filteredUsers);
+
+  private setupFilter() {
+    this.filterSubject.pipe(
+      map(filterValue => {
+        if (!filterValue.trim()) {
+          return this.originalData;
         }
-    )
+        return this.originalData.filter(user =>
+          user.nickname.toLowerCase().includes(filterValue.toLowerCase()) ||
+          user.name.toLowerCase().includes(filterValue.toLowerCase()) ||
+          user.surname.toLowerCase().includes(filterValue.toLowerCase()) ||
+          user.login.toLowerCase().includes(filterValue.toLowerCase()) ||
+          user.email.toLowerCase().includes(filterValue.toLowerCase())
+        );
+      })
+    ).subscribe(filteredData => {
+      this.dataSubject.next(filteredData);
+    });
   }
+
+  filter(filterValue: string) {
+    this.filterSubject.next(filterValue);
+  }
+
 
   removeUsers(ids: number[]) {
     const currentData = this.dataSubject.value;
     const updatedData = currentData.filter(user => !ids.includes(user.id));
+    this.originalData = updatedData;
     this.dataSubject.next(updatedData);
   }
 }

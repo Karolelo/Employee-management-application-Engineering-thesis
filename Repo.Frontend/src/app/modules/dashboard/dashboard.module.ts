@@ -21,13 +21,21 @@ import {MatSelectModule} from '@angular/material/select';
 import { EditUserFormComponent } from './components/edit-user-form/edit-user-form.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { CdkStepperModule } from '@angular/cdk/stepper';
+import { GroupsPageComponent } from './pages/groups-page/groups-page.component';
+import { ManageGroupPageComponent } from './pages/manage-group-page/manage-group-page.component';
+import { GroupViewPageComponent } from './pages/group-view-page/group-view-page.component';
+import { GroupFormComponent } from './components/group-form/group-form.component';
 @NgModule({
   declarations: [
     AdminDashboardComponent,
     UserListComponent,
     DeleteUserDialogComponent,
     CreateUserStepperFormComponent,
-    EditUserFormComponent
+    EditUserFormComponent,
+    GroupsPageComponent,
+    ManageGroupPageComponent,
+    GroupViewPageComponent,
+    GroupFormComponent,
   ],
   imports: [
     CommonModule,

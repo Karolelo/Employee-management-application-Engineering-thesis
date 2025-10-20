@@ -10,7 +10,45 @@
             </mat-card-title>
           </mat-card-header>
           <mat-card-content class="dashboard-card-content">
-            <div>Card Content Here</div>
+            @if (card.type === 'userStats')
+            {
+              <div class="card-content-users">
+                <div class="user-count">
+                  <mat-icon>people</mat-icon>
+                  <span>Active users: {{userCount}}</span>
+                </div>
+                <button mat-raised-button (click)="onManageUserClick()">
+                  <mat-icon>settings</mat-icon>
+                  Manage users
+                </button>
+              </div>
+            }
+            @if (card.type === 'groupStats')
+            {
+              <div class="card-content-groups">
+                <div class="group-count">
+                <mat-icon>groups</mat-icon>
+                  <span>Active groups: {{12}}</span>
+                  </div>
+                <div class="button-container">
+                  <button mat-raised-button (click)="onManageMyGroupClick()">
+                    Manage my group
+                  </button>
+                  <button mat-raised-button (click)="onSeeGroupsClick()">
+                    See groups
+                  </button>
+                  <button mat-raised-button (click)="onAddGroupClick()">
+                    Add groups
+                  </button>
+                  <button mat-raised-button (click)="onEditGroupClick()">
+                    Edit group
+                  </button>
+                  <button mat-raised-button (click)="onDeleteGroupClick()">
+                    Delete group
+                  </button>
+                </div>
+              </div>
+            }
           </mat-card-content>
         </mat-card>
       </mat-grid-tile>

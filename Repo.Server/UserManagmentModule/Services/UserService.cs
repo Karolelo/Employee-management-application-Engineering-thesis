@@ -17,56 +17,56 @@ public class UserService : IUserService
         _roleRepository = roleRepository;
     }
 
-    public async Task<Response<List<UserDto>>> GetAllUsers()
+    public async Task<Response<List<UserDTO>>> GetAllUsers()
     {
         try
         {
             var users = await _userRepository.GetAllUsers();
-            var usersDto = users.Select(user => new UserDto(user)).ToList();
-            return Response<List<UserDto>>.Ok(usersDto);
+            var usersDto = users.Select(user => new UserDTO(user)).ToList();
+            return Response<List<UserDTO>>.Ok(usersDto);
         }
         catch (Exception ex)
         {
-            return Response<List<UserDto>>.Fail($"Error while fetching users: {ex.Message}");
+            return Response<List<UserDTO>>.Fail($"Error while fetching users: {ex.Message}");
         }
     }
 
-    public async Task<Response<UserDto>> GetUserById(int id)
+    public async Task<Response<UserDTO>> GetUserById(int id)
     {
         try
         {
             var user = await _userRepository.GetUserById(id);
             return user != null 
-                ? Response<UserDto>.Ok(new UserDto(user)) 
-                : Response<UserDto>.Fail($"User with ID: {id} not found");
+                ? Response<UserDTO>.Ok(new UserDTO(user)) 
+                : Response<UserDTO>.Fail($"User with ID: {id} not found");
         }
         catch (Exception ex)
         {
-            return Response<UserDto>.Fail($"Error while fetching user: {ex.Message}");
+            return Response<UserDTO>.Fail($"Error while fetching user: {ex.Message}");
         }
     }
-    public async Task<Response<UserDto>> UpdateUser(UserUpdateDTO dto)
+    public async Task<Response<UserDTO>> UpdateUser(UserUpdateDTO dto)
     {
         try
         {
             if (dto == null)
-                return Response<UserDto>.Fail("Update data cannot be null");
+                return Response<UserDTO>.Fail("Update data cannot be null");
             
             var existingUser = await _userRepository.GetUserById(dto.ID);
             if (existingUser == null)
-                return Response<UserDto>.Fail($"User with ID: {dto.ID} not found");
+                return Response<UserDTO>.Fail($"User with ID: {dto.ID} not found");
 
             
             var userWithEmail = await _userRepository.GetUserByEmail(dto.Email.Trim());
             if (userWithEmail != null && userWithEmail.ID != dto.ID)
-                return Response<UserDto>.Fail("Email is already taken");
+                return Response<UserDTO>.Fail("Email is already taken");
 
             
             if (!string.IsNullOrEmpty(dto.Nickname))
             {
                 var userWithNickname = await _userRepository.GetUserByNickname(dto.Nickname.Trim());
                 if (userWithNickname != null && userWithNickname.ID != dto.ID)
-                    return Response<UserDto>.Fail("Nickname is already taken");
+                    return Response<UserDTO>.Fail("Nickname is already taken");
             }
 
             var resultRoles = await _roleRepository.GetAllRoles();
@@ -94,16 +94,16 @@ public class UserService : IUserService
             }
             else
             {
-                updatedUser.Password = existingUser.Password; //Zachowuje stare hasło 
+                updatedUser.Password = existingUser.Password; //Leaving old password 
             }
             
             var updated = await _userRepository.UpdateUser(updatedUser);
             
-            return Response<UserDto>.Ok(new UserDto(updated));
+            return Response<UserDTO>.Ok(new UserDTO(updated));
         }
         catch (Exception ex)
         {
-            return Response<UserDto>.Fail($"Error while updating user: {ex.Message}");
+            return Response<UserDTO>.Fail($"Error while updating user: {ex.Message}");
         }
     }
 

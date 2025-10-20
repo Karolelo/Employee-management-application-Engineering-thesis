@@ -1,8 +1,8 @@
 namespace Repo.Core.Models.user;
 
-public class UserDto
+public class UserDTO
 {
-    public UserDto(User user)
+    public UserDTO(User user)
     {
         ID = user.ID;
         Email = user.Email;

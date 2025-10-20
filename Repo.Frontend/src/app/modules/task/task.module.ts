@@ -26,39 +26,41 @@ import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
 
 
 @NgModule({
-  declarations: [
-    TaskDetailsComponent,
-    TaskListComponent,
-    TaskFormComponent,
-    TaskPageComponent,
-    TasksDetailPageComponent
-  ],
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    TaskRoutingModule,
-    MatProgressSpinner,
-    MatProgressBar,
-    NgIf,
-    NgClass,
-    MatSlideToggle,
-    MatSelect,
-    MatLabel,
-    MatOption,
-    FormsModule,
-    MatTable,
-    MatColumnDef,
-    MatHeaderCell,
-    MatCell,
-    MatHeaderRow,
-    MatRow,
-    MatRowDef,
-    MatHeaderRowDef,
-    MatHeaderCellDef,
-    MatCellDef,
-    MatPaginator,
-  ],
-  providers: [
-  ]
+    declarations: [
+        TaskDetailsComponent,
+        TaskListComponent,
+        TaskFormComponent,
+        TaskPageComponent,
+        TasksDetailPageComponent
+    ],
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        TaskRoutingModule,
+        MatProgressSpinner,
+        MatProgressBar,
+        NgIf,
+        NgClass,
+        MatSlideToggle,
+        MatSelect,
+        MatLabel,
+        MatOption,
+        FormsModule,
+        MatTable,
+        MatColumnDef,
+        MatHeaderCell,
+        MatCell,
+        MatHeaderRow,
+        MatRow,
+        MatRowDef,
+        MatHeaderRowDef,
+        MatHeaderCellDef,
+        MatCellDef,
+        MatPaginator,
+    ],
+    exports: [
+        TaskFormComponent
+    ],
+    providers: []
 })
 export class TaskModule { }

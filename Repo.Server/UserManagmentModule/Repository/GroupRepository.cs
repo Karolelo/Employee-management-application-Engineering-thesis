@@ -17,12 +17,12 @@ public class GroupRepository : IGroupRepository
     
     public async Task<List<Group>> GetAllGroups()
     {
-        return await _context.Set<Group>().ToListAsync();
+        return await _context.Set<Group>().Where(g => g.Deleted != 1).ToListAsync();
     }
 
     public async Task<Group?> GetGroupById(int id)
     {
-        return await _context.Set<Group>().FirstOrDefaultAsync(g => g.ID == id);
+        return await _context.Set<Group>().FirstOrDefaultAsync(g => g.ID == id && g.Deleted != 1);
     }
 
     public async Task<Group> CreateGroup(Group group)
@@ -34,7 +34,9 @@ public class GroupRepository : IGroupRepository
 
     public async Task<Group> UpdateGroup(Group group)
     {
-        _context.Set<Group>().Update(group);
+        //Not sure it need to attach it 
+        _context.Groups.Attach(group);
+        _context.Entry(group).State = EntityState.Modified;
         await _context.SaveChangesAsync();
         return group;
     }
@@ -42,7 +44,7 @@ public class GroupRepository : IGroupRepository
     public async Task<bool> DeleteGroup(int id)
     {
         var group = await _context.Set<Group>().FindAsync(id);
-        _context.Set<Group>().Remove(group);
+        group.Deleted = 1;
         var result = await _context.SaveChangesAsync();
         return result > 0;
     }

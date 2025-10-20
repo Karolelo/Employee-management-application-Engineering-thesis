@@ -1,4 +1,5 @@
 using Repo.Core.Models;
+using Repo.Core.Models.user;
 
 namespace Repo.Server.UserManagmentModule.Interfaces;
 

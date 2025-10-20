@@ -6,11 +6,11 @@ namespace Repo.Server.UserManagmentModule.Interfaces;
 
 public interface IUserService
 {
-    Task<Response<List<UserDto>>> GetAllUsers();
+    Task<Response<List<UserDTO>>> GetAllUsers();
     
-    Task<Response<UserDto>> GetUserById(int id);
+    Task<Response<UserDTO>> GetUserById(int id);
     
-    Task<Response<UserDto>> UpdateUser(UserUpdateDTO dto);
+    Task<Response<UserDTO>> UpdateUser(UserUpdateDTO dto);
     
     Task<Response<bool>> DeleteUser(int id);
 }
