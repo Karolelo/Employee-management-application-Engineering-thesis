@@ -10,7 +10,19 @@
             </mat-card-title>
           </mat-card-header>
           <mat-card-content class="dashboard-card-content">
-            <div>Card Content Here</div>
+            @if (card.type === 'userStats')
+            {
+              <div class="card-content-users">
+                <div class="user-count">
+                  <mat-icon>people</mat-icon>
+                  <span>Active users: {{userCount}}</span>
+                </div>
+                <button mat-raised-button (click)="onManageUserClick()">
+                  <mat-icon>settings</mat-icon>
+                  Manage users
+                </button>
+              </div>
+            }
           </mat-card-content>
         </mat-card>
       </mat-grid-tile>
