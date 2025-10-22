@@ -11,6 +11,7 @@ import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
 import { GradeDetailsComponent } from './components/grade-details/grade-details.component';
 import { GradeDetailPageComponent } from './pages/grade-detail-page/grade-detail-page.component';
+import { TargetListComponent } from './components/target-list/target-list.component';
 
 
 
@@ -21,6 +22,8 @@ import { GradeDetailPageComponent } from './pages/grade-detail-page/grade-detail
     GradeFormComponent,
     GradeDetailsComponent,
     GradeDetailPageComponent
+    GradeDetailPageComponent,
+    TargetListComponent,
   ],
   imports: [
     CommonModule,

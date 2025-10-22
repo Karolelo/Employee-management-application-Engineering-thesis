@@ -1,8 +1,36 @@
 <main class="grade-page">
   <section class="left">
     <app-user-grade-list></app-user-grade-list>
+<header class="page-header">
+  <button class="back-btn" routerLink="/"><i class="fa fa-arrow-left"></i></button>
+  <h1>Grades and progression</h1>
+</header>
+
+<main class="grade-layout">
+  <!-- Column 1: Grades -->
+  <section class="panel">
+    <div class="panel-title"> </div>
+    <div class="panel-scroll">
+      <app-user-grade-list></app-user-grade-list>
+    </div>
   </section>
   <section class="right">
     <app-grade-form [gradeToEdit]="selected" (changed)="onChanged()"></app-grade-form>
+
+  <!-- Column 2: Targets -->
+  <section class="panel">
+    <div class="panel-title">Personal targets</div>
+    <div class="panel-sub">Number of targets: {{targetCount}}</div>
+    <div class="panel-scroll">
+      <app-target-list></app-target-list>
+    </div>
+  </section>
+
   </section>
 </main>
+
+<div class="overlay" *ngIf="selected">
+  <div class="overlay-card">
+    <app-grade-form [gradeToEdit]="selected" (changed)="onChanged()"></app-grade-form>
+  </div>
+</div>

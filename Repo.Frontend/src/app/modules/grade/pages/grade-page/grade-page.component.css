@@ -1,9 +1,47 @@
-.grade-page {
-  display: grid;
-  grid-template-columns: 360px 1fr;
-  gap: 24px;
-  padding: 16px;
+.page-title {
+  font-weight: 700; font-size: 22px; margin: 8px 16px 12px;
 }
-@media (max-width: 900px) {
-  .grade-page { grid-template-columns: 1fr; }
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.page-header h1 {
+  font-weight: 600;
+  font-size: 22px;
+}
+.back-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.grade-layout {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;
+  height: calc(100vh - 120px);
+  padding: 0 16px 16px;
+}
+
+.panel {
+  display: grid; grid-template-rows: auto auto 1fr; gap: 8px;
+  background: #faf6ff; border-radius: 16px; padding: 12px;
+  border: 1px solid #eee;
+}
+.panel-title { font-weight: 800; letter-spacing: .5px; }
+.panel-sub { font-size: 12px; opacity: .8; margin-top: -4px; }
+.panel-scroll {
+  overflow: auto; height: 100%;
+  padding-right: 4px;
+}
+
+/* edit overlay */
+.overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.25);
+  display: grid; place-items: center; z-index: 20;
+}
+.overlay-card {
+  width: min(560px, 92vw);
+  background: #fff; border-radius: 16px; padding: 16px;
+  box-shadow: 0 10px 40px rgba(0,0,0,.25);
 }
