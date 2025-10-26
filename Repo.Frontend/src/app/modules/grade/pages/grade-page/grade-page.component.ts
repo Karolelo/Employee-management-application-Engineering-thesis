@@ -20,6 +20,8 @@ export class GradePageComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private gradeService: GradeService,
+    private targetService: TargetService,
+    private userStore: UserStoreService
   ) {}
   ngOnInit(): void {
     this.route.queryParamMap.pipe(take(1)).subscribe(params => {

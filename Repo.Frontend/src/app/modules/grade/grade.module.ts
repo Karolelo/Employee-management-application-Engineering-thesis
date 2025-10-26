@@ -12,6 +12,7 @@ import {MatButtonModule} from '@angular/material/button';
 import { GradeDetailsComponent } from './components/grade-details/grade-details.component';
 import { GradeDetailPageComponent } from './pages/grade-detail-page/grade-detail-page.component';
 import { TargetListComponent } from './components/target-list/target-list.component';
+import { CourseListComponent } from './components/course-list/course-list.component';
 
 
 
@@ -21,9 +22,12 @@ import { TargetListComponent } from './components/target-list/target-list.compon
     GradePageComponent,
     GradeFormComponent,
     GradeDetailsComponent,
-    GradeDetailPageComponent
     GradeDetailPageComponent,
     TargetListComponent,
+    CourseListComponent,
+    CourseEnrollOverlayComponent,
+    TargetDetailsOverlayComponent,
+    GradeDetailsOverlayComponent
   ],
   imports: [
     CommonModule,
