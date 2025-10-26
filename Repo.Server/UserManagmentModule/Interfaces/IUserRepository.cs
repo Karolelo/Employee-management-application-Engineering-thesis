@@ -7,6 +7,7 @@ namespace Repo.Server.UserManagmentModule.Interfaces;
 public interface IUserRepository
 {
     Task<List<User>> GetAllUsers();
+    Task<List<User>> GetAllUsersFromGroup(int groupId);
     Task<User?> GetUserById(int id);
     //This method I created for validation of user
     //For example to not create same user x time

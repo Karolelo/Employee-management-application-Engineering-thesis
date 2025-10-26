@@ -5,7 +5,7 @@ import { map,filter } from 'rxjs/operators';
 import { Observable, of as observableOf, merge } from 'rxjs';
 import {User} from '../../interfaces/user';
 import { BehaviorSubject,finalize,combineLatest } from 'rxjs';
-import {UserService} from '../../services/user.service';
+import {UserService} from '../../services/user/user.service';
 
 /**
  * Data source for the UserList view. This class should

@@ -6,6 +6,7 @@ using Repo.Core.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using Repo.Core.Infrastructure.Files;
 using Repo.Server.CalendarModule.Interfaces;
 using Repo.Server.CalendarModule.Repositories;
 using Repo.Server.CalendarModule.Services;
@@ -33,6 +34,7 @@ builder.Services.AddScoped<IUserService,UserService>();
 builder.Services.AddScoped<IRoleRepository,RoleRepository>();
 builder.Services.AddScoped<IGroupRepository,GroupRepository>();
 builder.Services.AddScoped<IGroupService,GroupService>();
+builder.Services.AddScoped<IFileOperations,FileOperation>();
 
 // Connection priority - changeable if needed
 var candidateNames = new[] { "Mroziu-workspace", "DefaultConnection" };
@@ -142,6 +144,7 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
         c.RoutePrefix = string.Empty; 
     });
+    app.UseHttpsRedirection();
 }
 
 static async Task<(string Name, string Conn)> ChooseFirstWorkingAsync(
@@ -168,9 +171,19 @@ static async Task<(string Name, string Conn)> ChooseFirstWorkingAsync(
 
     throw new InvalidOperationException("Failed to find a working ConnectionString");
 }
-
+app.Use(async (context, next) =>
+{
+    if (context.Request.Path.StartsWithSegments("/images"))
+    {
+        Console.WriteLine($"Próba dostępu do ścieżki: {context.Request.Path}");
+    }
+    await next();
+});
 app.UseHttpsRedirection();
+
+app.UseDefaultFiles();
 app.UseStaticFiles();
+
 
 app.UseRouting();
 
@@ -179,10 +192,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-// Hmmm we could use it, but i read that is more appropriate for MVC
-// and we prefere more explicit api
-/*app.MapControllerRoute(
-    name: "default",
-    pattern: "api/{controller=Home}/{action=Index}/{id?}");*/
 
 app.Run();

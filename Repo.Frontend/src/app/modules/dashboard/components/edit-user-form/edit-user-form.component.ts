@@ -1,12 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {DashboardModule} from '../../dashboard.module';
-import {UserService} from '../../services/user.service';
 import {ActivatedRoute,Router} from '@angular/router';
 import {User} from '../../interfaces/user';
 import {MatButtonModule} from '@angular/material/button';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
+import {UserService} from '../../services/user/user.service';
 @Component({
   selector: 'app-edit-user-form',
   standalone: false,

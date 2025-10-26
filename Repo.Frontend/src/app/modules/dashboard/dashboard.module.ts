@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule,NgOptimizedImage } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
@@ -25,6 +25,8 @@ import { GroupsPageComponent } from './pages/groups-page/groups-page.component';
 import { ManageGroupPageComponent } from './pages/manage-group-page/manage-group-page.component';
 import { GroupViewPageComponent } from './pages/group-view-page/group-view-page.component';
 import { GroupFormComponent } from './components/group-form/group-form.component';
+import { GroupListComponent } from './components/group-list/group-list.component';
+import {TaskModule} from "../task/task.module";
 @NgModule({
   declarations: [
     AdminDashboardComponent,
@@ -36,29 +38,32 @@ import { GroupFormComponent } from './components/group-form/group-form.component
     ManageGroupPageComponent,
     GroupViewPageComponent,
     GroupFormComponent,
+    GroupListComponent,
   ],
-  imports: [
-    CommonModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatSortModule,
-    MatGridListModule,
-    MatCardModule,
-    MatMenuModule,
-    MatIconModule,
-    MatButtonModule,
-    DashboardRoutingModule,
-    MatToolbar,
-    MatLabel,
-    MatInput,
-    MatSuffix,
-    MatFormField,
-    MatStepperModule,
-    ReactiveFormsModule,
-    MatSelectModule,
-    MatSnackBarModule,
-    CdkStepperModule
-  ]
+    imports: [
+        CommonModule,
+        MatTableModule,
+        MatPaginatorModule,
+        MatSortModule,
+        MatGridListModule,
+        MatCardModule,
+        MatMenuModule,
+        MatIconModule,
+        MatButtonModule,
+        DashboardRoutingModule,
+        MatToolbar,
+        MatLabel,
+        MatInput,
+        MatSuffix,
+        MatFormField,
+        MatStepperModule,
+        ReactiveFormsModule,
+        MatSelectModule,
+        MatSnackBarModule,
+        CdkStepperModule,
+        TaskModule,
+        NgOptimizedImage,
+    ]
 })
 export class DashboardModule {
 

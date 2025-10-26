@@ -26,6 +26,19 @@ public class UserController : ControllerBase
             : NotFound(new { message = response.Error });
     }
 
+    [HttpGet("group/{id}")]
+    public async Task<IActionResult> GetUsersByGroupId([FromRoute] int id)
+    {
+        var response = await _userService.GetAllUsersFromGroup(id);
+        if (response.Success == false && response.Error.StartsWith("Group with"))
+        {
+            return BadRequest(new { message = response.Error });
+        }
+        return response.Success
+            ? Ok(response.Data)
+            : NotFound(new { message = response.Error });
+    }
+
     [HttpGet("{id}")]
     public async Task<IActionResult> GetUserById([FromRoute] int id)
     {

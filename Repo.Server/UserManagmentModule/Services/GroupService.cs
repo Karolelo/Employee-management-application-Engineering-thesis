@@ -1,3 +1,4 @@
+using Repo.Core.Infrastructure.Files;
 using Repo.Core.Models;
 using Repo.Core.Models.api;
 using Repo.Core.Models.user;
@@ -8,10 +9,11 @@ namespace Repo.Server.UserManagmentModule.Services;
 public class GroupService : IGroupService
 {
     private readonly IGroupRepository _groupRepository;
-
-    public GroupService(IGroupRepository groupRepository)
+    private readonly IFileOperations _file;
+    public GroupService(IGroupRepository groupRepository, IFileOperations file)
     {
         _groupRepository = groupRepository;
+        _file = file;
     }
 
     public async Task<Response<List<GroupDTO>>> GetAllGroups()
@@ -138,6 +140,63 @@ public class GroupService : IGroupService
         }catch (Exception ex)
         {
             return Response<bool>.Fail($"Error while setting leader of group: {ex.Message}");
+        }
+    }
+
+    public async Task<Response<string>> GetGroupImagePath(int groupId)
+    {
+        try
+        {
+            var path = await _groupRepository.GetPathToImageFile(groupId);
+            return Response<string>.Ok(path);
+        }
+        catch (Exception ex)
+        {
+            return Response<string>.Fail($"Error while fetching image path: {ex.Message}");
+        }
+    }
+    
+    public async Task<Response<string>> SaveGroupImage(int groupId, IFormFile image,bool isUpdate = false)
+    {
+        try
+        {
+            var group = await _groupRepository.GetGroupById(groupId);
+            if (group == null)
+            {
+                return Response<string>.Fail("Group with this id not found");
+            }
+            
+            var fileName = $"group_{groupId}_{DateTime.Now.Ticks}{Path.GetExtension(image.FileName)}";
+            var relativePath = Path.Combine("images", "groups", fileName);
+            var absolutePath = Path.Combine("wwwroot", relativePath);
+            
+            Directory.CreateDirectory(Path.GetDirectoryName(absolutePath)!);
+
+            if (isUpdate)
+            {
+                var path = await _groupRepository.GetPathToImageFile(groupId);
+                var pathToDelete = Path.Combine("wwwroot", path);
+                if (File.Exists(pathToDelete))
+                    File.Delete(pathToDelete);
+                await _groupRepository.UpdateImageFile(groupId, relativePath);
+            }
+            else
+            {
+                await _groupRepository.SavePathToImageFile(groupId, relativePath);
+            }
+
+            using (var ms = new MemoryStream())
+            {
+                await image.CopyToAsync(ms);
+                var fileBytes = ms.ToArray();
+                _file.SaveFile(absolutePath, fileBytes);
+            }
+            
+            return Response<string>.Ok(relativePath);
+        }
+        catch (Exception ex)
+        {
+            return Response<string>.Fail($"Error durring saving image: {ex.Message}");
         }
     }
 

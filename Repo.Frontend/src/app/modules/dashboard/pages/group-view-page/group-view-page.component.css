@@ -1,0 +1,43 @@
+.navigation-arrows {
+  display: flex;
+  gap: 10px;
+  align-self: flex-end;
+}
+
+button {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: rgba(0,0,0,0.1);
+}
+
+mat-icon {
+  vertical-align: middle;
+}
+
+.list-view {
+  display: flex;
+  flex-direction: column;
+}
+.right-arrow mat-icon {
+  color: green;
+}
+.left-arrow mat-icon {
+  color: red;
+}
+
+.no-content-found-message {
+  text-align: center;
+  margin-top: 40px;
+  font-size: 4em;
+  box-shadow: 0 10px 30px var(--shadow-color);
+  color: var(--primary-color);
+  font-weight: 900;
+  font-family: monospace;
+}

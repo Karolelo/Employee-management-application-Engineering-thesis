@@ -12,9 +12,9 @@
     <Folder Include="src\app\layouts\" />
     <Folder Include="src\app\modules\calendar-module\components\" />
     <Folder Include="src\app\modules\dashboard\components\" />
-    <Folder Include="src\app\modules\dashboard\interfaces\" />
     <Folder Include="src\app\modules\dashboard\pages\" />
-    <Folder Include="src\app\modules\dashboard\services\" />
+    <Folder Include="src\app\modules\dashboard\resolvers\" />
+    <Folder Include="src\app\modules\dashboard\services\group\" />
     <Folder Include="src\app\modules\login\services\user_data\" />
     <Folder Include="src\app\modules\task\components\" />
     <Folder Include="src\app\modules\task\pages\" />

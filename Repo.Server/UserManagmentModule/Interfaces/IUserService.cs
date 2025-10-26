@@ -7,6 +7,8 @@ namespace Repo.Server.UserManagmentModule.Interfaces;
 public interface IUserService
 {
     Task<Response<List<UserDTO>>> GetAllUsers();
+
+    Task<Response<List<UserDTO>>> GetAllUsersFromGroup(int groupId);
     
     Task<Response<UserDTO>> GetUserById(int id);
     

@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Repo.Core.Models;
 using Type = Repo.Core.Models.Type;
 using Task = Repo.Core.Models.Task;
-
 namespace Repo.Core.Infrastructure;
 
 public partial class MyDbContext : DbContext
@@ -19,6 +18,8 @@ public partial class MyDbContext : DbContext
     }
 
     public virtual DbSet<AbsenceDay> AbsenceDays { get; set; }
+
+    public virtual DbSet<Announcement> Announcements { get; set; }
 
     public virtual DbSet<Application> Applications { get; set; }
 
@@ -39,6 +40,8 @@ public partial class MyDbContext : DbContext
     public virtual DbSet<Grade> Grades { get; set; }
 
     public virtual DbSet<Group> Groups { get; set; }
+
+    public virtual DbSet<GroupImage> GroupImages { get; set; }
 
     public virtual DbSet<HireHelper> HireHelpers { get; set; }
 
@@ -66,8 +69,6 @@ public partial class MyDbContext : DbContext
 
     public virtual DbSet<WorkTable> WorkTables { get; set; }
 
-    public virtual DbSet<WorkTask> WorkTasks { get; set; }
-
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer("Server=localhost,1433;Database=Tmp;User=sa;Password=Haslo1234*;TrustServerCertificate=True;");
@@ -89,6 +90,20 @@ public partial class MyDbContext : DbContext
                 .HasForeignKey(d => d.WorkTable_ID)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("SickDay_WorkTable");
+        });
+
+        modelBuilder.Entity<Announcement>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__Announce__3214EC27C2BB8722");
+
+            entity.ToTable("Announcement");
+
+            entity.Property(e => e.ID).ValueGeneratedNever();
+            entity.Property(e => e.Title).HasMaxLength(40);
+
+            entity.HasOne(d => d.Group).WithMany(p => p.Announcements)
+                .HasForeignKey(d => d.Group_ID)
+                .HasConstraintName("FK_GroupAnnoucment");
         });
 
         modelBuilder.Entity<Application>(entity =>
@@ -292,6 +307,7 @@ public partial class MyDbContext : DbContext
 
             entity.ToTable("Group");
 
+            entity.Property(e => e.Description).HasDefaultValue("");
             entity.Property(e => e.Name).HasMaxLength(100);
 
             entity.HasMany(d => d.Tasks).WithMany(p => p.Groups)
@@ -327,6 +343,20 @@ public partial class MyDbContext : DbContext
                         j.HasKey("Group_ID", "User_ID").HasName("GroupUser_pk");
                         j.ToTable("GroupUser");
                     });
+        });
+
+        modelBuilder.Entity<GroupImage>(entity =>
+        {
+            entity.HasKey(e => e.GROUP_ID).HasName("PK__GroupIma__3EFEA3DED9CE53C4");
+
+            entity.ToTable("GroupImage");
+
+            entity.Property(e => e.GROUP_ID).ValueGeneratedNever();
+
+            entity.HasOne(d => d.GROUP).WithOne(p => p.GroupImage)
+                .HasForeignKey<GroupImage>(d => d.GROUP_ID)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_GROUP_IMAGE");
         });
 
         modelBuilder.Entity<HireHelper>(entity =>
@@ -388,7 +418,6 @@ public partial class MyDbContext : DbContext
 
             entity.HasOne(d => d.User).WithMany(p => p.RefreshTokens)
                 .HasForeignKey(d => d.User_ID)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("RefreshToken_User");
         });
 
@@ -598,23 +627,6 @@ public partial class MyDbContext : DbContext
                 .HasForeignKey(d => d.User_ID)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("WorkTable_User");
-        });
-
-        modelBuilder.Entity<WorkTask>(entity =>
-        {
-            entity.HasKey(e => new { e.WorkTable_ID, e.Task_ID }).HasName("WorkTask_pk");
-
-            entity.ToTable("WorkTask");
-
-            entity.HasOne(d => d.Task).WithMany(p => p.WorkTasks)
-                .HasForeignKey(d => d.Task_ID)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("WorkTask_Task");
-
-            entity.HasOne(d => d.WorkTable).WithMany(p => p.WorkTasks)
-                .HasForeignKey(d => d.WorkTable_ID)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("WorkTask_WorkTable");
         });
 
         OnModelCreatingPartial(modelBuilder);

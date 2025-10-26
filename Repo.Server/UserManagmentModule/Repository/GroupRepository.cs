@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Repo.Core.Infrastructure;
+using Repo.Core.Infrastructure.Files;
 using Repo.Core.Models;
 using Repo.Core.Models.user;
 using Repo.Server.UserManagmentModule.Interfaces;
@@ -9,7 +10,6 @@ namespace Repo.Server.UserManagmentModule.Repository;
 public class GroupRepository : IGroupRepository
 {
     private readonly MyDbContext _context;
-    
     public GroupRepository(MyDbContext context)
     {
         _context = context;
@@ -76,5 +76,31 @@ public class GroupRepository : IGroupRepository
         var result = await _context.SaveChangesAsync();
 
         return result > 0;
+    }
+
+    public async Task<string> GetPathToImageFile(int groupId)
+    {
+        var groupImage = await _context.GroupImages.FirstOrDefaultAsync(g => g.GROUP_ID == groupId);
+        return groupImage?.Path ?? "";
+    }
+
+    public async Task<string> SavePathToImageFile(int groupId,string path)
+    {
+        var groupImage = new GroupImage()
+        {
+            GROUP_ID = groupId,
+            Path = path
+        };
+        await _context.GroupImages.AddAsync(groupImage);
+        await _context.SaveChangesAsync();
+        return path;
+    }
+
+    public async Task<string> UpdateImageFile(int groupId, string path)
+    {
+        var groupImage = await _context.GroupImages.FindAsync(groupId);
+        groupImage.Path = path;
+        await _context.SaveChangesAsync();
+        return path;
     }
 }

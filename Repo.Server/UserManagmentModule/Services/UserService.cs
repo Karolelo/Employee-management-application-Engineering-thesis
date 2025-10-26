@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http.HttpResults;
 using Repo.Core.Infrastructure;
 using Repo.Core.Models;
 using Repo.Core.Models.api;
@@ -10,11 +11,12 @@ public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
     private readonly IRoleRepository _roleRepository;
-    
-    public UserService(IUserRepository userRepository,IRoleRepository roleRepository)
+    private readonly IGroupRepository _groupRepository;
+    public UserService(IUserRepository userRepository,IRoleRepository roleRepository,IGroupRepository groupRepository)
     {
         _userRepository = userRepository;
         _roleRepository = roleRepository;
+        _groupRepository = groupRepository;
     }
 
     public async Task<Response<List<UserDTO>>> GetAllUsers()
@@ -31,6 +33,24 @@ public class UserService : IUserService
         }
     }
 
+    public async Task<Response<List<UserDTO>>> GetAllUsersFromGroup(int groupId)
+    {
+        try
+        {
+            if (await _groupRepository.GetGroupById(groupId) == null)
+            {
+                return Response<List<UserDTO>>.Fail("Group with this id not found");
+            }
+            var users = await _userRepository.GetAllUsersFromGroup(groupId);
+            var usersDto = users.Select(user => new UserDTO(user)).ToList();
+            return Response<List<UserDTO>>.Ok(usersDto);
+        }
+        catch (Exception e)
+        {
+            return Response<List<UserDTO>>.Fail($"Error while fetching users: {e.Message}");
+        }
+    }
+    
     public async Task<Response<UserDTO>> GetUserById(int id)
     {
         try

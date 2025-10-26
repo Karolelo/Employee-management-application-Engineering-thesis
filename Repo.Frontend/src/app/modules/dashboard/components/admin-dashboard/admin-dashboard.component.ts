@@ -1,8 +1,8 @@
 import { Component, inject,OnInit } from '@angular/core';
 import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
 import { map } from 'rxjs/operators';
-import {UserService} from '../../services/user.service';
 import { Router } from '@angular/router';
+import {UserService} from '../../services/user/user.service';
 @Component({
   selector: 'app-admin-dashboard',
   templateUrl: './admin-dashboard.component.html',
@@ -50,7 +50,7 @@ export class AdminDashboardComponent implements OnInit{
   }
 
   onSeeGroupsClick() {
-
+    this.router.navigate(['dashboard/groups']);
   }
 
   onAddGroupClick() {

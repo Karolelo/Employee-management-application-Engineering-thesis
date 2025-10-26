@@ -3,17 +3,17 @@
   <form>
     <input formControlName="name" placeholder=" ">
     <label>Title</label>
-    <span *ngIf="taskForm.get('name')?.invalid && taskForm.get('name')?.touched" class="error-message">
+    <span *ngIf="groupForm.get('name')?.invalid && groupForm.get('name')?.touched" class="error-message">
         Title is required.
       </span>
-    <input formControlName="name" placeholder=" ">
+    <input formControlName="description" placeholder=" ">
     <label>Title</label>
-    <span *ngIf="taskForm.get('name')?.invalid && taskForm.get('name')?.touched" class="error-message">
+    <span *ngIf="groupForm.get('name')?.invalid && groupForm.get('name')?.touched" class="error-message">
         Title is required.
       </span>
-    <input formControlName="name" placeholder=" ">
-    <label>Title</label>
-    <span *ngIf="taskForm.get('name')?.invalid && taskForm.get('name')?.touched" class="error-message">
+    <input type="select" formControlName="admin_ID" placeholder=" ">
+    <label>Admin</label>
+    <span *ngIf="groupForm.get('name')?.invalid && groupForm.get('name')?.touched" class="error-message">
         Title is required.
       </span>
   </form>

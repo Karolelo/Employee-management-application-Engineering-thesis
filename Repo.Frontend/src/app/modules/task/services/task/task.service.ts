@@ -3,7 +3,6 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Task} from '../../interfaces/task';
 import {RelatedTasks} from '../../interfaces/related-tasks';
-//Everu class posibble was change for map, for better angular assert to Angular convention
 @Injectable({
   providedIn: 'root'
 })

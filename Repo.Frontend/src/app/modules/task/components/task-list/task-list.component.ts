@@ -16,6 +16,7 @@ import {Router} from '@angular/router';
   providers: []
 })
 export class TaskListComponent implements OnInit{
+  enableEdit = true;
   loading = false;
   errorMessage: string | null = null;
   tasks$!: Observable<Task[]>;
@@ -84,5 +85,25 @@ export class TaskListComponent implements OnInit{
     }
   }
 
+  changeValueToGroupTask(id :number)
+  {
+    this.loading = true;
+    this.taskService.getAllGroupTask(id).subscribe(
+     {
+       next: (task) => {
+         console.log(task);
+         this.loading = false;
+         this.enableEdit = false;
+       },
+       error: (error) => {
+         console.log(error);
+         this.loading = false;
+       }
+     })
+  }
+  changeToOtherUserTask(id :number)
+  {
+
+  }
 
 }

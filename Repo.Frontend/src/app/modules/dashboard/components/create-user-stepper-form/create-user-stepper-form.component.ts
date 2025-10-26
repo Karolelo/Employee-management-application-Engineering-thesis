@@ -4,12 +4,12 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatStepperModule,MatStepper} from '@angular/material/stepper';
-import {UserService} from '../../services/user.service';
 import {Router} from '@angular/router';
 import {DashboardModule} from '../../dashboard.module';
 import {User} from '../../interfaces/user';
 import {EditUserFormComponent} from '../edit-user-form/edit-user-form.component';
 import {MatSnackBar} from '@angular/material/snack-bar'
+import {UserService} from '../../services/user/user.service';
 @Component({
   selector: 'app-create-user-stepper-form',
   standalone: false,

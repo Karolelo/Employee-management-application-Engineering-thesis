@@ -59,7 +59,8 @@ import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
         MatPaginator,
     ],
     exports: [
-        TaskFormComponent
+        TaskFormComponent,
+        TaskListComponent
     ],
     providers: []
 })

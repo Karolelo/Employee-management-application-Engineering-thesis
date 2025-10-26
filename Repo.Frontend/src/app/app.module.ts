@@ -24,9 +24,9 @@ import {CalendarModule} from './modules/calendar-module/calendar.module';
 import {HTTP_INTERCEPTORS} from '@angular/common/http';
 import {AuthInterceptorService} from './common_services/auth-interceptor-services.service';
 import {TaskModule} from './modules/task/task.module';
-import {JwtHelperService, JwtModule} from '@auth0/angular-jwt';
+import {JwtModule} from '@auth0/angular-jwt';
 import {MatListItem, MatNavList} from '@angular/material/list';
-import {CommonModule, NgClass} from '@angular/common';
+import {CommonModule, NgClass,NgOptimizedImage} from '@angular/common';
 import {SidenavbarComponent} from './common_components/sidenavbar/sidenavbar.component';
 import {UserDetailsNavComponent} from './common_components/user-details-nav/user-details-nav.component';
 import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
@@ -86,6 +86,7 @@ export function tokenGetter() {
     MatLabel,
     MatSelectModule,
     MatStepperModule,
+    NgOptimizedImage,
   ],
   providers: [
     {

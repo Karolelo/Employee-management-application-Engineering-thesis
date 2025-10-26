@@ -7,7 +7,7 @@ using Repo.Server.UserManagmentModule.Interfaces;
 namespace Repo.Server.UserManagmentModule.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 [Authorize(policy: "TeamLeaderOnly")]
 public class GroupController(IGroupService groupService) : ControllerBase
 {
@@ -73,5 +73,43 @@ public class GroupController(IGroupService groupService) : ControllerBase
             return BadRequest(new { Message = response.Error });
             
         return NoContent();
+    }
+
+    [HttpGet("image/{groupId}")]
+    public async Task<IActionResult> GetGroupImage(int groupId)
+    {
+        var result = await groupService.GetGroupImagePath(groupId);
+        if (!result.Success)
+            return NotFound(new { Message = result.Error });
+        //Im not returning files becuase its not any kind private data    
+        return File(result.Data, "image/jpeg");
+        /*return Ok(new {path = result.Data });*/
+}
+    
+    [HttpPost("upload-image/{id}")]
+    public async Task<IActionResult> UploadGroupImage(int id, IFormFile image, bool isUpdate = false)
+    {
+        if (image == null || image.Length == 0)
+            return BadRequest("Not send any image");
+        
+        var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+        var extension = Path.GetExtension(image.FileName).ToLowerInvariant();
+        if (!allowedExtensions.Contains(extension))
+            return BadRequest("Bad type of image");
+        
+        try
+        {
+            if (isUpdate)
+            {
+                var updatedPath = await groupService.SaveGroupImage(id,image, true);
+                return updatedPath.Success ? Ok(updatedPath.Data) : BadRequest(updatedPath.Error);
+            }
+            var imagePath = await groupService.SaveGroupImage(id, image);
+            return imagePath.Success ? Ok(imagePath.Data) : BadRequest(imagePath.Error);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { Message = ex.Message });
+        }
     }
 }

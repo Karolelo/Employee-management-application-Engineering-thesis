@@ -6,9 +6,9 @@ import {UserListDataSource} from './user-list-datasource';
 import {User} from '../../interfaces/user';
 import {MatDialog} from '@angular/material/dialog';
 import {DeleteUserDialogComponent} from '../delete-user-dialog/delete-user-dialog.component';
-import {UserService} from '../../services/user.service';
 import {Router} from '@angular/router';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {UserService} from '../../services/user/user.service';
 
 @Component({
   selector: 'app-user-list',

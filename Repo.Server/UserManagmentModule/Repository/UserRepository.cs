@@ -17,12 +17,25 @@ public class UserRepository : IUserRepository
     
     public async Task<List<User>> GetAllUsers()
     {
-        return await _context.Users.Include(u=>u.Roles).Where(u=>u.Deleted!=1).ToListAsync();
+        return await _context.Users
+            .Include(u=>u.Roles)
+            .Where(u=>u.Deleted!=1)
+            .ToListAsync();
+    }
+
+    public async Task<List<User>> GetAllUsersFromGroup(int groupId)
+    {
+        return await _context.Users
+            .Include(u=>u.Groups)
+            .Where(u=>u.Deleted!=1 && u.Groups.Any(g=>g.ID==groupId))
+            .ToListAsync();
     }
 
     public async Task<User?> GetUserById(int id)
     {
-        return await _context.Users.Include(u=>u.Roles).FirstOrDefaultAsync(u => u.ID == id);
+        return await _context.Users
+            .Include(u=>u.Roles)
+            .FirstOrDefaultAsync(u => u.ID == id);
     }
 
     public async Task<User?> GetUserByEmail(string email)

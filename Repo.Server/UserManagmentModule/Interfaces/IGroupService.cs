@@ -13,4 +13,7 @@ public interface IGroupService
     Task<Response<bool>> AddUserToGroup(int userId, int groupId);
     Task<Response<bool>> RemoveUserFromGroup(int userId, int groupId);
     Task<Response<bool>> SetLeaderOfGroup(int userId, int groupId);
-    }
+    Task<Response<string>> GetGroupImagePath(int groupId);
+    Task<Response<string>> SaveGroupImage(int groupId, IFormFile image, bool isUpdate = false);
+    
+}

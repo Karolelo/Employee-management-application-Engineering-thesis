@@ -27,6 +27,14 @@
   --completed-status: #2ecc71;
 }
 
+.short-info-text {
+  font-size: 0.8rem;
+  color: var(--text-color);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+
 .title-header {
   font-family:monospace;
   color: var(--primary-color);
