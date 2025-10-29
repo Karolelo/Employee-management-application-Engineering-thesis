@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Repo.Core.Models;
-using Type = Repo.Core.Models.Type;
+
 using Task = Repo.Core.Models.Task;
-namespace Repo.Core.Infrastructure;
+using User = Repo.Core.Models.User;
+using Type = Repo.Core.Models.Type;
+namespace Repo.Core.Infrastructure.Database;
 
 public partial class MyDbContext : DbContext
 {
@@ -98,7 +100,6 @@ public partial class MyDbContext : DbContext
 
             entity.ToTable("Announcement");
 
-            entity.Property(e => e.ID).ValueGeneratedNever();
             entity.Property(e => e.Title).HasMaxLength(40);
 
             entity.HasOne(d => d.Group).WithMany(p => p.Announcements)
@@ -355,7 +356,6 @@ public partial class MyDbContext : DbContext
 
             entity.HasOne(d => d.GROUP).WithOne(p => p.GroupImage)
                 .HasForeignKey<GroupImage>(d => d.GROUP_ID)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_GROUP_IMAGE");
         });
 

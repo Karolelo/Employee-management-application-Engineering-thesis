@@ -1,4 +1,3 @@
-using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Repo.Core.Models.user;
@@ -81,13 +80,14 @@ public class GroupController(IGroupService groupService) : ControllerBase
         var result = await groupService.GetGroupImagePath(groupId);
         if (!result.Success)
             return NotFound(new { Message = result.Error });
-        //Im not returning files becuase its not any kind private data    
+        
+        //I'm not returning files because it's not any kind private data    
         return File(result.Data, "image/jpeg");
         /*return Ok(new {path = result.Data });*/
 }
     
     [HttpPost("upload-image/{id}")]
-    public async Task<IActionResult> UploadGroupImage(int id, IFormFile image, bool isUpdate = false)
+    public async Task<IActionResult> UploadGroupImage(int id, IFormFile? image, bool isUpdate = false)
     {
         if (image == null || image.Length == 0)
             return BadRequest("Not send any image");
@@ -109,7 +109,7 @@ public class GroupController(IGroupService groupService) : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(new { Message = ex.Message });
+            return BadRequest(new {  ex.Message });
         }
     }
 }

@@ -1,52 +1,20 @@
-<div class="groups-page">
-  <div class="short-info">
-    <!--Here gonna add custom images someday-->
-    <img [ngSrc]="imageUrl" width="400" height="400" alt="Group_image" priority>
-    <article>
-      <h1 class="title-header">Team description</h1>
-      <p class="long-scrollable-text">{{group.description}}</p>
-    </article>
+<ng-container>
+  <div *ngIf="!groups?.length">
+    <h1 class="no-content-found-message">No team available</h1>
   </div>
-  <div class="info-data">
-  @if (announcements.length > 0) {
-    <h1 class="title-header">Announcements</h1>
-    <uL class="announcement-list">
-      @for (announcement of announcements; track announcement.id) {
-        <li class="announcement-item">
-          <h3>{{announcement.title}}</h3>
-          <p>{{announcement.text}}</p>
-        </li>
-      }
-    </uL>
-  } @else {
-    <h2 style="margin-left: 20px">No any new announcements</h2>
-  }
+
+  <div class="list-view" *ngIf="groups?.length">
+    <div class="navigation-arrows">
+      <button class="left-arrow" (click)="onLeftArrowClick()">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <button class="right-arrow" (click)="onRightArrowClick()">
+        <mat-icon>arrow_forward</mat-icon>
+      </button>
+    </div>
+    <app-group-list [groups]="selectedGroups" (groupDeleteEvent)="deleteGroup($event)"></app-group-list>
   </div>
-  <div class="task-info">
-    <h1 class="title-header">Tasks</h1>
-  </div>
-  <app-task-list></app-task-list>
-  <div class="user-list">
-    <h1 class="title-header">Users in group</h1>
-    <table mat-table [dataSource]="usersDataSource">
-      <ng-container matColumnDef="Name">
-        <th mat-header-cell *matHeaderCellDef class="hidden">Name </th>
-        <td mat-cell *matCellDef="let element" class="hidden"> {{element.name}} </td>
-      </ng-container>
-      <ng-container matColumnDef="Surname">
-        <th mat-header-cell *matHeaderCellDef> Surname </th>
-        <td mat-cell *matCellDef="let element"> {{element.surname}} </td>
-      </ng-container>
-     <ng-container matColumnDef="Email">
-       <th mat-header-cell *matHeaderCellDef> Email </th>
-       <td mat-cell *matCellDef="let element"> {{element.email}} </td>
-     </ng-container>
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
-    <mat-paginator [pageSizeOptions]="[5, 10, 20]"
-                   showFirstLastButtons
-                   aria-label="Select page of periodic elements">
-    </mat-paginator>
-  </div>
-</div>
+</ng-container>
+<ng-template #deleteGroupDialog>
+  <h1 class="title-header">You sure my friend you want to delete it ? </h1>
+</ng-template>

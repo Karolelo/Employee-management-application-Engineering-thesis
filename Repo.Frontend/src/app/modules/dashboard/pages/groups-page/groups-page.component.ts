@@ -1,78 +1,66 @@
 import {Component,AfterViewInit,ViewChild,OnInit} from '@angular/core';
-import {Announcement} from '../../interfaces/announcement';
 import {Group} from '../../interfaces/group';
-import {NgOptimizedImage} from '@angular/common'
-import {TaskModule} from '../../../task/task.module';
-import {MatTableModule,MatTableDataSource} from '@angular/material/table';
-import {MatPaginatorModule,MatPaginator} from '@angular/material/paginator';
-import {User} from '../../interfaces/user';
-import {UserService} from '../../services/user/user.service';
 import {ActivatedRoute} from '@angular/router';
 import {GroupService} from '../../services/group/group.service';
-import {DomSanitizer,SafeUrl} from '@angular/platform-browser';
-import {TaskListComponent} from '../../../task/components/task-list/task-list.component';
+import {MatDialog} from '@angular/material/dialog';
+import {ConfirmDialogComponent} from '../../../../common_components/confirm-dialog/confirm-dialog.component';
 @Component({
   selector: 'app-groups-page',
   standalone: false,
   templateUrl: './groups-page.component.html',
   styleUrl: './groups-page.component.css'
 })
-export class GroupsPageComponent implements AfterViewInit {
-  group!: Group;
-  announcements: Announcement[] = []
-  displayedColumns: string[] = ['Name','Surname','Email'];
-  users: User[] = [];
-  usersDataSource!: MatTableDataSource<any>;
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(TaskListComponent) taskList!: TaskListComponent;
-  imageUrl: SafeUrl = "";
-  constructor(private user_service: UserService,
-              private group_service: GroupService,
-              private activatedRoute: ActivatedRoute,
-              private sanitizer: DomSanitizer)
-  {
-    this.initializeValues()
+export class GroupsPageComponent {
+  groups: Group[] = [];
+  selectedGroups: Group[] = [];
+  private pageSize = 5;
+  private currentPage = 1;
+  constructor(private route: ActivatedRoute,private dialog: MatDialog,private groupService: GroupService) {}
+  ngOnInit() {
+    this.groups = this.route.snapshot.data['groups'];
+    this.selectedGroups = this.groups.slice(0, this.pageSize);
   }
 
-  initializeValues(): void {
-    const group_id =Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id') ?? '0');
-    this.group_service
-      .getGroup(group_id)
-      .subscribe({
-        next: (group:Group) => this.group = group,
-        error: (error) => console.error('Error getting group:', error)
-      });
-
-    this.group_service.getGroupImagePath(group_id).subscribe({
-      next: (blob: Blob) => {
-        const objectUrl = URL.createObjectURL(blob);
-        this.imageUrl = this.sanitizer.bypassSecurityTrustUrl(objectUrl);
-        console.log(this.imageUrl);
-      },
-      error: (error) => {
-        console.error('Błąd podczas pobierania obrazu:', error);
-      }
-    });
-
-    this.user_service.getUsersFromGroup(group_id).subscribe({
-      next: (users: User[]) => {
-        this.users = users;
-        this.usersDataSource = new MatTableDataSource(this.users);
-        this.usersDataSource.paginator = this.paginator;
-      },
-      error: (error) => console.error('Error getting users from group:', error)
-    });
-  }
-  ngAfterViewInit(): void {
-    if (this.usersDataSource) {
-      this.usersDataSource.paginator = this.paginator;
+  onLeftArrowClick() {
+    if(this.currentPage > 1) {
+      this.currentPage--;
     }
+    this.selectedGroups = this.groups.slice(
+      (this.currentPage - 1) * this.pageSize,
+      this.currentPage * this.pageSize
+    )
+  }
 
-    setTimeout(() => {
-      if(this.taskList) {
-        this.taskList.changeValueToGroupTask(
-          this.group.id)
+  onRightArrowClick() {
+    if(this.currentPage < Math.ceil(this.groups.length / this.pageSize)) {
+      this.currentPage++;
+    }
+    this.selectedGroups = this.groups.slice(
+      (this.currentPage - 1) * this.pageSize,
+      this.currentPage * this.pageSize
+    )
+  }
+
+  deleteGroup(id: number) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Delete group',
+        message: 'You sure you want to delete this group?'
+      },
+      disableClose: true
+    });
+
+    dialogRef.afterClosed().subscribe((result: boolean) => {
+      if (result) {
+        console.log(`Deleted group: ${id}`);
+        this.groups = this.groups.filter(group => group.id !== id);
+        this.selectedGroups = this.groups.filter(group => group.id !== id);
+        this.groupService.deleteGroup(id).subscribe({
+          error: (error) => {
+            console.error('Error deleting group:', error);
+          }
+        });
       }
-    })
+    });
   }
 }

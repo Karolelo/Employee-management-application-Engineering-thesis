@@ -7,6 +7,7 @@ import {EditUserFormComponent} from './components/edit-user-form/edit-user-form.
 import {GroupViewPageComponent} from './pages/group-view-page/group-view-page.component';
 import {GroupResolverService} from './resolvers/group-resolver.service';
 import {GroupsPageComponent} from './pages/groups-page/groups-page.component';
+import {ManageGroupPageComponent} from './pages/manage-group-page/manage-group-page.component';
 
 
 const routes: Routes = [
@@ -23,15 +24,15 @@ const routes: Routes = [
     path: 'users/edit/:id', component: EditUserFormComponent
   },
   {
-    path: `groups`, component: GroupViewPageComponent,
+    path: `groups`, component: GroupsPageComponent,
     resolve: {groups: GroupResolverService}
   },
   {
-    path: 'groups/:id', component: GroupsPageComponent,
-    data: {
-
-    }
+    path: 'groups/:id', component: GroupViewPageComponent,
   },
+  {
+    path: 'groupsManage/:id', component: ManageGroupPageComponent
+  }
 ]
 
 @NgModule({

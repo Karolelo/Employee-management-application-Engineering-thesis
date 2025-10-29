@@ -34,7 +34,6 @@ export class GroupService {
       responseType: 'blob'
     });
   }
-  //TODO pomyslec nad zmianna
   saveGroupImage(id: number, formData: FormData, isUpdate: boolean): Observable<any> {
     formData.append('isUpdate', isUpdate.toString());
     return this.http.post<any>(

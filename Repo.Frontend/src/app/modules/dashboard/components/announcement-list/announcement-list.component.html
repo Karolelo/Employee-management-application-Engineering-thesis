@@ -1,0 +1,17 @@
+<!--<h1 class="title-header">Announcements</h1>-->
+<uL class="announcement-list">
+  @for (announcement of announcements; track announcement.id) {
+    <li class="announcement-item">
+      <h3>{{announcement.title}}</h3>
+      <p>{{announcement.text}}</p>
+      <ng-container *ngIf="enableEdit">
+        <button (click)="onEditAnnoucement(announcement)">
+          <i class="fa fa-edit edit-icon"></i>
+        </button>
+        <button (click)="onDeleteAnnoucement(announcement.id)">
+          <i class="fa fa-trash delete-icon"></i>
+        </button>
+      </ng-container>
+    </li>
+  }
+</uL>

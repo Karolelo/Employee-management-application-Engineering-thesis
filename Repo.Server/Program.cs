@@ -4,8 +4,8 @@ using Microsoft.Data.SqlClient;
 using Microsoft.IdentityModel.Tokens;
 using Repo.Core.Infrastructure;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using Repo.Core.Infrastructure.Database;
 using Repo.Core.Infrastructure.Files;
 using Repo.Server.CalendarModule.Interfaces;
 using Repo.Server.CalendarModule.Repositories;
@@ -35,6 +35,8 @@ builder.Services.AddScoped<IRoleRepository,RoleRepository>();
 builder.Services.AddScoped<IGroupRepository,GroupRepository>();
 builder.Services.AddScoped<IGroupService,GroupService>();
 builder.Services.AddScoped<IFileOperations,FileOperation>();
+builder.Services.AddScoped<IAnnoucementService,AnnouncementService>();
+builder.Services.AddScoped<IAnnoucementRepository,AnnoucementRepository>();
 
 // Connection priority - changeable if needed
 var candidateNames = new[] { "Mroziu-workspace", "DefaultConnection" };

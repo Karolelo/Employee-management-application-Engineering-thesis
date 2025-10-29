@@ -27,6 +27,9 @@ import { GroupViewPageComponent } from './pages/group-view-page/group-view-page.
 import { GroupFormComponent } from './components/group-form/group-form.component';
 import { GroupListComponent } from './components/group-list/group-list.component';
 import {TaskModule} from "../task/task.module";
+import { AnnouncementFormComponent } from './components/annoucment-form/announcement-form.component';
+import { MatFormFieldModule,MatFormFieldAppearance } from '@angular/material/form-field';
+import { AnnouncementListComponent } from './components/announcement-list/announcement-list.component';
 @NgModule({
   declarations: [
     AdminDashboardComponent,
@@ -39,6 +42,8 @@ import {TaskModule} from "../task/task.module";
     GroupViewPageComponent,
     GroupFormComponent,
     GroupListComponent,
+    AnnouncementFormComponent,
+    AnnouncementListComponent,
   ],
     imports: [
         CommonModule,
@@ -63,6 +68,7 @@ import {TaskModule} from "../task/task.module";
         CdkStepperModule,
         TaskModule,
         NgOptimizedImage,
+        MatFormFieldModule
     ]
 })
 export class DashboardModule {
