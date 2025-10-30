@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import {Course} from '../../interfaces/course';
 import {UserStoreService} from '../../../login/services/user_data/user-store.service';
 import {CourseService} from '../../services/course.service';
@@ -15,6 +15,7 @@ interface CourseVM extends Course {status: CourseStatus;}
   styleUrl: './course-list.component.css'
 })
 export class CourseListComponent implements OnInit {
+  @Output() select = new EventEmitter<number>();
   courses: CourseVM[] = [];
   loading = true;
 
@@ -77,6 +78,8 @@ export class CourseListComponent implements OnInit {
       }
     });
   }
+
+  onSelect(course: CourseVM) {this.select.emit(course.id)}
 
   private parseDateOnly(start: string): Date | null {
     if (!start) return null;

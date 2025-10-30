@@ -1,7 +1,7 @@
 <div *ngIf="loading" class="loading"><mat-spinner></mat-spinner></div>
 
 <ul *ngIf="!loading && courses.length" class="courses">
-  <li *ngFor="let c of courses" class="course-card">
+  <li *ngFor="let c of courses" class="course-card" (click)="onSelect(c)">
     <div class="course-content">
       <div class="title">{{ c.name }}</div>
       <div class="sub">Starts on: {{ formatDate(c.start_Date) }}</div>

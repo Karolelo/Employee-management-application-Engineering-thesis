@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, Output, EventEmitter} from '@angular/core';
 import {Grade} from '../../interfaces/grade';
 import {Observable, take} from 'rxjs';
 import {GradeService} from '../../services/grade.service';
@@ -12,6 +12,8 @@ import {Router} from '@angular/router';
   styleUrl: './user-grade-list.component.css'
 })
 export class UserGradeListComponent implements OnInit {
+  @Output() select = new EventEmitter<number>();
+
   grades$!: Observable<Grade[]>;
   loading = true;
   errorMessage = '';
@@ -52,6 +54,8 @@ export class UserGradeListComponent implements OnInit {
 
   openDetails(grade: Grade){
     this.router.navigate(['/grades/grade-details', grade.id]);
+  onSelect(grade: Grade) {
+    this.select.emit(grade.id);
   }
 
   displayValue(grade: Grade): string {

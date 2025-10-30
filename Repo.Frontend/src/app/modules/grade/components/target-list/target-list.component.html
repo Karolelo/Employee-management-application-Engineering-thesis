@@ -1,7 +1,7 @@
 <div *ngIf="loading" class="loading"><mat-spinner></mat-spinner></div>
 
 <ul *ngIf="!loading" class="targets">
-  <li *ngFor="let t of targets" class="target-card">
+  <li *ngFor="let t of targets" class="target-card" (click)="onSelect(t)">
     <div class="target-content">
       <div class="title">{{ t.name }}</div>
       <div class="deadline">Deadline: {{ formatDate(t.finish_Time) }}</div>

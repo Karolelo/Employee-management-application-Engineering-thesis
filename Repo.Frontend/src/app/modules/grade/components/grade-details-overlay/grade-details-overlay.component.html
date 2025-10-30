@@ -1,0 +1,24 @@
+<div class="overlay" (click)="dismiss()">
+  <div class="card" (click)="$event.stopPropagation()">
+    <button class="close" type="button" (click)="dismiss()">×</button>
+
+    <div *ngIf="loading" class="loading"><mat-spinner></mat-spinner></div>
+
+    <ng-container *ngIf="!loading && grade">
+      <h2 class="title">Grade details</h2>
+
+      <div class="score">
+        <div class="value">{{ displayValue(grade) }}</div>
+        <div class="sub">/ 5 ({{ displayValuePercent(grade) }})</div>
+      </div>
+
+      <div class="meta">
+        <div><strong>Beginning of period:</strong> {{ formatDate(grade.start_Date) }}</div>
+        <div><strong>Finish of period:</strong> {{ formatDate(grade.finish_Date) }}</div>
+      </div>
+
+    </ng-container>
+
+    <p *ngIf="error" class="error">{{ error }}</p>
+  </div>
+</div>

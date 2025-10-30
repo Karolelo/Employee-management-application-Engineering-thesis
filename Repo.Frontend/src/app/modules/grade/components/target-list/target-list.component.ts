@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import {Target} from '../../interfaces/target';
 import {UserStoreService} from '../../../login/services/user_data/user-store.service';
 import {TargetService} from '../../services/target.service';
@@ -10,6 +10,7 @@ import {TargetService} from '../../services/target.service';
   styleUrl: './target-list.component.css'
 })
 export class TargetListComponent implements OnInit {
+  @Output() select = new EventEmitter<number>();
   targets: Target[] = [];
   loading = true;
 
@@ -36,6 +37,10 @@ export class TargetListComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  onSelect(target: Target){
+    this.select.emit(target.id);
   }
 
   formatDate(iso: string | null | undefined): string {

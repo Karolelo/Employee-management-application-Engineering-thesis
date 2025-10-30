@@ -8,7 +8,7 @@
   <section class="panel">
     <div class="panel-title"> </div>
     <div class="panel-scroll">
-      <app-user-grade-list></app-user-grade-list>
+      <app-user-grade-list (select)="onGradeSelect($event)"></app-user-grade-list>
     </div>
   </section>
 
@@ -17,7 +17,7 @@
     <div class="panel-title">Personal targets</div>
     <div class="panel-sub">Number of targets: {{targetCount}}</div>
     <div class="panel-scroll">
-      <app-target-list></app-target-list>
+      <app-target-list (select)="onTargetSelect($event)"></app-target-list>
     </div>
   </section>
 
@@ -26,7 +26,7 @@
     <div class="panel-title">Courses</div>
     <div class="panel-sub">You can select a course from the list:</div>
     <div class="panel-scroll">
-      <app-course-list></app-course-list>
+      <app-course-list (select)="onCourseSelect($event)"></app-course-list>
     </div>
   </section>
 </main>
@@ -36,3 +36,24 @@
     <app-grade-form [gradeToEdit]="selected" (changed)="onChanged()"></app-grade-form>
   </div>
 </div>
+
+<!-- Course details overlay -->
+<app-course-enroll-overlay
+  *ngIf="selectedCourseId"
+  [courseId]="selectedCourseId!"
+  (close)="onCourseOverlayClose($event)">
+</app-course-enroll-overlay>
+
+<!-- Target details overlay -->
+<app-target-details-overlay
+  *ngIf="selectedTargetId"
+  [targetId]="selectedTargetId!"
+  (close)="onTargetOverlayClose()">
+</app-target-details-overlay>
+
+<!-- Grade details overlay -->
+<app-grade-details-overlay
+  *ngIf="selectedGradeId"
+  [gradeId]="selectedGradeId!"
+  (close)="onGradeOverlayClose()"
+></app-grade-details-overlay>

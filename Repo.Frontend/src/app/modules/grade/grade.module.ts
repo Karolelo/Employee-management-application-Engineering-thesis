@@ -13,6 +13,9 @@ import { GradeDetailsComponent } from './components/grade-details/grade-details.
 import { GradeDetailPageComponent } from './pages/grade-detail-page/grade-detail-page.component';
 import { TargetListComponent } from './components/target-list/target-list.component';
 import { CourseListComponent } from './components/course-list/course-list.component';
+import { CourseEnrollOverlayComponent } from './components/course-enroll-overlay/course-enroll-overlay.component';
+import { TargetDetailsOverlayComponent } from './components/target-details-overlay/target-details-overlay.component';
+import { GradeDetailsOverlayComponent } from './components/grade-details-overlay/grade-details-overlay.component';
 
 
 

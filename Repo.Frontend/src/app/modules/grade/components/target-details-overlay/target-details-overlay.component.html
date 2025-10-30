@@ -1,0 +1,26 @@
+<div class="overlay">
+  <div class="card">
+    <button class="close" type="button" (click)="dismiss()">×</button>
+
+    <div *ngIf="loading" class="loading"><mat-spinner></mat-spinner></div>
+
+    <ng-container *ngIf="!loading && target">
+      <h2 class="title">{{ target.name }}</h2>
+
+      <div class="desc-scroll">
+        <p>{{ target.description || '—' }}</p>
+      </div>
+
+      <div class="meta">
+        <span>Starts on: {{ formatDateTime(target.start_Time) }}</span>
+        <span>Finishes on: {{ formatDateTime(target.finish_Time) }}</span>
+
+        <span *ngIf="target.tag" class="chip chip-tag" aria-label="Tag">
+          {{ target.tag }}
+        </span>
+      </div>
+    </ng-container>
+
+    <p *ngIf="error" class="error">{{ error }}</p>
+  </div>
+</div>
