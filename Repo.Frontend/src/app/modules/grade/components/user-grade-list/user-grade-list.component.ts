@@ -52,8 +52,6 @@ export class UserGradeListComponent implements OnInit {
     });
   }
 
-  openDetails(grade: Grade){
-    this.router.navigate(['/grades/grade-details', grade.id]);
   onSelect(grade: Grade) {
     this.select.emit(grade.id);
   }
