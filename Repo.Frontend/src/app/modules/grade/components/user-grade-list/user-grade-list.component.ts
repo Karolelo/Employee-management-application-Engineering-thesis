@@ -1,9 +1,10 @@
-import {Component, OnInit, Output, EventEmitter} from '@angular/core';
+import {Component, OnInit, Output, EventEmitter, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {Grade} from '../../interfaces/grade';
 import {Observable, take} from 'rxjs';
 import {GradeService} from '../../services/grade.service';
 import {UserStoreService} from '../../../login/services/user_data/user-store.service';
 import {Router} from '@angular/router';
+import {UserService} from '../../services/user.service';
 
 @Component({
   selector: 'app-user-grade-list',
@@ -11,7 +12,9 @@ import {Router} from '@angular/router';
   templateUrl: './user-grade-list.component.html',
   styleUrl: './user-grade-list.component.css'
 })
-export class UserGradeListComponent implements OnInit {
+export class UserGradeListComponent implements OnInit, OnChanges {
+  @Input() userId?: number;
+  @Input() usernameOverride?: string;
   @Output() select = new EventEmitter<number>();
 
   grades$!: Observable<Grade[]>;
@@ -24,18 +27,33 @@ export class UserGradeListComponent implements OnInit {
   constructor(
     private gradeService: GradeService,
     private userStore: UserStoreService,
+    private userService: UserService,
     private router: Router
   ) {
   }
 
   ngOnInit(): void {
-    this.userStore.getUserData().pipe(take(1)).subscribe(userData => {
-      const nickname = userData?.nickname.trim();
-      this.userName = nickname || 'User';
-      this.userInitial = (this.userName || '?').charAt(0).toUpperCase();
-    });
+    this.load();
+  }
 
-    const id = this.userStore.getUserId();
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['userId'] || changes['usernameOverride']) this.load();
+  }
+
+  private load(): void {
+    if (this.usernameOverride){
+      this.applyName(this.usernameOverride);
+    } else if (this.userId){
+      this.userService.getUserById(this.userId).pipe(take(1)).subscribe(user => {
+        this.applyName(user?.nickname.trim() || user?.login || 'User');
+      });
+    } else {
+      this.userStore.getUserData().pipe(take(1)).subscribe(user => {
+        this.applyName(user?.nickname.trim() || 'User');
+      })
+    }
+
+    const id = this.userId ?? this.userStore.getUserId();
     if (!id) {
       this.loading = false;
       this.errorMessage = 'No user ID';
@@ -50,6 +68,11 @@ export class UserGradeListComponent implements OnInit {
         this.errorMessage = 'Failed to load grades';
       }
     });
+  }
+
+  private applyName(name: string) {
+    this.userName = name;
+    this.userInitial = (name || '?').charAt(0).toUpperCase();
   }
 
   onSelect(grade: Grade) {

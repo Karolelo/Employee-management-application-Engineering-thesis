@@ -18,7 +18,12 @@ export class GradePageComponent implements OnInit {
   selectedCourseId?: number;
   selectedTargetId?: number;
   selectedGradeId?: number;
+  selectedUserId?: number;
   targetCount = 0;
+  isLeaderOrAdmin = false;
+  selectedUsername = '';
+  userSwitchOpen = false;
+
   @ViewChild(CourseListComponent) courseList?: CourseListComponent;
 
   constructor(
@@ -30,7 +35,9 @@ export class GradePageComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.isLeaderOrAdmin = this.userStore.hasRole('TeamLeader') || this.userStore.hasRole('Admin');
     this.route.queryParamMap.pipe(take(1)).subscribe(params => {
+      this.selectedUsername = params.get('selectedUser') || params.get('userName') || params.get('user') || '';
       const editId = Number(params.get('editId'));
       if (editId) {
         this.gradeService.getGradeById(editId).pipe(take(1)).subscribe({
@@ -49,7 +56,6 @@ export class GradePageComponent implements OnInit {
   onCourseSelect(courseId: number) {
     this.selectedCourseId = courseId;
   }
-
   onCourseOverlayClose(changed: boolean) {
     this.selectedCourseId = undefined;
     if (changed){
@@ -60,7 +66,6 @@ export class GradePageComponent implements OnInit {
   onTargetSelect(targetId: number) {
     this.selectedTargetId = targetId;
   }
-
   onTargetOverlayClose() {
     this.selectedTargetId = undefined;
   }
@@ -68,8 +73,23 @@ export class GradePageComponent implements OnInit {
   onGradeSelect(gradeId: number) {
     this.selectedGradeId = gradeId;
   }
-
   onGradeOverlayClose() {
     this.selectedGradeId = undefined;
+  }
+
+  onAddGrade() {/* TODO: open grade creation form */}
+  onAddTarget() {/* TODO: open target creation form */}
+  onAddCourse() {/* TODO: open course creation form */}
+
+  onHeaderMenu() {
+    this.userSwitchOpen = true;
+  }
+  onUserSwitchClose() {
+    this.userSwitchOpen = false;
+  }
+  onUserSelected(ev: {id: number; name: string}) {
+    this.selectedUserId = ev.id;
+    this.selectedUsername = ev.name;
+    this.userSwitchOpen = false;
   }
 }

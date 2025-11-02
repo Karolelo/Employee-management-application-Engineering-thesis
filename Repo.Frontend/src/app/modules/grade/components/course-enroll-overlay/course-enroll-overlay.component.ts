@@ -33,9 +33,9 @@ export class CourseEnrollOverlayComponent implements OnInit{
     this.courseService.getCourseById(this.courseId).subscribe({
       next: (course) => {
         this.course = course;
-        const starts = this.parseDateOnly(course.start_Date);
+        const ends = this.parseDateOnly(course.finish_Date);
         const now = new Date();
-        this.isExpired = !!starts && starts < now;
+        this.isExpired = !!ends && ends < now;
 
         this.courseService.getParticipants(course.id)
           .pipe(catchError(() => of([] as UserMini[])))

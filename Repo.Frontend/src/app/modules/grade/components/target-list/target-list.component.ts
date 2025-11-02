@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import {Component, OnInit, Output, EventEmitter, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {Target} from '../../interfaces/target';
 import {UserStoreService} from '../../../login/services/user_data/user-store.service';
 import {TargetService} from '../../services/target.service';
@@ -9,7 +9,8 @@ import {TargetService} from '../../services/target.service';
   templateUrl: './target-list.component.html',
   styleUrl: './target-list.component.css'
 })
-export class TargetListComponent implements OnInit {
+export class TargetListComponent implements OnInit, OnChanges {
+  @Input() userId?: number;
   @Output() select = new EventEmitter<number>();
   targets: Target[] = [];
   loading = true;
@@ -21,13 +22,23 @@ export class TargetListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const userId = this.userStore.getUserId();
-    if (!userId){
+    this.load();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['userId'] && !changes['userId'].firstChange) this.load();
+  }
+
+  private load(): void {
+    const uId = this.userId ?? this.userStore.getUserId();
+    this.loading = true;
+    if (!uId){
+      this.targets = [];
       this.loading = false;
       return;
     }
 
-    this.targetService.getUserTargets(userId).subscribe({
+    this.targetService.getUserTargets(uId).subscribe({
       next: list => {
         this.targets = list;
         this.loading = false;

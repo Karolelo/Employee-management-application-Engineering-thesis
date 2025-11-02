@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import {Component, OnInit, Output, EventEmitter, OnChanges, SimpleChanges, Input} from '@angular/core';
 import {Course} from '../../interfaces/course';
 import {UserStoreService} from '../../../login/services/user_data/user-store.service';
 import {CourseService} from '../../services/course.service';
@@ -14,7 +14,8 @@ interface CourseVM extends Course {status: CourseStatus;}
   templateUrl: './course-list.component.html',
   styleUrl: './course-list.component.css'
 })
-export class CourseListComponent implements OnInit {
+export class CourseListComponent implements OnInit, OnChanges {
+  @Input() userId?: number;
   @Output() select = new EventEmitter<number>();
   courses: CourseVM[] = [];
   loading = true;
@@ -29,13 +30,17 @@ export class CourseListComponent implements OnInit {
     this.reload();
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['userId'] && !changes['userId'].firstChange) this.reload();
+  }
+
   reload(): void {
-    const userId = this.userStore.getUserId();
-    if (!userId) {
+    const uId = this.userId ?? this.userStore.getUserId();
+    this.loading = true;
+    if (!uId) {
       this.loading = false;
       return;
     }
-    this.loading = true;
 
     this.courseService.getCourses('', 1, 50).subscribe({
       next: (courses) => {
@@ -50,12 +55,13 @@ export class CourseListComponent implements OnInit {
             this.courseService.getParticipants(c.id).pipe(
               catchError (() => of([] as UserMini[])),
               map(participants => {
-                const enrolled = !!participants.find(p => p.id === userId);
-                const starts = this.parseDateOnly(c.start_Date);
+                const enrolled = !!participants.find(p => p.id === uId);
+                const ends = this.parseDateOnly(c.finish_Date);
                 const now = new Date();
+                const expired = !!ends && ends < now;
                 const status: CourseStatus =
                   enrolled ? 'participating'
-                    : (starts && starts < now) ? 'expired'
+                    : expired ? 'expired'
                       : 'undecided';
                 return {...c, status} as CourseVM;
               })

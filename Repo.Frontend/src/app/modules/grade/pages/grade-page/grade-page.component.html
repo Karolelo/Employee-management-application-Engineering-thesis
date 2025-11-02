@@ -1,32 +1,72 @@
 <header class="page-header">
   <button class="back-btn" routerLink="/"><i class="fa fa-arrow-left"></i></button>
   <h1>Grades and progression</h1>
+  <span *ngIf="isLeaderOrAdmin" class="selected-user">
+    Selected user: {{ selectedUsername || '—' }}
+  </span>
+
+  <button *ngIf="isLeaderOrAdmin"
+          type="button"
+          class="icon-btn more"
+          aria-label="More actions"
+          (click)="onHeaderMenu()">⋮</button>
 </header>
 
 <main class="grade-layout">
   <!-- Column 1: Grades -->
   <section class="panel">
-    <div class="panel-title"> </div>
+    <div class = "panel-head">
+      <div class="panel-title"></div>
+      <button *ngIf="isLeaderOrAdmin"
+              type="button"
+              class="icon-btn"
+              aria-label="Add grade"
+              (click)="onAddGrade()">＋</button>
+    </div>
     <div class="panel-scroll">
-      <app-user-grade-list (select)="onGradeSelect($event)"></app-user-grade-list>
+      <app-user-grade-list
+        [userId]="selectedUserId"
+        [usernameOverride]="selectedUsername"
+        (select)="onGradeSelect($event)">
+      </app-user-grade-list>
     </div>
   </section>
 
   <!-- Column 2: Targets -->
   <section class="panel">
-    <div class="panel-title">Personal targets</div>
+    <div class="panel-head">
+      <div class="panel-title">Personal targets</div>
+      <button *ngIf="isLeaderOrAdmin"
+              type="button"
+              class="icon-btn"
+              aria-label="Add target"
+              (click)="onAddTarget()">＋</button>
+    </div>
     <div class="panel-sub">Number of targets: {{targetCount}}</div>
     <div class="panel-scroll">
-      <app-target-list (select)="onTargetSelect($event)"></app-target-list>
+      <app-target-list
+        [userId]="selectedUserId"
+        (select)="onTargetSelect($event)">
+      </app-target-list>
     </div>
   </section>
 
   <!-- Column 3: Courses -->
   <section class="panel">
-    <div class="panel-title">Courses</div>
+    <div class="panel-head">
+      <div class="panel-title">Courses</div>
+      <button *ngIf="isLeaderOrAdmin"
+              type="button"
+              class="icon-btn"
+              aria-label="Add course"
+              (click)="onAddCourse()">＋</button>
+    </div>
     <div class="panel-sub">You can select a course from the list:</div>
     <div class="panel-scroll">
-      <app-course-list (select)="onCourseSelect($event)"></app-course-list>
+      <app-course-list
+        [userId]="selectedUserId"
+        (select)="onCourseSelect($event)">
+      </app-course-list>
     </div>
   </section>
 </main>
@@ -57,3 +97,10 @@
   [gradeId]="selectedGradeId!"
   (close)="onGradeOverlayClose()"
 ></app-grade-details-overlay>
+
+<!-- User switch overlay -->
+<app-user-switch-overlay
+  *ngIf="userSwitchOpen"
+  (close)="onUserSwitchClose()"
+  (selected)="onUserSelected($event)"
+></app-user-switch-overlay>
