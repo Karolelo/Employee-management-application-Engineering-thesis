@@ -1,20 +1,51 @@
 <div class="group-form">
   <h2 class="title-header">Create group</h2>
-  <form>
-    <input formControlName="name" placeholder=" ">
-    <label>Title</label>
-    <span *ngIf="groupForm.get('name')?.invalid && groupForm.get('name')?.touched" class="error-message">
-        Title is required.
-      </span>
-    <input formControlName="description" placeholder=" ">
-    <label>Title</label>
-    <span *ngIf="groupForm.get('name')?.invalid && groupForm.get('name')?.touched" class="error-message">
-        Title is required.
-      </span>
-    <input type="select" formControlName="admin_ID" placeholder=" ">
-    <label>Admin</label>
-    <span *ngIf="groupForm.get('name')?.invalid && groupForm.get('name')?.touched" class="error-message">
-        Title is required.
-      </span>
+  <form [formGroup]="groupForm" (ngSubmit)="onSubmit()">
+
+    <mat-form-field appearance="fill">
+      <mat-label>Title</mat-label>
+      <input matInput formControlName="name">
+      <mat-error *ngIf="groupForm.get('name')?.errors?.['required']">
+        Title is required
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Description</mat-label>
+        <textarea
+          matInput
+          formControlName="description"
+          placeholder="Announcement content"
+          rows="4"
+          cdkTextareaAutosize
+          cdkAutosizeMinRows="4"
+          cdkAutosizeMaxRows="8">
+          </textarea>
+      <mat-error *ngIf="groupForm.get('description')?.errors?.['required']">
+        Description is required
+      </mat-error>
+      <mat-error *ngIf="groupForm.get('description')?.errors?.['minlength']">
+        Description needs to be at least 30 characters long
+      </mat-error>
+      <mat-error *ngIf="groupForm.get('description')?.errors?.['maxlength']">
+        Description cannot be longer than 1000 characters
+      </mat-error>
+    </mat-form-field>
+    <h2 *ngIf="teamLeaders?.length===0">No available team leads u need to create one without group</h2>
+    <mat-form-field appearance="fill">
+      <mat-label>Admin</mat-label>
+      <mat-select formControlName="admin_ID">
+        <mat-option *ngFor="let admin of teamLeaders" [value]="admin.id">
+          {{admin.name}}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="groupForm.get('admin_ID')?.errors?.['required']">
+        Admin is required
+      </mat-error>
+      <mat-error *ngIf="groupForm.get('admin_ID')?.errors?.['pattern']">
+        Admin ID must be a number
+      </mat-error>
+    </mat-form-field>
+    <button type="submit" [disabled]="groupForm.invalid">Create</button>
   </form>
 </div>

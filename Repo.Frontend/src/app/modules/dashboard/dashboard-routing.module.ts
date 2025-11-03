@@ -1,5 +1,5 @@
-import {RouterModule, Routes} from '@angular/router';
-import {NgModule} from '@angular/core';
+import {RouterModule, Routes,CanDeactivate} from '@angular/router';
+import {NgModule,inject} from '@angular/core';
 import {UserListComponent} from './components/user-list/user-list.component';
 import {AdminDashboardComponent} from './components/admin-dashboard/admin-dashboard.component';
 import {CreateUserStepperFormComponent} from './components/create-user-stepper-form/create-user-stepper-form.component';
@@ -8,6 +8,8 @@ import {GroupViewPageComponent} from './pages/group-view-page/group-view-page.co
 import {GroupResolverService} from './resolvers/group-resolver.service';
 import {GroupsPageComponent} from './pages/groups-page/groups-page.component';
 import {ManageGroupPageComponent} from './pages/manage-group-page/manage-group-page.component';
+import {GroupFormComponent} from './components/group-form/group-form.component';
+import {GroupCreatePageComponent} from './pages/group-create-page/group-create-page.component';
 
 
 const routes: Routes = [
@@ -32,7 +34,10 @@ const routes: Routes = [
   },
   {
     path: 'groupsManage/:id', component: ManageGroupPageComponent
-  }
+  },
+  {
+    path: 'group/create', component: GroupCreatePageComponent,
+    canDeactivate: [()=> inject(GroupCreatePageComponent).canDeactivate()]}
 ]
 
 @NgModule({

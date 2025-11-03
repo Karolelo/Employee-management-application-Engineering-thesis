@@ -1,3 +1,8 @@
+app-group-short-info {
+  grid-column: 1/3;
+  grid-row: 1;
+}
+
 .group-page {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -8,34 +13,6 @@
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }
 
-.short-info {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-  grid-column: 1 / 3;
-  grid-row: 1;
-}
-
-.long-scrollable-text {
-  flex: 1;
-  max-width: 400px;
-  overflow-y: auto;
-  padding: 1.5rem;
-  box-shadow: 0 8px 16px var(--shadow-color);
-  border-radius: 16px;
-  background: white;
-  height: 50%;
-  font-family: var(--font-main);
-  color: var(--text-color);
-  line-height: 1.6;
-  text-align: justify;
-  text-indent: 2em;
-  white-space: pre-line;
-}
-img {
-  border-radius: 16px;
-  margin-top: 40px;
-}
 /*Tutaj zmienic ten shit*/
 .info-data {
   display: flex;

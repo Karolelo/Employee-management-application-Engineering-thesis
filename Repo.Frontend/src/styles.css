@@ -125,8 +125,19 @@ table[mat-table] {
   background-color: var(--primary-color) !important;
   opacity: 0.8;
 }
+/*style for common buttons*/
+button[type="submit"]:hover {
+  background-color: var(--success-color);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+}
 
-
+button[type="submit"]:disabled {
+  background-color: var(--error-color);
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
 
 
 

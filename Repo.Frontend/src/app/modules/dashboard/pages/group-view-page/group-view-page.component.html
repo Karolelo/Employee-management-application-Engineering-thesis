@@ -1,12 +1,5 @@
 <div class="group-page">
-  <div class="short-info">
-    <!--Here gonna add custom images someday-->
-    <img [ngSrc]="imageUrl" width="400" height="400" alt="Group_image" priority>
-    <article>
-      <h1 class="title-header">Team description</h1>
-      <p class="long-scrollable-text">{{group.description}}</p>
-    </article>
-  </div>
+  <app-group-short-info [group]="group"></app-group-short-info>
   <div class="info-data">
   @if (announcements.length > 0) {
     <h1 class="title-header">Announcements</h1>

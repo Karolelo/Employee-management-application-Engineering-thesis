@@ -10,5 +10,5 @@ public class GroupDTO
 
     public int Admin_ID { get; set; }
     
-    
+    public string? Description {get; set;}
 }

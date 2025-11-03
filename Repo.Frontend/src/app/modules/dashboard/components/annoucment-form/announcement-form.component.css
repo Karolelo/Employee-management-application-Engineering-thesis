@@ -21,3 +21,11 @@ button[type="submit"] {
   cursor: pointer;
   transition: all 0.3s ease;
 }
+button[type="submit"]:hover {
+  background-color: var(--accent-color);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+mat-form-field {
+  margin-bottom: 20px;
+}

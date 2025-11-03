@@ -1,7 +1,8 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import {Observable,forkJoin} from 'rxjs';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {forkJoin, Observable} from 'rxjs';
 import {User} from '../../interfaces/user';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -15,8 +16,16 @@ export class UserService {
   getUsers(): Observable<User[]>{
     return this.http.get<User[]>(this.url)
   }
-  getUsersFromGroup(groupId: number){
+  getUsersFromGroup(groupId: number): Observable<User[]>{
     return this.http.get<User[]>(this.url + '/group/' + groupId);
+  }
+
+  getUsersWithRole(role: string): Observable<User[]> {
+    return this.http.get<User[]>(`${this.url}/role`, {params: {role}});
+  }
+
+  getTeamLeadsWithoutGroup(): Observable<User[]> {
+    return this.http.get<User[]>(`${this.url}/availableLeads`);
   }
 
   deleteUser(id: number): Observable<void>{

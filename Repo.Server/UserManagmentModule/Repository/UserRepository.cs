@@ -20,6 +20,7 @@ public class UserRepository : IUserRepository
     {
         return await _context.Users
             .Include(u=>u.Roles)
+            .Include(u => u.Groups)
             .Where(u=>u.Deleted!=1)
             .ToListAsync();
     }
@@ -73,6 +74,8 @@ public class UserRepository : IUserRepository
         await _context.SaveChangesAsync();
         return existingUser;
     }
+    
+    
 
     public async Task<bool> DeleteUser(int id)
     {

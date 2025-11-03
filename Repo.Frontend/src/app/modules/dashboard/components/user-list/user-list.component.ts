@@ -22,6 +22,7 @@ export class UserListComponent implements AfterViewInit {
   @ViewChild(MatTable) table!: MatTable<User>;
   dataSource!: UserListDataSource;
   selectedIds: number[] = [];
+  activeEditing: boolean = true;
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
   displayedColumns = ['Nickname','Name','Surname','Login','Email','Role','Select'];
@@ -85,5 +86,9 @@ export class UserListComponent implements AfterViewInit {
     } else {
       this.router.navigate(['/dashboard/users/edit', this.selectedIds[0]])
     }
+  }
+
+  disableEdit() {
+    this.activeEditing = false;
   }
 }

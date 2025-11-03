@@ -137,6 +137,17 @@ export class UserListDataSource extends DataSource<User> {
     this.filterSubject.next(filterValue);
   }
 
+  filterExistingGroupUsers(groupId: number) {
+    this.user_service.getUsersFromGroup(groupId).subscribe(
+      {
+        next: (users) => {
+          this.removeUsers(users.map(user => user.id));
+        },
+        error: (error) => console.log(error)
+      }
+    )
+  }
+
 
   removeUsers(ids: number[]) {
     const currentData = this.dataSubject.value;

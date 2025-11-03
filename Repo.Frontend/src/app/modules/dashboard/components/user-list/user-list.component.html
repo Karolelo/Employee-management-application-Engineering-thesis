@@ -1,5 +1,5 @@
 <div class="mat-elevation-z2">
-  <mat-toolbar class="small-toolbar">
+  <mat-toolbar *ngIf="activeEditing" class="small-toolbar">
     <mat-icon (click)="onAdd()">add</mat-icon>
     <mat-icon (click)="onEdit()">edit</mat-icon>
     <mat-icon (click)="onDelete()">delete</mat-icon>

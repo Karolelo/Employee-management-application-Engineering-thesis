@@ -30,6 +30,13 @@ import {TaskModule} from "../task/task.module";
 import { AnnouncementFormComponent } from './components/annoucment-form/announcement-form.component';
 import { MatFormFieldModule,MatFormFieldAppearance } from '@angular/material/form-field';
 import { AnnouncementListComponent } from './components/announcement-list/announcement-list.component';
+import { TextFieldModule } from '@angular/cdk/text-field';
+import {MatDividerModule} from '@angular/material/divider';
+import { GroupCreatePageComponent } from './pages/group-create-page/group-create-page.component';
+import { AddUserToGroupFormComponent } from './components/add-user-to-group-form/add-user-to-group-form.component';
+import {MatProgressBar} from '@angular/material/progress-bar';
+import {MatSpinner} from '@angular/material/progress-spinner';
+import { GroupShortInfoComponent } from './components/group-short-info/group-short-info.component';
 @NgModule({
   declarations: [
     AdminDashboardComponent,
@@ -44,6 +51,9 @@ import { AnnouncementListComponent } from './components/announcement-list/announ
     GroupListComponent,
     AnnouncementFormComponent,
     AnnouncementListComponent,
+    GroupCreatePageComponent,
+    AddUserToGroupFormComponent,
+    GroupShortInfoComponent,
   ],
     imports: [
         CommonModule,
@@ -68,7 +78,14 @@ import { AnnouncementListComponent } from './components/announcement-list/announ
         CdkStepperModule,
         TaskModule,
         NgOptimizedImage,
-        MatFormFieldModule
+        MatFormFieldModule,
+        TextFieldModule,
+        MatDividerModule,
+        MatProgressBar,
+        MatSpinner
+    ],
+    providers: [
+      GroupCreatePageComponent
     ]
 })
 export class DashboardModule {

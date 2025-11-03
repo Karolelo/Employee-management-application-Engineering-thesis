@@ -29,6 +29,14 @@ export class GroupService {
     return this.http.delete<void>(this.basiceUrl+`/${id}`);
   }
 
+  addUserToGroup(userId: number,groupId: number): Observable<void>{
+    return this.http.post<void>(`${this.basiceUrl}/add-user/${userId}/${groupId}`,null);
+  }
+
+  removeUserFromGroup(userId: number,groupId: number) {
+    return this.http.delete(this.basiceUrl + `/remove-user/${userId}/${groupId}`)
+  }
+
   getGroupImagePath(id: number): Observable<Blob> {
     return this.http.get(`${this.basiceUrl}/image/${id}`, {
       responseType: 'blob'

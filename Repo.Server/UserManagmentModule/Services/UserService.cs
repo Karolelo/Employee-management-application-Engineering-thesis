@@ -1,5 +1,7 @@
-using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.Extensions.Options;
 using Repo.Core.Infrastructure;
+using Repo.Core.Infrastructure.Database;
+using Repo.Core.Infrastructure.Roles;
 using Repo.Core.Models;
 using Repo.Core.Models.api;
 using Repo.Core.Models.user;
@@ -9,14 +11,21 @@ namespace Repo.Server.UserManagmentModule.Services;
 
 public class UserService : IUserService
 {
+    private readonly MyDbContext _context;
     private readonly IUserRepository _userRepository;
     private readonly IRoleRepository _roleRepository;
     private readonly IGroupRepository _groupRepository;
-    public UserService(IUserRepository userRepository,IRoleRepository roleRepository,IGroupRepository groupRepository)
+    private readonly RoleConfiguration _roleConfiguration;
+    public UserService(MyDbContext context,IUserRepository userRepository
+        ,IRoleRepository roleRepository
+        ,IGroupRepository groupRepository
+        ,IOptions<RoleConfiguration> roleConfiguration)
     {
+        _context = context;
         _userRepository = userRepository;
         _roleRepository = roleRepository;
         _groupRepository = groupRepository;
+        _roleConfiguration = roleConfiguration.Value;
     }
 
     public async Task<Response<List<UserDTO>>> GetAllUsers()
@@ -50,6 +59,47 @@ public class UserService : IUserService
             return Response<List<UserDTO>>.Fail($"Error while fetching users: {e.Message}");
         }
     }
+
+    public async Task<Response<List<UserDTO>>> GetUsersWithoutGroup()
+    {
+        try
+        {
+            var users = await _userRepository.GetAllUsers();
+            var usersWithoutGroup = users.Where(u => !u.Groups.Any()).ToList();
+            var usersDto = usersWithoutGroup.Select(user => new UserDTO(user)).ToList();
+            return Response<List<UserDTO>>.Ok(usersDto);
+        }
+        catch (Exception e)
+        {
+            return Response<List<UserDTO>>.Fail($"Error while fetching users: {e.Message}");
+        }
+    }
+
+    public async Task<Response<List<UserDTO>>> GetTeamLeadersWithoutGroup()
+    {
+        try
+        {
+            var response = await GetAllUsers();
+
+            if (response.Success)
+            {
+                var role = "TeamLeader";
+                if (!_roleConfiguration.AvailableRoles.Contains(role))
+                    return Response<List<UserDTO>>.Fail($"Role: {role} is not available");
+                
+                var users = response.Data
+                    .Where(u => u.Roles.Contains(role)&&!_context.Groups.Any(g=>g.Admin_ID==u.ID))
+                    .ToList();
+                
+                return Response<List<UserDTO>>.Ok(users);
+            }
+            return Response<List<UserDTO>>.Fail("No available teamLead found ");
+        }
+        catch (Exception e)
+        {
+            return Response<List<UserDTO>>.Fail($"Error while fetching users: {e.Message}");
+        }
+    }
     
     public async Task<Response<UserDTO>> GetUserById(int id)
     {
@@ -65,6 +115,30 @@ public class UserService : IUserService
             return Response<UserDTO>.Fail($"Error while fetching user: {ex.Message}");
         }
     }
+
+    public async Task<Response<List<UserDTO>>> GetUsersWithRole(string role)
+    {
+        try
+        {
+            var response = await GetAllUsers();
+
+            if (response.Success)
+            {
+                if(!_roleConfiguration.AvailableRoles.Contains(role))
+                    return Response<List<UserDTO>>.Fail($"Role: {role} is not available");
+                
+                var users = response.Data.Where(u=>u.Roles.Contains(role)).ToList();
+                return Response<List<UserDTO>>.Ok(users);
+            }
+            return Response<List<UserDTO>>.Fail($"Error during fetching users with role: {role}, Error: {response.Error}");
+
+        }
+        catch (Exception ex)
+        {
+            return Response<List<UserDTO>>.Fail($"Error while fetching users: {ex.Message}");
+        }
+    }
+
     public async Task<Response<UserDTO>> UpdateUser(UserUpdateDTO dto)
     {
         try

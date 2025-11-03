@@ -10,6 +10,8 @@
   width: calc(100% - 30px);
   height: calc(100% - 30px);
   transition: transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
 }
 
 .dashboard-card:hover {
@@ -18,18 +20,32 @@
 
 .mat-card-header {
   background: linear-gradient(135deg, #cfd9df, #e2ebf0);
-  padding: 15px;
   border-radius: 8px 8px 0 0;
 }
 
 .mat-card-title {
   color: var(--text-color);
-  font-family: var(--font-main);
   font-size: 1.2rem;
   margin: 0;
 }
 
 dashboard-card-content {
+  height: 100vh;
   display: flex;
   flex-direction: row;
+}
+
+.announcement-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex: 1;
+}
+
+.header-mat {
+  font-family: monospace;
+  font-size: 1.5rem;
+  font-weight: 1000;
+  color: var(--primary-color);
+  margin: 0;
 }

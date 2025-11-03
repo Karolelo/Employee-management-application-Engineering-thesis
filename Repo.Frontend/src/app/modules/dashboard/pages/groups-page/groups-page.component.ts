@@ -45,7 +45,9 @@ export class GroupsPageComponent {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: {
         title: 'Delete group',
-        message: 'You sure you want to delete this group?'
+        message: 'You sure you want to delete this group?',
+        closeBtn: 'Cancel',
+        confirmBtn: 'Delete'
       },
       disableClose: true
     });
