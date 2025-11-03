@@ -11,6 +11,8 @@ public interface IUserService
     Task<Response<List<UserDTO>>> GetAllUsersFromGroup(int groupId);
     
     Task<Response<UserDTO>> GetUserById(int id);
+
+    Task<Response<List<UserDTO>>> GetUsersWithRole(string role);
     
     Task<Response<UserDTO>> UpdateUser(UserUpdateDTO dto);
     

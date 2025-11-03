@@ -8,6 +8,8 @@ import {GroupViewPageComponent} from './pages/group-view-page/group-view-page.co
 import {GroupResolverService} from './resolvers/group-resolver.service';
 import {GroupsPageComponent} from './pages/groups-page/groups-page.component';
 import {ManageGroupPageComponent} from './pages/manage-group-page/manage-group-page.component';
+import {GroupFormComponent} from './components/group-form/group-form.component';
+import {GroupCreatePageComponent} from './pages/group-create-page/group-create-page.component';
 
 
 const routes: Routes = [
@@ -32,6 +34,9 @@ const routes: Routes = [
   },
   {
     path: 'groupsManage/:id', component: ManageGroupPageComponent
+  },
+  {
+    path: 'group/create', component: GroupCreatePageComponent
   }
 ]
 

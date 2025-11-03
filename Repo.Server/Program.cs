@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Repo.Core.Infrastructure.Database;
 using Repo.Core.Infrastructure.Files;
+using Repo.Core.Infrastructure.Roles;
 using Repo.Server.CalendarModule.Interfaces;
 using Repo.Server.CalendarModule.Repositories;
 using Repo.Server.CalendarModule.Services;
@@ -37,6 +38,11 @@ builder.Services.AddScoped<IGroupService,GroupService>();
 builder.Services.AddScoped<IFileOperations,FileOperation>();
 builder.Services.AddScoped<IAnnoucementService,AnnouncementService>();
 builder.Services.AddScoped<IAnnoucementRepository,AnnoucementRepository>();
+
+//Creating getting role from appseting
+builder.Services.Configure<RoleConfiguration>(
+    builder.Configuration.GetSection("Roles"));
+
 
 // Connection priority - changeable if needed
 var candidateNames = new[] { "Mroziu-workspace", "DefaultConnection" };

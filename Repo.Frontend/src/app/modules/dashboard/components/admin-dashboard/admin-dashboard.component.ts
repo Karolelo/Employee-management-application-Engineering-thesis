@@ -54,23 +54,7 @@ export class AdminDashboardComponent implements OnInit{
   }
 
   onAddGroupClick() {
-
+    this.router.navigate(['dashboard/group/create']);
   }
 
-  onEditGroupClick() {
-
-  }
-
-  onDeleteGroupClick() {
-
-  }
 }
-//Fajny sposób na dodanie menu w math components
-/*
-<!-- <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
-  <mat-icon>more_vert</mat-icon>
-  </button>
-  <mat-menu #menu="matMenu" xPosition="before">
-  <button mat-menu-item>Expand</button>
-  <button mat-menu-item>Remove</button>
-</mat-menu>-->*/

@@ -30,6 +30,10 @@ import {TaskModule} from "../task/task.module";
 import { AnnouncementFormComponent } from './components/annoucment-form/announcement-form.component';
 import { MatFormFieldModule,MatFormFieldAppearance } from '@angular/material/form-field';
 import { AnnouncementListComponent } from './components/announcement-list/announcement-list.component';
+import { TextFieldModule } from '@angular/cdk/text-field';
+import {MatDividerModule} from '@angular/material/divider';
+import { GroupCreatePageComponent } from './pages/group-create-page/group-create-page.component';
+import { AddUserToGroupFormComponent } from './components/add-user-to-group-form/add-user-to-group-form.component';
 @NgModule({
   declarations: [
     AdminDashboardComponent,
@@ -44,6 +48,8 @@ import { AnnouncementListComponent } from './components/announcement-list/announ
     GroupListComponent,
     AnnouncementFormComponent,
     AnnouncementListComponent,
+    GroupCreatePageComponent,
+    AddUserToGroupFormComponent,
   ],
     imports: [
         CommonModule,
@@ -68,7 +74,9 @@ import { AnnouncementListComponent } from './components/announcement-list/announ
         CdkStepperModule,
         TaskModule,
         NgOptimizedImage,
-        MatFormFieldModule
+        MatFormFieldModule,
+        TextFieldModule,
+        MatDividerModule,
     ]
 })
 export class DashboardModule {

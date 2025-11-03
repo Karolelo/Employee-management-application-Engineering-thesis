@@ -1,4 +1,6 @@
+using Microsoft.Extensions.Options;
 using Repo.Core.Infrastructure.Files;
+using Repo.Core.Infrastructure.Roles;
 using Repo.Core.Models;
 using Repo.Core.Models.api;
 using Repo.Core.Models.user;
@@ -10,7 +12,10 @@ public class GroupService : IGroupService
 {
     private readonly IGroupRepository _groupRepository;
     private readonly IFileOperations _file;
-    public GroupService(IGroupRepository groupRepository, IFileOperations file)
+    public GroupService(IGroupRepository groupRepository
+        , IFileOperations file
+        , IOptions<RoleConfiguration> roleConfiguration
+        )
     {
         _groupRepository = groupRepository;
         _file = file;

@@ -51,6 +51,15 @@ public class UserController : ControllerBase
             : NotFound(new { message = response.Error });
     }
 
+    [HttpGet("role")]
+    public async Task<IActionResult> GetUsersByRole([FromQuery] string role)
+    {
+        var response = await _userService.GetUsersWithRole(role);
+        return response.Success
+            ? Ok(response.Data)
+            : NotFound(new { message = response.Error });
+    }
+
     [HttpPut]
     public async Task<IActionResult> UpdateUser([FromBody] UserUpdateDTO dto)
     {

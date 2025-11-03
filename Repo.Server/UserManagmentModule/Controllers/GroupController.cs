@@ -73,6 +73,38 @@ public class GroupController(IGroupService groupService) : ControllerBase
             
         return NoContent();
     }
+    [HttpPost("add-user/{userId}/{groupId}")]
+    public async Task<IActionResult> AddUserToGroup(int userId, int groupId)
+    {
+        var response = await groupService.AddUserToGroup(userId, groupId);
+        
+        if (!response.Success)
+            return BadRequest(new { Message = response.Error });
+            
+        return Ok(response.Data);
+    }
+    
+    [HttpDelete("remove-user/{userId}/{groupId}")]
+    public async Task<IActionResult> RemoveUserFromGroup(int userId, int groupId)
+    {
+        var response = await groupService.RemoveUserFromGroup(userId, groupId);
+        
+        if (!response.Success)
+            return BadRequest(new { Message = response.Error });
+            
+        return Ok(response.Data);
+        
+    }
+    
+    [HttpPut("set-leader/{userId}/{groupId}")]
+    public async Task<IActionResult> SetLeaderOfGroup(int userId, int groupId)
+    {
+        var response = await groupService.SetLeaderOfGroup(userId, groupId);
+        
+        if (!response.Success)
+            return BadRequest(new { Message = response.Error });
+        return Ok(response.Data);
+    }
 
     [HttpGet("image/{groupId}")]
     public async Task<IActionResult> GetGroupImage(int groupId)
@@ -84,7 +116,7 @@ public class GroupController(IGroupService groupService) : ControllerBase
         //I'm not returning files because it's not any kind private data    
         return File(result.Data, "image/jpeg");
         /*return Ok(new {path = result.Data });*/
-}
+    }
     
     [HttpPost("upload-image/{id}")]
     public async Task<IActionResult> UploadGroupImage(int id, IFormFile? image, bool isUpdate = false)

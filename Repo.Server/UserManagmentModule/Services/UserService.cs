@@ -1,5 +1,6 @@
-using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.Extensions.Options;
 using Repo.Core.Infrastructure;
+using Repo.Core.Infrastructure.Roles;
 using Repo.Core.Models;
 using Repo.Core.Models.api;
 using Repo.Core.Models.user;
@@ -12,11 +13,16 @@ public class UserService : IUserService
     private readonly IUserRepository _userRepository;
     private readonly IRoleRepository _roleRepository;
     private readonly IGroupRepository _groupRepository;
-    public UserService(IUserRepository userRepository,IRoleRepository roleRepository,IGroupRepository groupRepository)
+    private readonly RoleConfiguration _roleConfiguration;
+    public UserService(IUserRepository userRepository
+        ,IRoleRepository roleRepository
+        ,IGroupRepository groupRepository
+        ,IOptions<RoleConfiguration> roleConfiguration)
     {
         _userRepository = userRepository;
         _roleRepository = roleRepository;
         _groupRepository = groupRepository;
+        _roleConfiguration = roleConfiguration.Value;
     }
 
     public async Task<Response<List<UserDTO>>> GetAllUsers()
@@ -65,6 +71,30 @@ public class UserService : IUserService
             return Response<UserDTO>.Fail($"Error while fetching user: {ex.Message}");
         }
     }
+
+    public async Task<Response<List<UserDTO>>> GetUsersWithRole(string role)
+    {
+        try
+        {
+            var response = await GetAllUsers();
+
+            if (response.Success)
+            {
+                if(!_roleConfiguration.AvailableRoles.Contains(role))
+                    return Response<List<UserDTO>>.Fail($"Role: {role} is not available");
+                
+                var users = response.Data.Where(u=>u.Roles.Contains(role)).ToList();
+                return Response<List<UserDTO>>.Ok(users);
+            }
+            return Response<List<UserDTO>>.Fail($"Error during fetching users with role: {role}, Error: {response.Error}");
+
+        }
+        catch (Exception ex)
+        {
+            return Response<List<UserDTO>>.Fail($"Error while fetching users: {ex.Message}");
+        }
+    }
+
     public async Task<Response<UserDTO>> UpdateUser(UserUpdateDTO dto)
     {
         try
