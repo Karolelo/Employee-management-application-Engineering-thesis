@@ -23,6 +23,9 @@ export class GradePageComponent implements OnInit {
   isLeaderOrAdmin = false;
   selectedUsername = '';
   userSwitchOpen = false;
+  createCourseOpen = false;
+  createTargetOpen = false;
+  createGradeOpen = false;
 
   @ViewChild(CourseListComponent) courseList?: CourseListComponent;
 
@@ -66,20 +69,38 @@ export class GradePageComponent implements OnInit {
   onTargetSelect(targetId: number) {
     this.selectedTargetId = targetId;
   }
-  onTargetOverlayClose() {
+  onTargetOverlayClose(changed?: boolean) {
     this.selectedTargetId = undefined;
   }
 
   onGradeSelect(gradeId: number) {
     this.selectedGradeId = gradeId;
   }
-  onGradeOverlayClose() {
+  onGradeOverlayClose(changed?: boolean) {
     this.selectedGradeId = undefined;
   }
 
-  onAddGrade() {/* TODO: open grade creation form */}
-  onAddTarget() {/* TODO: open target creation form */}
-  onAddCourse() {/* TODO: open course creation form */}
+  onAddGrade() {
+    this.createGradeOpen = true;
+  }
+  onGradeCreated(changed: boolean) {
+    this.createGradeOpen = false;
+  }
+
+  onAddTarget() {
+    this.createTargetOpen = true;
+  }
+  onTargetCreated(changed: boolean) {
+    this.createTargetOpen = false;
+  }
+
+  onAddCourse() {
+    this.createCourseOpen = true;
+  }
+  onCourseCreated(changed: boolean) {
+    this.createCourseOpen = false;
+    if (changed) this.courseList?.reload();
+  }
 
   onHeaderMenu() {
     this.userSwitchOpen = true;

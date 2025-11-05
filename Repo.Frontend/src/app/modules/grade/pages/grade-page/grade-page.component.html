@@ -88,14 +88,14 @@
 <app-target-details-overlay
   *ngIf="selectedTargetId"
   [targetId]="selectedTargetId!"
-  (close)="onTargetOverlayClose()">
+  (close)="onTargetOverlayClose($event)">
 </app-target-details-overlay>
 
 <!-- Grade details overlay -->
 <app-grade-details-overlay
   *ngIf="selectedGradeId"
   [gradeId]="selectedGradeId!"
-  (close)="onGradeOverlayClose()"
+  (close)="onGradeOverlayClose($event)"
 ></app-grade-details-overlay>
 
 <!-- User switch overlay -->
@@ -104,3 +104,23 @@
   (close)="onUserSwitchClose()"
   (selected)="onUserSelected($event)"
 ></app-user-switch-overlay>
+
+<!-- Course creator overlay -->
+<app-course-create-overlay
+  *ngIf="createCourseOpen"
+  (close)="onCourseCreated($event)"
+></app-course-create-overlay>
+
+<!-- Target creator overlay -->
+<app-target-create-overlay
+  *ngIf="createTargetOpen"
+  [userId]="selectedUserId"
+  (close)="onTargetCreated($event)">
+</app-target-create-overlay>
+
+<!-- Grade creator overlay -->
+<app-grade-create-overlay
+  *ngIf="createGradeOpen"
+  [userId]="selectedUserId"
+  (close)="onGradeCreated($event)">
+</app-grade-create-overlay>

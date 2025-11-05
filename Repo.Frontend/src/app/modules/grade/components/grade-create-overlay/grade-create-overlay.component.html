@@ -1,0 +1,31 @@
+<div class="overlay" (click)="dismiss()">
+  <div class="card" (click)="$event.stopPropagation()">
+    <h2 class="title">{{ grade ? 'Grade editor' : 'Grade creator' }}</h2>
+    <button class="close" type="button" (click)="dismiss()">×</button>
+
+    <form [formGroup]="form" (ngSubmit)="create()" class="form">
+      <label>Grade (0–5):</label>
+      <input type="number" formControlName="grade" min="0" max="5" step="1">
+
+      <label>Description:</label>
+      <textarea rows="5" formControlName="description" placeholder="Short note..."></textarea>
+
+      <label>Start date:</label>
+      <input type="date" formControlName="start_Date">
+
+      <label>Finish date:</label>
+      <input type="date" formControlName="finish_Date">
+
+      <div class="errors" *ngIf="form.hasError('finishBeforeStart')">
+        Finish date cannot be earlier than start date.
+      </div>
+
+      <div class="actions">
+        <button mat-button type="button" (click)="dismiss()">Cancel</button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || submitting">
+          Create
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

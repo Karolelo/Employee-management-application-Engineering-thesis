@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {Grade} from '../../interfaces/grade';
 import {GradeService} from '../../services/grade.service';
+import {UserStoreService} from '../../../login/services/user_data/user-store.service';
 
 @Component({
   selector: 'app-grade-details-overlay',
@@ -10,15 +11,18 @@ import {GradeService} from '../../services/grade.service';
 })
 export class GradeDetailsOverlayComponent implements OnInit{
   @Input({required: true}) gradeId!: number;
-  @Output() close = new EventEmitter<void>();
+  @Output() close = new EventEmitter<boolean>();
 
   loading = true;
   error = '';
   grade?: Grade;
 
-  constructor(private gradeService: GradeService) {}
+  isLeaderOrAdmin=false; editOpen=false; confirmOpen=false; submitting=false;
+  constructor(private gradeService: GradeService,
+              private userStore: UserStoreService) { }
 
   ngOnInit(): void {
+    this.isLeaderOrAdmin = this.userStore.hasRole('TeamLeader') || this.userStore.hasRole('Admin');
     this.loading = true;
     this.gradeService.getGradeById(this.gradeId).subscribe({
       next: grade => {
@@ -33,7 +37,37 @@ export class GradeDetailsOverlayComponent implements OnInit{
   }
 
   dismiss(): void {
-    this.close.emit();
+    this.close.emit(false);
+  }
+
+  openEdit(){ this.editOpen=true; }
+  onEditClosed(changed:boolean){
+    this.editOpen=false;
+    if(changed)
+    {
+      this.gradeService.getGradeById(this.grade!.id).subscribe(g=>this.grade=g);
+      this.close.emit(true);
+    }
+  }
+
+  onEditSaved() {
+    this.editOpen = false;
+    if (this.grade) {
+      this.gradeService.getGradeById(this.grade.id)
+        .subscribe(g => this.grade = g);
+    }
+    this.close.emit(true);
+  }
+
+  askDelete(){ this.confirmOpen=true; }
+  cancelDelete(){ this.confirmOpen=false; }
+  confirmDelete(){
+    if(!this.grade) return;
+    this.submitting=true;
+    this.gradeService.deleteGrade(this.grade.id).subscribe({
+      next: ()=> { this.submitting=false; this.confirmOpen=false; this.close.emit(true); },
+      error:()=> { this.submitting=false; this.confirmOpen=false; }
+    });
   }
 
   displayValuePercent(grade: Grade | undefined): string {

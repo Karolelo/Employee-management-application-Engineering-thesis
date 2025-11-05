@@ -2,6 +2,11 @@
   <div class="card">
     <button class="close" type="button" (click)="dismiss()">×</button>
 
+    <div *ngIf="isLeaderOrAdmin" class="admin-icons">
+      <button class="icon" type="button" (click)="openEdit()" aria-label="Edit">✎</button>
+      <button class="icon" type="button" (click)="askDelete()" aria-label="Delete">🗑</button>
+    </div>
+
     <div *ngIf="loading" class="loading"><mat-spinner></mat-spinner></div>
     <ng-container *ngIf="!loading && course">
       <h2 class="title">{{ course.name }}</h2>
@@ -14,7 +19,6 @@
         <span>Starts on: {{ formatDate(course.start_Date) }}</span>
         <span>Finishes on: {{ formatDate(course.finish_Date) }}</span>
 
-        <!-- JEDEN główny CTA -->
         <button *ngIf="!isEnrolled && !isExpired"
                 mat-raised-button color="primary"
                 [disabled]="submitting"
@@ -33,3 +37,17 @@
     <p *ngIf="error" class="error">{{ error }}</p>
   </div>
 </div>
+
+<app-course-create-overlay
+  *ngIf="editOpen && course as c"
+  [course]="c"
+  (close)="onEditClosed($event)">
+</app-course-create-overlay>
+
+<app-confirm-overlay
+  *ngIf="confirmOpen"
+  title="Delete course?"
+  message="This action cannot be undone."
+  (cancel)="cancelDelete()"
+  (confirm)="confirmDelete()">
+</app-confirm-overlay>

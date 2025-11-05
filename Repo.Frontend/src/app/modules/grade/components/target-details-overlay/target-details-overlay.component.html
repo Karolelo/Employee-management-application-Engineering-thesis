@@ -2,6 +2,11 @@
   <div class="card">
     <button class="close" type="button" (click)="dismiss()">×</button>
 
+    <div class="admin-icons" *ngIf="isLeaderOrAdmin">
+      <button class="icon" type="button" (click)="openEdit()">✎</button>
+      <button class="icon" type="button" (click)="askDelete()">🗑</button>
+    </div>
+
     <div *ngIf="loading" class="loading"><mat-spinner></mat-spinner></div>
 
     <ng-container *ngIf="!loading && target">
@@ -24,3 +29,18 @@
     <p *ngIf="error" class="error">{{ error }}</p>
   </div>
 </div>
+
+<app-target-create-overlay
+  *ngIf="editOpen && target as t"
+  [userId]="undefined"
+  [target]="t"
+  (close)="onEditClosed($event)">
+</app-target-create-overlay>
+
+<app-confirm-overlay
+  *ngIf="confirmOpen"
+  title="Delete target?"
+  message="This action cannot be undone."
+  (cancel)="cancelDelete()"
+  (confirm)="confirmDelete()">
+</app-confirm-overlay>

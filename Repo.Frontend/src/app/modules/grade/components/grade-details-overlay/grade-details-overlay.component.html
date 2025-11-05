@@ -2,6 +2,11 @@
   <div class="card" (click)="$event.stopPropagation()">
     <button class="close" type="button" (click)="dismiss()">×</button>
 
+    <div *ngIf="isLeaderOrAdmin" class="admin-icons">
+      <button class="icon" type="button" (click)="openEdit()">✎</button>
+      <button class="icon" type="button" (click)="askDelete()">🗑</button>
+    </div>
+
     <div *ngIf="loading" class="loading"><mat-spinner></mat-spinner></div>
 
     <ng-container *ngIf="!loading && grade">
@@ -10,6 +15,10 @@
       <div class="score">
         <div class="value">{{ displayValue(grade) }}</div>
         <div class="sub">/ 5 ({{ displayValuePercent(grade) }})</div>
+      </div>
+
+      <div class="desc-scroll">
+        <p>{{ grade.description || '—' }}</p>
       </div>
 
       <div class="meta">
@@ -22,3 +31,19 @@
     <p *ngIf="error" class="error">{{ error }}</p>
   </div>
 </div>
+
+<ng-container *ngIf="editOpen && grade">
+  <app-grade-create-overlay
+    [grade]="grade"
+    (saved)="onEditSaved()"
+    (close)="onEditClosed($event)">
+  </app-grade-create-overlay>
+</ng-container>
+
+<app-confirm-overlay
+  *ngIf="confirmOpen"
+  title="Delete grade?"
+  message="This action cannot be undone."
+  (cancel)="cancelDelete()"
+  (confirm)="confirmDelete()">
+</app-confirm-overlay>

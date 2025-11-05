@@ -21,6 +21,9 @@ export class CourseEnrollOverlayComponent implements OnInit{
   isEnrolled = false;
   isExpired = false;
   error = '';
+  isLeaderOrAdmin = false;
+  editOpen = false;
+  confirmOpen = false;
 
   constructor(
     private courseService: CourseService,
@@ -29,6 +32,7 @@ export class CourseEnrollOverlayComponent implements OnInit{
   }
 
   ngOnInit(): void {
+    this.isLeaderOrAdmin = this.userStore.hasRole('TeamLeader') || this.userStore.hasRole('Admin');
     const userId = this.userStore.getUserId();
     this.courseService.getCourseById(this.courseId).subscribe({
       next: (course) => {
@@ -82,6 +86,27 @@ export class CourseEnrollOverlayComponent implements OnInit{
 
   dismiss(): void {
     this.close.emit(false);
+  }
+
+  openEdit(): void { this.editOpen = true; }
+  onEditClosed(changed: boolean): void {
+    this.editOpen = false;
+    if (changed && this.course) {
+      this.courseService.getCourseById(this.course.id).subscribe(c => this.course = c);
+      this.close.emit(true);
+    }
+  }
+
+  askDelete(): void { this.confirmOpen = true; }
+  cancelDelete(): void { this.confirmOpen = false; }
+  confirmDelete(): void {
+    if (!this.course) return;
+    this.submitting = true;
+    this.courseService.deleteCourse(this.course.id).subscribe({
+      next: () => { this.submitting = false; this.close.emit(true); },
+      error: () => { this.submitting = false; },
+      complete: () => this.confirmOpen = false
+    });
   }
 
   private parseDateOnly(start: string): Date | null {

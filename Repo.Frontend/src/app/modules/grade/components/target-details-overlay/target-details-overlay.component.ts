@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { TargetService } from '../../services/target.service';
 import { Target } from '../../interfaces/target';
+import {UserStoreService} from '../../../login/services/user_data/user-store.service';
 
 @Component({
   selector: 'app-target-details-overlay',
@@ -10,15 +11,22 @@ import { Target } from '../../interfaces/target';
 })
 export class TargetDetailsOverlayComponent implements OnInit {
   @Input({required:true}) targetId!: number;
-  @Output() close = new EventEmitter<void>();
+  @Output() close = new EventEmitter<boolean>();
 
   loading = true;
   error = '';
   target?: Target;
 
-  constructor(private targetService: TargetService) { }
+  isLeaderOrAdmin = false;
+  editOpen = false;
+  confirmOpen = false;
+  submitting = false;
+
+  constructor(private targetService: TargetService,
+              private userStore: UserStoreService) { }
 
   ngOnInit(): void {
+    this.isLeaderOrAdmin = this.userStore.hasRole('TeamLeader') || this.userStore.hasRole('Admin');
     this.loading = true;
     this.targetService.getTargetById(this.targetId).subscribe({
       next: target => {
@@ -33,7 +41,20 @@ export class TargetDetailsOverlayComponent implements OnInit {
   }
 
   dismiss(): void {
-    this.close.emit();
+    this.close.emit(false);
+  }
+
+  openEdit(){ this.editOpen = true; }
+  onEditClosed(changed: boolean){ this.editOpen=false; if(changed && this.target){ this.targetService.getTargetById(this.target.id).subscribe(t=>this.target=t); this.close.emit(true); } }
+  askDelete(){ this.confirmOpen=true; }
+  cancelDelete(){ this.confirmOpen=false; }
+  confirmDelete(){
+    if(!this.target) return;
+    this.submitting=true;
+    this.targetService.deleteTarget(this.target.id).subscribe({
+      next: ()=> { this.submitting=false; this.confirmOpen=false; this.close.emit(true); },
+      error:()=> { this.submitting=false; this.confirmOpen=false; }
+    });
   }
 
   formatDateTime(iso: string | null | undefined): string {

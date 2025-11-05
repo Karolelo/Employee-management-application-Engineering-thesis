@@ -17,6 +17,10 @@ import { CourseEnrollOverlayComponent } from './components/course-enroll-overlay
 import { TargetDetailsOverlayComponent } from './components/target-details-overlay/target-details-overlay.component';
 import { GradeDetailsOverlayComponent } from './components/grade-details-overlay/grade-details-overlay.component';
 import { UserSwitchOverlayComponent } from './components/user-switch-overlay/user-switch-overlay.component';
+import { CourseCreateOverlayComponent } from './components/course-create-overlay/course-create-overlay.component';
+import { TargetCreateOverlayComponent } from './components/target-create-overlay/target-create-overlay.component';
+import { GradeCreateOverlayComponent } from './components/grade-create-overlay/grade-create-overlay.component';
+import { ConfirmOverlayComponent } from './components/confirm-overlay/confirm-overlay.component';
 
 
 
@@ -32,7 +36,11 @@ import { UserSwitchOverlayComponent } from './components/user-switch-overlay/use
     CourseEnrollOverlayComponent,
     TargetDetailsOverlayComponent,
     GradeDetailsOverlayComponent,
-    UserSwitchOverlayComponent
+    UserSwitchOverlayComponent,
+    CourseCreateOverlayComponent,
+    TargetCreateOverlayComponent,
+    GradeCreateOverlayComponent,
+    ConfirmOverlayComponent
   ],
   imports: [
     CommonModule,
