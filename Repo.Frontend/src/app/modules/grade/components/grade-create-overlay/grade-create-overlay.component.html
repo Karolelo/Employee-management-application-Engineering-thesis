@@ -23,7 +23,7 @@
       <div class="actions">
         <button mat-button type="button" (click)="dismiss()">Cancel</button>
         <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || submitting">
-          Create
+          {{ grade ? 'Save' : 'Create' }}
         </button>
       </div>
     </form>

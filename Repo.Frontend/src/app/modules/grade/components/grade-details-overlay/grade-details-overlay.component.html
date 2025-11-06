@@ -32,13 +32,12 @@
   </div>
 </div>
 
-<ng-container *ngIf="editOpen && grade">
-  <app-grade-create-overlay
-    [grade]="grade"
-    (saved)="onEditSaved()"
-    (close)="onEditClosed($event)">
-  </app-grade-create-overlay>
-</ng-container>
+<app-grade-create-overlay
+  *ngIf="editOpen && grade as g"
+  [grade]="g"
+  (close)="onEditClosed($event)">
+</app-grade-create-overlay>
+
 
 <app-confirm-overlay
   *ngIf="confirmOpen"

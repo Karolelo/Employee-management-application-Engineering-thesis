@@ -55,20 +55,19 @@ export class GradeService {
       finish_Date: body.finish_Date
     };
 
-    return this.http.put<Grade>(`/${this.apiUrl}/${gradeId}`, payload).pipe(
-      map(updatedGrade => {
-        const data = this.gradeSubject
-          .getValue()
-          .map(it => it.id === updatedGrade.id ? updatedGrade : it);
+    return this.http.put<Grade>(`${this.apiUrl}/${gradeId}`, payload, { observe: 'response' }).pipe(
+      map(() => {
+        const merged: Grade = {id: gradeId, ...payload} as Grade;
+        const data = this.gradeSubject.getValue().map(it => it.id === gradeId ? {...it, ...merged } : it);
         this.gradeSubject.next(data);
-        return updatedGrade;
+        return merged;
       })
     );
   }
 
   //[HttpDelete] methods
   deleteGrade(gradeId: number): Observable<void> {
-    return this.http.delete<void>(`/${this.apiUrl}/${gradeId}`).pipe(
+    return this.http.delete<void>(`${this.apiUrl}/${gradeId}`).pipe(
       map(() => {
         this.gradeSubject.next(
           this.gradeSubject.getValue().filter(it => it.id !== gradeId)

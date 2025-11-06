@@ -71,12 +71,6 @@
   </section>
 </main>
 
-<div class="overlay" *ngIf="selected">
-  <div class="overlay-card">
-    <app-grade-form [gradeToEdit]="selected" (changed)="onChanged()"></app-grade-form>
-  </div>
-</div>
-
 <!-- Course details overlay -->
 <app-course-enroll-overlay
   *ngIf="selectedCourseId"

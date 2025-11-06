@@ -3,6 +3,7 @@ import {AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators} f
 import {GradeService} from '../../services/grade.service';
 import {UserStoreService} from '../../../login/services/user_data/user-store.service';
 import {Grade} from '../../interfaces/grade';
+import {finalize} from 'rxjs';
 
 @Component({
   selector: 'app-grade-create-overlay',
@@ -14,7 +15,6 @@ export class GradeCreateOverlayComponent implements OnInit {
   @Input() userId?: number;
   @Input() grade?: Grade;
   @Output() close = new EventEmitter<boolean>();
-  @Output() saved = new EventEmitter<void>();
 
   form!: FormGroup;
   submitting = false;
@@ -53,24 +53,22 @@ export class GradeCreateOverlayComponent implements OnInit {
   create(): void {
     if (this.form.invalid) return;
     this.submitting = true;
-
     const payload: Partial<Grade> = {
       grade: this.form.value.grade!,
       description: (this.form.value.description || '').trim(),
       start_Date: this.form.value.start_Date!,
       finish_Date: this.form.value.finish_Date!
     };
-
     const uid = this.userId ?? this.userStore.getUserId();
-    if (!uid) { this.submitting = false; return; }
+    const req$ = this.grade ? this.gradeService.updateGrade(this.grade.id, payload as Grade) : this.gradeService.createGradeForUser(uid!, payload as Grade);
 
-    const done = () => { this.submitting = false; this.saved.emit(); this.close.emit(true); };
-
-    if (this.grade) {
-      this.gradeService.updateGrade(this.grade.id, payload as Grade).subscribe({ next: done, error: () => this.submitting = false });
-    } else {
-      this.gradeService.createGradeForUser(uid, payload as Grade).subscribe({ next: done, error: () => this.submitting = false });
-    }
+    req$
+      .pipe(finalize(() => {this.submitting = false;}))
+      .subscribe({
+        next: () => {},
+        error: () => {console.log(this);},
+        complete: () => {this.close.emit(true);}
+      })
   }
 
   dismiss(): void { this.close.emit(false); }

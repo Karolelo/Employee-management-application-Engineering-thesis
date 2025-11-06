@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectorRef, NgZone } from '@angular/core';
 import {Grade} from '../../interfaces/grade';
 import {GradeService} from '../../services/grade.service';
 import {UserStoreService} from '../../../login/services/user_data/user-store.service';
@@ -41,24 +41,7 @@ export class GradeDetailsOverlayComponent implements OnInit{
   }
 
   openEdit(){ this.editOpen=true; }
-  onEditClosed(changed:boolean){
-    this.editOpen=false;
-    if(changed)
-    {
-      this.gradeService.getGradeById(this.grade!.id).subscribe(g=>this.grade=g);
-      this.close.emit(true);
-    }
-  }
-
-  onEditSaved() {
-    this.editOpen = false;
-    if (this.grade) {
-      this.gradeService.getGradeById(this.grade.id)
-        .subscribe(g => this.grade = g);
-    }
-    this.close.emit(true);
-  }
-
+  onEditClosed(changed:boolean){ this.editOpen=false; if(changed && this.grade){ this.gradeService.getGradeById(this.grade.id).subscribe(g=>this.grade=g); this.close.emit(true); } }
   askDelete(){ this.confirmOpen=true; }
   cancelDelete(){ this.confirmOpen=false; }
   confirmDelete(){
