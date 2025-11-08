@@ -10,7 +10,7 @@ import {DomSanitizer,SafeUrl} from '@angular/platform-browser';
 })
 export class GroupShortInfoComponent implements OnChanges {
   @Input() group?: Group;
-  imageUrl: SafeUrl = "";
+  imageUrl?: SafeUrl;
 
   constructor(private group_service: GroupService,
               private sanitizer: DomSanitizer) {}
@@ -31,8 +31,13 @@ export class GroupShortInfoComponent implements OnChanges {
         this.imageUrl = this.sanitizer.bypassSecurityTrustUrl(objectUrl);
       },
       error: (error) => {
-        console.error('Error during taking image:', error);
-      }
+          if(error.status == 404){
+            console.log("Image not found")
+            return
+          }
+          if(error.status != 404)
+            console.error('Error during taking image:', error);
+        }
     });
   }
 }

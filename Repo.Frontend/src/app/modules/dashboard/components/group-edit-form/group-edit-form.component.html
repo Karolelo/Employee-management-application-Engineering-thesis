@@ -1,0 +1,6 @@
+<ng-container class="group-form">
+  <img [src]='imageUrl ?? "/images/defualt.png"' width="400" height="400" alt="No found any image">
+  <app-export-image (fileSent)="onFileSent($event)"></app-export-image>
+  <app-group-form></app-group-form>
+</ng-container>
+

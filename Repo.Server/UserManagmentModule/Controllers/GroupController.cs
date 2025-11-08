@@ -114,12 +114,12 @@ public class GroupController(IGroupService groupService) : ControllerBase
             return NotFound(new { Message = result.Error });
         
         //I'm not returning files because it's not any kind private data    
-        return File(result.Data, "image/jpeg");
-        /*return Ok(new {path = result.Data });*/
+        return File(result.Data, "image/*");
     }
     
-    [HttpPost("upload-image/{id}")]
-    public async Task<IActionResult> UploadGroupImage(int id, IFormFile? image, bool isUpdate = false)
+    [HttpPost("upload-image"),DisableRequestSizeLimit]
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> UploadGroupImage([FromForm]int groupId,IFormFile? image,[FromForm] bool isUpdate = false)
     {
         if (image == null || image.Length == 0)
             return BadRequest("Not send any image");
@@ -133,15 +133,15 @@ public class GroupController(IGroupService groupService) : ControllerBase
         {
             if (isUpdate)
             {
-                var updatedPath = await groupService.SaveGroupImage(id,image, true);
-                return updatedPath.Success ? Ok(updatedPath.Data) : BadRequest(updatedPath.Error);
+                var updatedPath = await groupService.SaveGroupImage(groupId,image, true);
+                return updatedPath.Success ? Ok(new { Path = updatedPath.Data}) : BadRequest(new {Message = updatedPath.Error});
             }
-            var imagePath = await groupService.SaveGroupImage(id, image);
-            return imagePath.Success ? Ok(imagePath.Data) : BadRequest(imagePath.Error);
+            var imagePath = await groupService.SaveGroupImage(groupId, image);
+            return imagePath.Success ? Ok(new {Path = imagePath.Data}) : BadRequest(new {Message = imagePath.Error});
         }
         catch (Exception ex)
         {
-            return BadRequest(new {  ex.Message });
+            return BadRequest(new { Message = "An error occurred while uploading the image", Details = ex.Message });
         }
     }
 }

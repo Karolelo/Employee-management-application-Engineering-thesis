@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Repo.Core.Infrastructure.Files;
 using Repo.Core.Infrastructure.Roles;
 using Repo.Core.Models;
@@ -153,7 +154,8 @@ public class GroupService : IGroupService
         try
         {
             var path = await _groupRepository.GetPathToImageFile(groupId);
-            return Response<string>.Ok(path);
+            
+            return path.IsNullOrEmpty() ? Response<string>.Fail("Group does not have image") : Response<string>.Ok(path);
         }
         catch (Exception ex)
         {
@@ -192,7 +194,7 @@ public class GroupService : IGroupService
 
             using (var ms = new MemoryStream())
             {
-                await image.CopyToAsync(ms);
+                await image.CopyToAsync(ms); ;
                 var fileBytes = ms.ToArray();
                 _file.SaveFile(absolutePath, fileBytes);
             }
@@ -201,7 +203,7 @@ public class GroupService : IGroupService
         }
         catch (Exception ex)
         {
-            return Response<string>.Fail($"Error durring saving image: {ex.Message}");
+            return Response<string>.Fail($"Error while saving image: {ex.Message}");
         }
     }
 

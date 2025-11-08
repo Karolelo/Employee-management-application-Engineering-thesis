@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient,HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {Group} from '../../interfaces/group';
 @Injectable({
@@ -42,15 +42,12 @@ export class GroupService {
       responseType: 'blob'
     });
   }
-  saveGroupImage(id: number, formData: FormData, isUpdate: boolean): Observable<any> {
+  saveGroupImage(id: number, file: File, isUpdate: boolean): Observable<any> {
+    const formData = new FormData();
+    formData.append('groupId', id.toString());
+    formData.append('image', file);
     formData.append('isUpdate', isUpdate.toString());
-    return this.http.post<any>(
-      `${this.basiceUrl}/upload-image/${id}`,
-      formData,
-      {
-        reportProgress: true,
-        observe: 'events'
-      }
-    );
+
+    return this.http.post(`${this.basiceUrl}/upload-image`, formData, {})
   }
 }

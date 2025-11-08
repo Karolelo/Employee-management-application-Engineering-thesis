@@ -37,6 +37,8 @@ import { AddUserToGroupFormComponent } from './components/add-user-to-group-form
 import {MatProgressBar} from '@angular/material/progress-bar';
 import {MatSpinner} from '@angular/material/progress-spinner';
 import { GroupShortInfoComponent } from './components/group-short-info/group-short-info.component';
+import { GroupEditFormComponent } from './components/group-edit-form/group-edit-form.component';
+import {AppModule} from '../../app.module';
 @NgModule({
   declarations: [
     AdminDashboardComponent,
@@ -54,36 +56,38 @@ import { GroupShortInfoComponent } from './components/group-short-info/group-sho
     GroupCreatePageComponent,
     AddUserToGroupFormComponent,
     GroupShortInfoComponent,
+    GroupEditFormComponent,
   ],
-    imports: [
-        CommonModule,
-        MatTableModule,
-        MatPaginatorModule,
-        MatSortModule,
-        MatGridListModule,
-        MatCardModule,
-        MatMenuModule,
-        MatIconModule,
-        MatButtonModule,
-        DashboardRoutingModule,
-        MatToolbar,
-        MatLabel,
-        MatInput,
-        MatSuffix,
-        MatFormField,
-        MatStepperModule,
-        ReactiveFormsModule,
-        MatSelectModule,
-        MatSnackBarModule,
-        CdkStepperModule,
-        TaskModule,
-        NgOptimizedImage,
-        MatFormFieldModule,
-        TextFieldModule,
-        MatDividerModule,
-        MatProgressBar,
-        MatSpinner
-    ],
+  imports: [
+    CommonModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatGridListModule,
+    MatCardModule,
+    MatMenuModule,
+    MatIconModule,
+    MatButtonModule,
+    DashboardRoutingModule,
+    MatToolbar,
+    MatLabel,
+    MatInput,
+    MatSuffix,
+    MatFormField,
+    MatStepperModule,
+    ReactiveFormsModule,
+    MatSelectModule,
+    MatSnackBarModule,
+    CdkStepperModule,
+    TaskModule,
+    NgOptimizedImage,
+    MatFormFieldModule,
+    TextFieldModule,
+    MatDividerModule,
+    MatProgressBar,
+    MatSpinner,
+    AppModule
+  ],
     providers: [
       GroupCreatePageComponent
     ]

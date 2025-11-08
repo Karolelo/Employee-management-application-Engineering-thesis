@@ -1,6 +1,6 @@
 <div class="short-info">
   <!--Here gonna add custom images someday-->
-  <img [src]="imageUrl" width="400" height="400" alt="Group_image" priority>
+  <img [src]='imageUrl ?? "/images/defualt.png"' width="400" height="400" alt="Group_image" priority>
   <article>
     <h1 class="title-header">Team description</h1>
     <p class="long-scrollable-text">{{group?.description}}</p>

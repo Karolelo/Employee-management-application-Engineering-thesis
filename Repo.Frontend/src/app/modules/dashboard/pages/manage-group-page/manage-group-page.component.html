@@ -1,4 +1,3 @@
-
 <div class="grid-container">
   <h1 class="title-header">Manage your group</h1>
   <mat-grid-list cols="2" rowHeight="350px">
@@ -19,7 +18,7 @@
                   </app-announcement-list>
                   <app-announcement-form
                     [announcement]="selectedAnnouncement"
-                    [group_ID]="group_id">
+                    [group_ID]="group.id">
                   </app-announcement-form>
                </div>
           </mat-card-content>
@@ -29,7 +28,8 @@
               <h2 class="header-mat">Group details</h2>
             </mat-card-header>
             <mat-card-content class="dashboard-card-content">
-
+              <app-group-short-info [group]="group"></app-group-short-info>
+              <app-group-edit-form [group]="group"></app-group-edit-form>
             </mat-card-content>
           }
         </mat-card>

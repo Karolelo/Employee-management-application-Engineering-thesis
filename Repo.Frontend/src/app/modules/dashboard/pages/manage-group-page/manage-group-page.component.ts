@@ -6,6 +6,8 @@ import {Announcement} from '../../interfaces/announcement';
 import {ActivatedRoute} from '@angular/router'
 import {Observable} from 'rxjs';
 import {AnnouncementListComponent} from '../../components/announcement-list/announcement-list.component';
+import {GroupService} from '../../services/group/group.service';
+import {Group} from '../../interfaces/group';
 @Component({
   selector: 'app-manage-group-page',
   standalone: false,
@@ -15,8 +17,9 @@ import {AnnouncementListComponent} from '../../components/announcement-list/anno
 export class ManageGroupPageComponent implements AfterViewInit{
   private breakpointObserver = inject(BreakpointObserver);
   private announcement_service = inject(AnnouncementService);
+  private group_service = inject(GroupService);
   announcements$: Observable<Announcement[]> = new Observable<Announcement[]>();
-  group_id: number = 0;
+  group!: Group;
   selectedAnnouncement?: Announcement;
   @ViewChild("listAnnouncement") announcementList!: AnnouncementListComponent;
 
@@ -33,16 +36,16 @@ export class ManageGroupPageComponent implements AfterViewInit{
       return [
         { title: 'announcements', cols: 2, rows: 2, type: 'announcement' },
         { title: 'Task management', cols: 2, rows: 2, type: 'taskStats' },
-        { title: 'Group details', cols: 1, rows: 1, type: 'groupDetails'},
+        { title: 'Group details', cols: 2, rows: 4, type: 'groupDetails'},
         { title: 'Users', cols: 1, rows: 1, type: 'usersView' }
       ];
     })
   );
 
   constructor(private route : ActivatedRoute) {
-    this.group_id = Number.parseInt(this.route.snapshot.paramMap.get('id')?.toString() ?? '0');
+    const group_id = Number.parseInt(this.route.snapshot.paramMap.get('id')?.toString() ?? '0');
 
-    this.announcement_service.getAnnouncementsForGroup(this.group_id).subscribe(
+    this.announcement_service.getAnnouncementsForGroup(group_id).subscribe(
       () => {
         this.announcements$ = this.announcement_service.announcements$;
       },
@@ -50,8 +53,14 @@ export class ManageGroupPageComponent implements AfterViewInit{
         console.log(error);
       }
     )
-  }
 
+    this.group_service.getGroup(group_id).subscribe({
+     next: (group: Group) => this.group = group,
+     error: (error) => console.error('Error getting group:', error)
+    }
+    );
+
+  }
   ngAfterViewInit(){
     this.announcementList.enableEdit = true;
   }

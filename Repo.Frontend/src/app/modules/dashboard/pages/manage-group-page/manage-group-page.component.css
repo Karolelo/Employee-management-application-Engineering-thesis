@@ -49,3 +49,7 @@ dashboard-card-content {
   color: var(--primary-color);
   margin: 0;
 }
+
+app-announcement-form {
+  margin-right: 30px;
+}

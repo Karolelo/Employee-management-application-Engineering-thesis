@@ -53,7 +53,6 @@ export class AddUserToGroupFormComponent implements AfterViewInit {
       .subscribe({
         next: () => {
           this.usersAdded.emit(true);
-          //this.router.navigate(['/dashboard']);
         },
         error: (error) => {
           console.error('Error during adding user:', error);
