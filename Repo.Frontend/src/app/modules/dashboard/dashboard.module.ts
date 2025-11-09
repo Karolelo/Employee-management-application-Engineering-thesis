@@ -10,14 +10,14 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { UserListComponent } from './components/user-list/user-list.component';
-import {DashboardRoutingModule} from './dashboard-routing.module';
-import {MatToolbar} from '@angular/material/toolbar';
-import {MatFormField, MatInput, MatLabel, MatSuffix} from '@angular/material/input';
+import { DashboardRoutingModule} from './dashboard-routing.module';
+import { MatToolbar} from '@angular/material/toolbar';
+import { MatFormField, MatInput, MatLabel, MatSuffix} from '@angular/material/input';
 import { DeleteUserDialogComponent } from './components/delete-user-dialog/delete-user-dialog.component';
 import { CreateUserStepperFormComponent } from './components/create-user-stepper-form/create-user-stepper-form.component';
 import { MatStepperModule } from '@angular/material/stepper';
 import { ReactiveFormsModule,FormGroup } from '@angular/forms';
-import {MatSelectModule} from '@angular/material/select';
+import { MatSelectModule} from '@angular/material/select';
 import { EditUserFormComponent } from './components/edit-user-form/edit-user-form.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { CdkStepperModule } from '@angular/cdk/stepper';
@@ -26,19 +26,19 @@ import { ManageGroupPageComponent } from './pages/manage-group-page/manage-group
 import { GroupViewPageComponent } from './pages/group-view-page/group-view-page.component';
 import { GroupFormComponent } from './components/group-form/group-form.component';
 import { GroupListComponent } from './components/group-list/group-list.component';
-import {TaskModule} from "../task/task.module";
+import { TaskModule} from "../task/task.module";
 import { AnnouncementFormComponent } from './components/annoucment-form/announcement-form.component';
 import { MatFormFieldModule,MatFormFieldAppearance } from '@angular/material/form-field';
 import { AnnouncementListComponent } from './components/announcement-list/announcement-list.component';
 import { TextFieldModule } from '@angular/cdk/text-field';
-import {MatDividerModule} from '@angular/material/divider';
+import { MatDividerModule} from '@angular/material/divider';
 import { GroupCreatePageComponent } from './pages/group-create-page/group-create-page.component';
 import { AddUserToGroupFormComponent } from './components/add-user-to-group-form/add-user-to-group-form.component';
-import {MatProgressBar} from '@angular/material/progress-bar';
-import {MatSpinner} from '@angular/material/progress-spinner';
+import { MatProgressBar} from '@angular/material/progress-bar';
+import { MatSpinner} from '@angular/material/progress-spinner';
 import { GroupShortInfoComponent } from './components/group-short-info/group-short-info.component';
-import { GroupEditFormComponent } from './components/group-edit-form/group-edit-form.component';
-import {AppModule} from '../../app.module';
+import { AppModule} from '../../app.module';
+import { GroupImageEditFormComponent} from './components/group-image-edit-form/group-image-edit-form.component';
 @NgModule({
   declarations: [
     AdminDashboardComponent,
@@ -56,7 +56,7 @@ import {AppModule} from '../../app.module';
     GroupCreatePageComponent,
     AddUserToGroupFormComponent,
     GroupShortInfoComponent,
-    GroupEditFormComponent,
+    GroupImageEditFormComponent,
   ],
   imports: [
     CommonModule,

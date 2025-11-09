@@ -1,5 +1,5 @@
-<div class="group-form">
-  <h2 class="title-header">Create group</h2>
+<div class="group-form" [ngClass]="{'transparent': transparentBackground}">
+  <h2 class="title-header">{{group?"Update group":"Create group"}}</h2>
   <form [formGroup]="groupForm" (ngSubmit)="onSubmit()">
 
     <mat-form-field appearance="fill">
@@ -15,7 +15,7 @@
         <textarea
           matInput
           formControlName="description"
-          placeholder="Announcement content"
+          placeholder="Group description"
           rows="4"
           cdkTextareaAutosize
           cdkAutosizeMinRows="4"
@@ -46,6 +46,6 @@
         Admin ID must be a number
       </mat-error>
     </mat-form-field>
-    <button type="submit" [disabled]="groupForm.invalid">Create</button>
+    <button type="submit" [disabled]="groupForm.invalid">{{group?"Update group":"Create group"}}</button>
   </form>
 </div>

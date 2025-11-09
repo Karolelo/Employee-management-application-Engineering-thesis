@@ -58,6 +58,7 @@ public class GroupService : IGroupService
             {
                 Name = dto.Name,
                 Admin_ID = dto.Admin_ID,
+                Description = dto.Description,
                 Deleted = 0
             };
             //I dont know if this mapping make big change, but 
@@ -83,6 +84,7 @@ public class GroupService : IGroupService
             
             existingGroup.Name = dto.Name;
             existingGroup.Admin_ID = dto.Admin_ID;
+            existingGroup.Description = dto.Description;
 
             var result = await _groupRepository.UpdateGroup(existingGroup);
             return Response<GroupDTO>.Ok(MapToGroupDTO(result));

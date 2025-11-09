@@ -8,6 +8,7 @@ import {Observable} from 'rxjs';
 import {AnnouncementListComponent} from '../../components/announcement-list/announcement-list.component';
 import {GroupService} from '../../services/group/group.service';
 import {Group} from '../../interfaces/group';
+import {UserStoreService} from '../../../login/services/user_data/user-store.service';
 @Component({
   selector: 'app-manage-group-page',
   standalone: false,
@@ -18,10 +19,12 @@ export class ManageGroupPageComponent implements AfterViewInit{
   private breakpointObserver = inject(BreakpointObserver);
   private announcement_service = inject(AnnouncementService);
   private group_service = inject(GroupService);
+  private userStore = inject(UserStoreService);
   announcements$: Observable<Announcement[]> = new Observable<Announcement[]>();
   group!: Group;
   selectedAnnouncement?: Announcement;
   @ViewChild("listAnnouncement") announcementList!: AnnouncementListComponent;
+  get canEditAdminId(): boolean { return this.userStore.hasRole('Admin'); }
 
   cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
     map(({ matches }) => {

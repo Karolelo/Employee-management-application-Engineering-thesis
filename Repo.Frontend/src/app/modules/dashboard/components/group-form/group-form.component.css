@@ -9,6 +9,16 @@
   transition: all 0.3s ease;
 }
 
+.group-form.transparent {
+  background: transparent;
+  box-shadow: none;
+}
+
+.group-form.transparent:hover {
+  transform: translateY(0px);
+  box-shadow: none;
+}
+
 .group-form:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);

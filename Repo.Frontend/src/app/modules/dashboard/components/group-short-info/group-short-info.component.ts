@@ -17,7 +17,7 @@ export class GroupShortInfoComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['group'] && this.group) {
-      console.log("Values of group "+ this.group.description);
+      console.log("Values of group ");
       this.initializeValues();
     }
   }

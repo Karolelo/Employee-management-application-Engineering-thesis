@@ -29,7 +29,10 @@
             </mat-card-header>
             <mat-card-content class="dashboard-card-content">
               <app-group-short-info [group]="group"></app-group-short-info>
-              <app-group-edit-form [group]="group"></app-group-edit-form>
+              <div class="edit-group-panel">
+                  <app-group-image-edit-form [group]="group"></app-group-image-edit-form>
+                  <app-group-form [group]="group" [allowAdminEdit]="canEditAdminId" [transparentBackground]="true"></app-group-form>
+              </div>
             </mat-card-content>
           }
         </mat-card>
