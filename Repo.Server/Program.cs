@@ -121,7 +121,7 @@ builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
     options.AddPolicy("UserOnly", policy => policy.RequireRole("User","TeamLeader","Admin","Accountant"));
-    options.AddPolicy("TeamLeader",policy => policy.RequireRole("TeamLeader"));
+    options.AddPolicy("TeamLeader",policy => policy.RequireRole("TeamLeader", "Admin"));
     options.AddPolicy("Accountant", policy => policy.RequireRole("Admin", "Accountant"));
     
 });
