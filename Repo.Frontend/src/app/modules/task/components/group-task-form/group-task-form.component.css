@@ -1,0 +1,8 @@
+.task-form {
+  max-width: 800px;
+  width: 90%;
+  margin: 1rem auto;
+  background: transparent;
+  padding: 2rem;
+  transition: all 0.3s ease;
+}

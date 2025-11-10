@@ -23,6 +23,7 @@ import {
   MatTable
 } from "@angular/material/table";
 import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
+import { GroupTaskFormComponent } from './components/group-task-form/group-task-form.component';
 
 
 @NgModule({
@@ -31,7 +32,8 @@ import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
         TaskListComponent,
         TaskFormComponent,
         TaskPageComponent,
-        TasksDetailPageComponent
+        TasksDetailPageComponent,
+        GroupTaskFormComponent
     ],
     imports: [
         CommonModule,
@@ -60,7 +62,8 @@ import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
     ],
     exports: [
         TaskFormComponent,
-        TaskListComponent
+        TaskListComponent,
+        TaskPageComponent
     ],
     providers: []
 })

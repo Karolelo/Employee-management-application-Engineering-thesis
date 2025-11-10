@@ -4,6 +4,7 @@ import {GroupService} from '../../services/group/group.service';
 import {UserService} from '../../services/user/user.service';
 import {User} from '../../interfaces/user';
 import {Group} from '../../interfaces/group';
+import {MatSnackBar} from '@angular/material/snack-bar';
 @Component({
   selector: 'app-group-form',
   standalone: false,
@@ -19,7 +20,8 @@ export class GroupFormComponent implements OnChanges{
   @Output() groupCreatedId: EventEmitter<number> = new EventEmitter();
   constructor(private fb: FormBuilder
               ,private user_service: UserService
-              ,private group_service: GroupService) {
+              ,private group_service: GroupService
+              ,public snackBar: MatSnackBar ) {
     this.groupForm = this.fb.group(
       {
         name: ['', Validators.required],
@@ -60,7 +62,10 @@ export class GroupFormComponent implements OnChanges{
       this.group_service
         .updateGroup(payload)
         .subscribe({
-          next: () => console.log('Group updated successfully'),
+          next: () => {
+            console.log('Group updated successfully')
+            this.snackBar.open('group updated','Hide',{duration: 3000});
+          },
           error: (error) => console.log(error)
         });
       return;
