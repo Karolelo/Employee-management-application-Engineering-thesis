@@ -1,0 +1,41 @@
+<main [ngClass]="[isTransparent ? '.task-list--transparent':'task-list'
+                  ,isCompact ? 'task-list--compact' :'']">
+  <ng-container *ngIf="!errorMessage; else errorTpl">
+    <div *ngIf="loading" class="loading-spinner">
+      <mat-spinner></mat-spinner>
+    </div>
+
+    <ng-container *ngIf="!loading">
+      <ul>
+        <li *ngFor="let task of tasks$ | async">
+          <div class="task-info">
+            <h2>{{task.name}}</h2>
+            <mat-progress-bar [value]="setProgressBarValue(task.status)"></mat-progress-bar>
+          </div>
+          <div class="icon-container">
+            <ng-container *ngIf="isLeader">
+              <button (click)="onEditTask(task)">
+                <i class="fa fa-edit edit-icon"></i>
+              </button>
+              <button (click)="onDeleteTask(task.id)">
+                <i class="fa fa-trash delete-icon"></i>
+              </button>
+            </ng-container>
+            <button (click)="onViewTask(task)">
+              <i class="fa fa-eye view-icon"></i>
+            </button>
+            <button (click)="onShowDetails(task)">
+              <i class="fa fa-search show-icon"></i>
+            </button>
+          </div>
+        </li>
+      </ul>
+    </ng-container>
+  </ng-container>
+
+  <ng-template #errorTpl>
+    <div class="error-message-container">
+      {{ errorMessage }}
+    </div>
+  </ng-template>
+</main>

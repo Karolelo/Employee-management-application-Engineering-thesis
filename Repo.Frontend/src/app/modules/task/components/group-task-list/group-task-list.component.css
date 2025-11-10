@@ -5,6 +5,22 @@ body {
   line-height: 1.9;
 }
 
+.task-list {
+  max-width: 800px;
+  width: 90%;
+  margin: 3rem auto;
+  background: linear-gradient(135deg, #ffffff 0%, #f3f3f3 100%);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px var(--shadow-color);
+  padding: 2.5rem;
+  transition: all 0.3s ease;
+}
+
+.task-list:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px var(--shadow-color);
+}
+
 h2 {
   color: var(--primary-color);
   font-size: 2rem;

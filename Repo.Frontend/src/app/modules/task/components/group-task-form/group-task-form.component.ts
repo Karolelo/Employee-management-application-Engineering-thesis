@@ -20,6 +20,7 @@ export class GroupTaskFormComponent implements OnChanges {
 
   taskForm!: FormGroup;
 
+  isTransparent = true;
   constructor(
     private fb: FormBuilder,
     private taskService: TaskService

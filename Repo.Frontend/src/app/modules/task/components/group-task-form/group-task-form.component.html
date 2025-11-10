@@ -1,4 +1,4 @@
-<div class="group-task-form">
+<div class="task-form" [ngClass]="{'task-form--transparent': isTransparent}">
   <button id="restart-button" (click)="resetFormState()">
     <i class="fa fa-refresh refresh-icon"></i>
   </button>
@@ -25,17 +25,6 @@
         <span *ngIf="error['required']">Description is required.</span>
         <span *ngIf="error['minlength']">Description must be at least 20 characters long.</span>
       </div>
-    </div>
-
-    <!-- Przypisanie do członka grupy -->
-    <div class="floating-label">
-      <label>Assign to (optional)</label>
-      <select formControlName="assignedToUserId">
-        <option [value]="null">Unassigned - anyone can take it</option>
-        <option *ngFor="let member of groupMembers" [value]="member.id">
-          {{ member.name }}
-        </option>
-      </select>
     </div>
 
     <div class="floating-label">
@@ -81,6 +70,16 @@
     <span *ngIf="taskForm.get('status')?.invalid && taskForm.get('status')?.touched" class="error-message">
       Status is required.
     </span>
+
+    <div class="floating-label">
+      <label>Assign to (optional)</label>
+      <select formControlName="assignedToUserId">
+        <option [value]="null">Unassigned - anyone can take it</option>
+        <option *ngFor="let member of groupMembers" [value]="member.id">
+          {{ member.name }}
+        </option>
+      </select>
+    </div>
 
     <button type="submit"
             [disabled]="taskForm.invalid"

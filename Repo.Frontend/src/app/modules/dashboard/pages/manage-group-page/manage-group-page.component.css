@@ -53,9 +53,15 @@ dashboard-card-content {
 app-announcement-form {
   margin-right: 30px;
 }
-.edit-group-panel {
+.group-container {
   display: flex;
   flex-direction: row;
   align-content: center;
+  align-items: center;
+}
+.task-container {
+  display: flex;
+  flex-direction: row;
+  align-content: space-evenly;
   align-items: center;
 }

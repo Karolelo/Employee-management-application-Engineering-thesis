@@ -29,7 +29,7 @@
             </mat-card-header>
             <mat-card-content class="dashboard-card-content">
               <app-group-short-info [group]="group"></app-group-short-info>
-              <div class="edit-group-panel">
+              <div class="group-container">
                   <app-group-image-edit-form [group]="group"></app-group-image-edit-form>
                   <app-group-form [group]="group" [allowAdminEdit]="canEditAdminId" [transparentBackground]="true"></app-group-form>
               </div>
@@ -41,9 +41,10 @@
               <h2 class="header-mat">Task creating for the group</h2>
             </mat-card-header>
             <mat-card-content class="dashboard-card-content">
-              <app-task-page>
-
-              </app-task-page>
+                <div class="task-container">
+                  <app-group-task-form></app-group-task-form>
+                  <app-group-task-list [groupId]="this.group.id" style="margin-left: 50px"></app-group-task-list>
+                </div>
             </mat-card-content>
           }
         </mat-card>
