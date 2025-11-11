@@ -12,6 +12,8 @@ using Repo.Server.GradeModule.Interfaces;
 using Repo.Server.GradeModule.Services;
 using Repo.Server.TaskModule;
 using Repo.Server.TaskModule.interafaces;
+using Repo.Server.WorkTimeModule.Interfaces;
+using Repo.Server.WorkTimeModule.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
@@ -25,6 +27,7 @@ builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<IGradeService, GradeService>();
 builder.Services.AddScoped<ITargetService, TargetService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IWorkEntryService, WorkEntryService>();
 builder.Services.AddScoped<AuthenticationHelpers>();
 
 // Connection priority - changeable if needed
