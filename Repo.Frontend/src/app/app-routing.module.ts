@@ -8,6 +8,7 @@ import {TaskPageComponent} from './modules/task/pages/task-page/task-page.compon
 import {TaskModule} from './modules/task/task.module';
 import {AuthGuardService} from './guard/AuthGuard/auth-guard.service';
 import {GradeModule} from './modules/grade/grade.module';
+import {WorktimeModule} from './modules/worktime/worktime.module';
 const routes: Routes = [
   {
     path: '',
@@ -19,7 +20,9 @@ const routes: Routes = [
       { path: 'calendar', loadChildren: () => CalendarModule,
       data: { title: 'Calendar module',expectedRole:'User' }},
       { path: 'grades', loadChildren: () => GradeModule,
-      data: { title: 'Grades module', expectedRole: 'User'}}
+      data: { title: 'Grades module', expectedRole: 'User'}},
+      { path: 'worktime', loadChildren: () => WorktimeModule,
+        data: { title: 'Work Time module', expectedRole: 'User'}}
     ]
   },
   {
