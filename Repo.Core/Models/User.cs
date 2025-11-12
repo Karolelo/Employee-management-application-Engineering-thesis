@@ -39,6 +39,8 @@ public partial class User
 
     public virtual ICollection<Grade> Grades { get; set; } = new List<Grade>();
 
+    public virtual ICollection<GroupTask> GroupTasks { get; set; } = new List<GroupTask>();
+
     public virtual ICollection<Group> Groups { get; set; } = new List<Group>();
 
     public virtual ICollection<Role> Roles { get; set; } = new List<Role>();

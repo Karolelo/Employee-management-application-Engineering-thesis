@@ -2,6 +2,7 @@
   <app-group-short-info [group]="group"></app-group-short-info>
   <div class="info-data">
   @if (announcements.length > 0) {
+    <div class="announcement-container">
     <h1 class="title-header">Announcements</h1>
     <uL class="announcement-list">
       @for (announcement of announcements; track announcement.id) {
@@ -11,14 +12,17 @@
         </li>
       }
     </uL>
+    </div>
   } @else {
     <h2 style="margin-left: 20px">No any new announcements</h2>
   }
-  </div>
   <div class="task-info">
     <h1 class="title-header">Tasks</h1>
+  @if (group) {
+    <app-group-task-list [groupId]="group.id" [isLeader]="false"></app-group-task-list>
+  }
   </div>
-  <app-task-list></app-task-list>
+  </div>
   <div class="user-list">
     <h1 class="title-header">Users in group</h1>
     <table mat-table [dataSource]="usersDataSource">

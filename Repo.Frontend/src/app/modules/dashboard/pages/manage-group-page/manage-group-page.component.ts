@@ -9,6 +9,9 @@ import {AnnouncementListComponent} from '../../components/announcement-list/anno
 import {GroupService} from '../../services/group/group.service';
 import {Group} from '../../interfaces/group';
 import {UserStoreService} from '../../../login/services/user_data/user-store.service';
+import {User} from '../../interfaces/user';
+import {UserService} from '../../services/user/user.service';
+import {Task} from '../../../task/interfaces/task';
 @Component({
   selector: 'app-manage-group-page',
   standalone: false,
@@ -17,13 +20,22 @@ import {UserStoreService} from '../../../login/services/user_data/user-store.ser
 })
 export class ManageGroupPageComponent implements AfterViewInit{
   private breakpointObserver = inject(BreakpointObserver);
+
+  //services
   private announcement_service = inject(AnnouncementService);
   private group_service = inject(GroupService);
   private userStore = inject(UserStoreService);
-  announcements$: Observable<Announcement[]> = new Observable<Announcement[]>();
-  group!: Group;
-  selectedAnnouncement?: Announcement;
+  private user_service = inject(UserService);
+
+  //announcement part
   @ViewChild("listAnnouncement") announcementList!: AnnouncementListComponent;
+  announcements$: Observable<Announcement[]> = new Observable<Announcement[]>();
+  selectedAnnouncement?: Announcement;
+
+  //group and task part
+  group!: Group;
+  groupUsers!: User[];
+  taskToEdit?: Task;
   get canEditAdminId(): boolean { return this.userStore.hasRole('Admin'); }
 
   cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
@@ -59,15 +71,22 @@ export class ManageGroupPageComponent implements AfterViewInit{
 
     this.group_service.getGroup(group_id).subscribe({
      next: (group: Group) => this.group = group,
-     error: (error) => console.error('Error getting group:', error)
-    }
-    );
+     error: (error) => console.error('Error during getting group:', error)
+    });
+
+    this.user_service.getUsersFromGroup(group_id).subscribe({
+        next: (users: User[]) => this.groupUsers = users,
+        error: (error) => console.error('Error during getting users:', error)
+      }
+    )
+
 
   }
   ngAfterViewInit(){
     this.announcementList.enableEdit = true;
   }
 
+  //Announcement part
   onDeleteAnnouncement(announcementId: number) {
     this.announcement_service.deleteAnnouncementForGroup(announcementId).subscribe(
       () => {
@@ -81,6 +100,17 @@ export class ManageGroupPageComponent implements AfterViewInit{
 
   onEditAnnouncement(announcement: Announcement) {
    this.selectedAnnouncement = announcement;
+  }
+
+  //Task part
+  onTaskEdit(task: Task)
+  {
+    this.taskToEdit = task;
+  }
+
+  onTaskUpdated()
+  {
+    this.taskToEdit = undefined;
   }
 
 }

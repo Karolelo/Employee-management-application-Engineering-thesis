@@ -42,8 +42,16 @@
             </mat-card-header>
             <mat-card-content class="dashboard-card-content">
                 <div class="task-container">
-                  <app-group-task-form></app-group-task-form>
-                  <app-group-task-list [groupId]="this.group.id" style="margin-left: 50px"></app-group-task-list>
+                  <app-group-task-form [groupId]="group.id"
+                                       [groupMembers]="groupUsers"
+                                       [taskToEdit]="taskToEdit"
+                                       (taskUpdated)="onTaskUpdated()">
+
+                  </app-group-task-form>
+                  <app-group-task-list [groupId]="this.group.id"
+                                       [isLeader]="true"
+                                       (editTask)="onTaskEdit($event)" style="margin-left: 50px">
+                  </app-group-task-list>
                 </div>
             </mat-card-content>
           }

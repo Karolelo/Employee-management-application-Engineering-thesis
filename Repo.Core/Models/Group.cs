@@ -19,7 +19,7 @@ public partial class Group
 
     public virtual GroupImage? GroupImage { get; set; }
 
-    public virtual ICollection<Task> Tasks { get; set; } = new List<Task>();
+    public virtual ICollection<GroupTask> GroupTasks { get; set; } = new List<GroupTask>();
 
     public virtual ICollection<User> Users { get; set; } = new List<User>();
 }

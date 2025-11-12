@@ -24,7 +24,6 @@ export class GroupViewPageComponent implements AfterViewInit{
    users: User[] = [];
    usersDataSource!: MatTableDataSource<any>;
    @ViewChild(MatPaginator) paginator!: MatPaginator;
-   @ViewChild(TaskListComponent) taskList!: TaskListComponent;
    constructor(private user_service: UserService,
                private group_service: GroupService,
                private activatedRoute: ActivatedRoute)
@@ -55,13 +54,6 @@ export class GroupViewPageComponent implements AfterViewInit{
      if (this.usersDataSource) {
        this.usersDataSource.paginator = this.paginator;
      }
-
-     setTimeout(() => {
-       if(this.taskList) {
-         this.taskList.changeValueToGroupTask(
-           this.group.id)
-       }
-     })
    }
 }
 

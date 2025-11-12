@@ -85,25 +85,4 @@ export class TaskListComponent implements OnInit{
     }
   }
 
-  changeValueToGroupTask(id :number)
-  {
-    this.loading = true;
-    this.taskService.getAllGroupTask(id).subscribe(
-     {
-       next: (task) => {
-         console.log(task);
-         this.loading = false;
-         this.enableEdit = false;
-       },
-       error: (error) => {
-         console.log(error);
-         this.loading = false;
-       }
-     })
-  }
-  changeToOtherUserTask(id :number)
-  {
-
-  }
-
 }
