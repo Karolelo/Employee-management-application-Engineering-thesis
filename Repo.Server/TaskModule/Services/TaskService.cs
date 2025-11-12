@@ -334,7 +334,7 @@ public class TaskService : ITaskService
             task.Name = dto.Name;
             task.Description = dto.Description;
             task.Start_Time = dto.Start_Time;
-            //task.Estimated_Time = model.Estimated_Time;
+            task.Estimated_Time = dto.Estimated_Time;
             task.Priority = priority;
             task.Status = status;
             await _context.SaveChangesAsync();

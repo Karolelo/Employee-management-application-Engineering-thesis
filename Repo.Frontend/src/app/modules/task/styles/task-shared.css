@@ -63,50 +63,12 @@
   padding: 1.5rem;
 }
 
-/*!* ========== LIST ELEMENTS ========== *!
-.task-list h2 {
-  color: var(--primary-color);
-  font-size: 2rem;
-  margin-bottom: 2rem;
-  text-align: left;
-}
-
-.task-list ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-.task-list li {
-  background-color: #ffffff;
-  border-radius: 10px;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
-  animation: fadeIn 0.3s ease-in;
-}
-
-.task-list li:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-}
-
-.task-list li span {
-  font-weight: 900;
-  padding: 0.25rem 0.75rem;
-  border-radius: 15px;
-  font-size: 0.85rem;
-}
-
-!* ========== TASK INFO SECTION ========== *!
+/* ========== TASK INFO SECTION ========== */
 .task-info {
   width: 100%;
 }
 
-!* ========== ICON CONTAINER & ICONS ========== *!
+/* ========== ICON CONTAINER & ICONS ========== */
 .icon-container {
   display: flex;
   align-items: center;
@@ -133,10 +95,10 @@
   font-size: 1rem;
 }
 
-!* Icon colors *!
-.edit-icon {
-  color: #3498db;
-}
+Icon colors
+ .edit-icon {
+   color: #3498db;
+ }
 
 .delete-icon {
   color: #e74c3c;
@@ -153,171 +115,3 @@
 .refresh-icon {
   color: #2ecc71;
 }
-
-!* ========== PRIORITY SELECT STYLES ========== *!
-select[formControlName="priority"] {
-  padding-left: 2.5rem;
-  background-position: left 0.75rem center, right 1rem center;
-  background-size: 1em, 1em;
-  background-repeat: no-repeat, no-repeat;
-}
-
-select[formControlName="priority"] option[value="low"] {
-  color: var(--low-priority);
-}
-
-select[formControlName="priority"] option[value="normal"] {
-  color: var(--medium-priority);
-}
-
-select[formControlName="priority"] option[value="high"] {
-  color: var(--high-priority);
-}
-
-select[formControlName="priority"]:has(option[value="low"]:checked) {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' fill='%2327ae60'%3E%3Cpath d='M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9l17-17c9.4-9.4 24.6-9.4 33.9 0l39 39 96-96c9.4-9.4 24.6-9.4 33.9 0l17 17c9.4 9.4 9.4 24.6 0 33.9z'/%3E%3C/svg%3E"),
-  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236c5ce7' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-}
-
-select[formControlName="priority"]:has(option[value="normal"]:checked) {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' fill='%23f39c12'%3E%3Cpath d='M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9l17-17c9.4-9.4 24.6-9.4 33.9 0l39 39 96-96c9.4-9.4 24.6-9.4 33.9 0l17 17c9.4 9.4 9.4 24.6 0 33.9z'/%3E%3C/svg%3E"),
-  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236c5ce7' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-}
-
-select[formControlName="priority"]:has(option[value="high"]:checked) {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' fill='%23e74c3c'%3E%3Cpath d='M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9l17-17c9.4-9.4 24.6-9.4 33.9 0l39 39 96-96c9.4-9.4 24.6-9.4 33.9 0l17 17c9.4 9.4 9.4 24.6 0 33.9z'/%3E%3C/svg%3E"),
-  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236c5ce7' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-}
-
-!* ========== STATUS SELECT STYLES ========== *!
-select[formControlName="status"] {
-  padding-left: 2.5rem;
-  background-position: left 0.75rem center, right 1rem center;
-  background-size: 1em, 1em;
-  background-repeat: no-repeat, no-repeat;
-}
-
-select[formControlName="status"] option[value="To-Do"] {
-  color: var(--todo-status);
-}
-
-select[formControlName="status"] option[value="In-Progress"] {
-  color: var(--inprogress-status);
-}
-
-select[formControlName="status"] option[value="Finished"] {
-  color: var(--completed-status);
-}
-
-select[formControlName="status"]:has(option[value="To-Do"]:checked) {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' fill='%233498db'%3E%3Cpath d='M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9l17-17c9.4-9.4 24.6-9.4 33.9 0l39 39 96-96c9.4-9.4 24.6-9.4 33.9 0l17 17c9.4 9.4 9.4 24.6 0 33.9z'/%3E%3C/svg%3E"),
-  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236c5ce7' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-}
-
-select[formControlName="status"]:has(option[value="In-Progress"]:checked) {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' fill='%23f1c40f'%3E%3Cpath d='M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9l17-17c9.4-9.4 24.6-9.4 33.9 0l39 39 96-96c9.4-9.4 24.6-9.4 33.9 0l17 17c9.4 9.4 9.4 24.6 0 33.9z'/%3E%3C/svg%3E"),
-  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236c5ce7' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-}
-
-select[formControlName="status"]:has(option[value="Finished"]:checked) {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' fill='%232ecc71'%3E%3Cpath d='M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9l17-17c9.4-9.4 24.6-9.4 33.9 0l39 39 96-96c9.4-9.4 24.6-9.4 33.9 0l17 17c9.4 9.4 9.4 24.6 0 33.9z'/%3E%3C/svg%3E"),
-  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236c5ce7' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-}
-
-!* ========== OTHER COMMON ELEMENTS ========== *!
-.task-description {
-  padding: 1rem;
-  min-height: 200px;
-  border-radius: 0.375rem;
-  width: 95%;
-  resize: vertical;
-}
-
-.error-message {
-  color: red;
-  font-size: 0.8rem;
-  font-weight: bold;
-}
-
-.blocked {
-  font-family: monospace;
-  color: var(--primary-color);
-  font-size: 1.2rem;
-  text-align: center;
-  padding-bottom: 0.5rem;
-  font-weight: 1000;
-}
-
-#restart-button {
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  margin-left: 0.5rem;
-  padding: 0.5rem;
-  border-radius: 50%;
-  transition: all 0.3s ease;
-  font-size: 1.2rem;
-}
-
-#restart-button:hover {
-  background-color: rgba(108, 92, 231, 0.1);
-  transform: scale(1.1);
-}
-
-!* ========== LOADING & ERROR STATES ========== *!
-.loading-spinner {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 200px;
-}
-
-.error-message-container {
-  padding: 2rem;
-  text-align: center;
-  color: #e74c3c;
-  font-size: 1.1rem;
-}
-
-!* ========== ANIMATIONS ========== *!
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-!* ========== RESPONSIVE STYLES ========== *!
-@media (max-width: 768px) {
-  .task-form, .task-list {
-    width: 95%;
-    padding: 1.5rem;
-    margin: 2rem 1rem;
-  }
-
-  .task-list {
-    margin: 2rem 1rem;
-  }
-
-
-  .task-list li {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .task-list li span {
-    margin-bottom: 0.5rem;
-  }
-
-  .button-group,
-  .icon-container {
-    display: flex;
-    justify-content: flex-end;
-    width: 100%;
-    margin-top: 0.5rem;
-  }
-}*/
