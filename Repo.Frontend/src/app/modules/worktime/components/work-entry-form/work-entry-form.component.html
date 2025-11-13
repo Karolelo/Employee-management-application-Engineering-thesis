@@ -1,0 +1,70 @@
+<div class="work-entry-form">
+  <h2>{{ entryToEdit ? 'Edit work entry' : 'Add work entry' }}</h2>
+
+  <form [formGroup]="workEntryForm" (ngSubmit)="onSubmit()">
+
+    <div class="floating-label" *ngIf="!entryToEdit">
+      <select formControlName="user_ID">
+        <option [ngValue]="null">-- Select user --</option>
+        <option *ngFor="let user of users" [ngValue]="user.id">
+          {{ user.nickname || user.login }} ({{ user.login }})
+        </option>
+      </select>
+      <label>User</label>
+      <span *ngIf="workEntryForm.get('user_ID')?.invalid
+                  && workEntryForm.get('user_ID')?.touched"
+            class="error-message">
+        User is required.
+      </span>
+    </div>
+
+    <div class="floating-label">
+      <input type="date" formControlName="work_Date" placeholder=" ">
+      <label>Work date</label>
+      <span *ngIf="workEntryForm.get('work_Date')?.invalid
+                  && workEntryForm.get('work_Date')?.touched"
+            class="error-message">
+        Work date is required.
+      </span>
+    </div>
+
+    <div class="floating-label">
+      <input type="number"
+             formControlName="hours_Worked"
+             placeholder=" "
+             step="0.25" min="0.25">
+      <label>Hours worked</label>
+      <div *ngIf="workEntryForm.get('hours_Worked')?.invalid
+                  && workEntryForm.get('hours_Worked')?.touched
+                  && workEntryForm.get('hours_Worked')?.errors as error"
+           class="error-message">
+        <span *ngIf="error['required']">Hours are required.</span>
+        <span *ngIf="error['min']">Minimum 0.25 hour.</span>
+      </div>
+    </div>
+
+    <div class="floating-label">
+      <input type="number" formControlName="task_ID" placeholder=" ">
+      <label>Task ID (optional)</label>
+    </div>
+
+    <div class="floating-label">
+      <textarea formControlName="comment" rows="3" placeholder=" "></textarea>
+      <label>Comment (optional)</label>
+    </div>
+
+    <div *ngIf="errorMessage" class="error-message server">
+      {{ errorMessage }}
+    </div>
+
+    <button type="submit"
+            [disabled]="workEntryForm.invalid || loading"
+            [ngClass]="{'valid': workEntryForm.valid && !loading, 'invalid': workEntryForm.invalid}">
+      {{ entryToEdit ? 'Save changes' : 'Add entry' }}
+    </button>
+
+    <div class="spinner-container" *ngIf="loading">
+      <mat-spinner diameter="30"></mat-spinner>
+    </div>
+  </form>
+</div>
