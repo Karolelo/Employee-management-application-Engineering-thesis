@@ -1,0 +1,29 @@
+.info-message {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.info-message__content {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 12px var(--shadow-color);
+  text-align: center;
+  max-width: 480px;
+}
+
+.info-message__title {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.4rem;
+  color: var(--primary-color);
+  font-weight: 700;
+}
+
+.info-message__text {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--text-color);
+  opacity: 0.85;
+}

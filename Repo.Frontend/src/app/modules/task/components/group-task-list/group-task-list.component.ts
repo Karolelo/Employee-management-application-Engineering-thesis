@@ -19,7 +19,7 @@ export class GroupTaskListComponent implements OnInit {
   @Output() editTask = new EventEmitter<Task>();
 
   loading = false;
-  errorMessage: string | null = null;
+  errorMessage?: string;
   tasks$!: Observable<Task[]>;
 
   isTransparent = true;
@@ -49,9 +49,14 @@ export class GroupTaskListComponent implements OnInit {
         console.log('Group tasks loaded:', tasks);
       },
       error: (error) => {
-        console.error(error);
-        this.loading = false;
-        this.errorMessage = 'Failed to load group tasks';
+        if(error.error.message.includes('Group has no tasks'))
+        {
+          this.errorMessage = 'Group has no tasks'
+        }else {
+          console.error(error);
+          this.loading = false;
+          this.errorMessage = 'Failed to load group tasks';
+        }
       }
     });
   }

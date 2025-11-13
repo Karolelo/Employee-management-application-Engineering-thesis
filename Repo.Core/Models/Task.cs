@@ -25,8 +25,6 @@ public partial class Task
 
     public virtual ICollection<Event> Events { get; set; } = new List<Event>();
 
-    public virtual ICollection<GroupTask> GroupTasks { get; set; } = new List<GroupTask>();
-
     public virtual Priority Priority { get; set; } = null!;
 
     public virtual ICollection<RelatedTask> RelatedTaskMain_Tasks { get; set; } = new List<RelatedTask>();
@@ -34,6 +32,8 @@ public partial class Task
     public virtual ICollection<RelatedTask> RelatedTaskRelated_Tasks { get; set; } = new List<RelatedTask>();
 
     public virtual Status Status { get; set; } = null!;
+
+    public virtual ICollection<Group> Groups { get; set; } = new List<Group>();
 
     public virtual ICollection<User> Users { get; set; } = new List<User>();
 }

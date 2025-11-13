@@ -71,16 +71,6 @@
       Status is required.
     </span>
 
-    <div class="floating-label">
-      <label>Assign to (optional)</label>
-      <select formControlName="assignedToUserId">
-        <option [value]="null">Unassigned - anyone can take it</option>
-        <option *ngFor="let member of groupMembers" [value]="member.id">
-          {{ member.name }}
-        </option>
-      </select>
-    </div>
-
     <button type="submit"
             [disabled]="taskForm.invalid"
             [ngClass]="{'valid': taskForm.valid, 'invalid': taskForm.invalid}">

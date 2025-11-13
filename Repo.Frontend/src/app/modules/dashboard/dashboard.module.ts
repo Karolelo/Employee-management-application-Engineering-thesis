@@ -31,7 +31,7 @@ import { AnnouncementFormComponent } from './components/annoucment-form/announce
 import { MatFormFieldModule,MatFormFieldAppearance } from '@angular/material/form-field';
 import { AnnouncementListComponent } from './components/announcement-list/announcement-list.component';
 import { TextFieldModule } from '@angular/cdk/text-field';
-import { MatDividerModule} from '@angular/material/divider';
+import { MatDividerModule,MatDivider} from '@angular/material/divider';
 import { GroupCreatePageComponent } from './pages/group-create-page/group-create-page.component';
 import { AddUserToGroupFormComponent } from './components/add-user-to-group-form/add-user-to-group-form.component';
 import { MatProgressBar} from '@angular/material/progress-bar';
@@ -39,6 +39,9 @@ import { MatSpinner} from '@angular/material/progress-spinner';
 import { GroupShortInfoComponent } from './components/group-short-info/group-short-info.component';
 import { AppModule} from '../../app.module';
 import { GroupImageEditFormComponent} from './components/group-image-edit-form/group-image-edit-form.component';
+import {InfoMessageComponent} from '../../common_components/info-message/info-message.component';
+import { UserSimpleListComponent } from './components/user-simple-list/user-simple-list.component';
+
 @NgModule({
   declarations: [
     AdminDashboardComponent,
@@ -57,6 +60,7 @@ import { GroupImageEditFormComponent} from './components/group-image-edit-form/g
     AddUserToGroupFormComponent,
     GroupShortInfoComponent,
     GroupImageEditFormComponent,
+    UserSimpleListComponent,
   ],
   imports: [
     CommonModule,
@@ -86,7 +90,8 @@ import { GroupImageEditFormComponent} from './components/group-image-edit-form/g
     MatDividerModule,
     MatProgressBar,
     MatSpinner,
-    AppModule
+    InfoMessageComponent,
+    MatDivider
   ],
     providers: [
       GroupCreatePageComponent

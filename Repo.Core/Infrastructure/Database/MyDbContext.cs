@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using Repo.Core.Models;
 
 using Task = Repo.Core.Models.Task;
 using Type = Repo.Core.Models.Type;
-
 namespace Repo.Core.Infrastructure.Database;
 
 public partial class MyDbContext : DbContext
@@ -42,8 +43,6 @@ public partial class MyDbContext : DbContext
     public virtual DbSet<Group> Groups { get; set; }
 
     public virtual DbSet<GroupImage> GroupImages { get; set; }
-
-    public virtual DbSet<GroupTask> GroupTasks { get; set; }
 
     public virtual DbSet<HireHelper> HireHelpers { get; set; }
 
@@ -311,6 +310,23 @@ public partial class MyDbContext : DbContext
             entity.Property(e => e.Description).HasDefaultValue("");
             entity.Property(e => e.Name).HasMaxLength(100);
 
+            entity.HasMany(d => d.Tasks).WithMany(p => p.Groups)
+                .UsingEntity<Dictionary<string, object>>(
+                    "GroupTask",
+                    r => r.HasOne<Task>().WithMany()
+                        .HasForeignKey("Task_ID")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("GroupTask_Task"),
+                    l => l.HasOne<Group>().WithMany()
+                        .HasForeignKey("Group_ID")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("GroupTask_Group"),
+                    j =>
+                    {
+                        j.HasKey("Group_ID", "Task_ID").HasName("GroupTask_pk");
+                        j.ToTable("GroupTask");
+                    });
+
             entity.HasMany(d => d.Users).WithMany(p => p.Groups)
                 .UsingEntity<Dictionary<string, object>>(
                     "GroupUser",
@@ -340,40 +356,6 @@ public partial class MyDbContext : DbContext
             entity.HasOne(d => d.GROUP).WithOne(p => p.GroupImage)
                 .HasForeignKey<GroupImage>(d => d.GROUP_ID)
                 .HasConstraintName("FK_GROUP_IMAGE");
-        });
-
-        modelBuilder.Entity<GroupTask>(entity =>
-        {
-            entity.HasKey(e => new { e.Group_ID, e.Task_ID }).HasName("GroupTask_pk");
-
-            entity.ToTable("GroupTask");
-
-            entity.HasOne(d => d.Group).WithMany(p => p.GroupTasks)
-                .HasForeignKey(d => d.Group_ID)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("GroupTask_Group");
-
-            entity.HasOne(d => d.Task).WithMany(p => p.GroupTasks)
-                .HasForeignKey(d => d.Task_ID)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("GroupTask_Task");
-
-            entity.HasMany(d => d.Users).WithMany(p => p.GroupTasks)
-                .UsingEntity<Dictionary<string, object>>(
-                    "UserGroupTask",
-                    r => r.HasOne<User>().WithMany()
-                        .HasForeignKey("User_ID")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("UserGroupTask_User_fk"),
-                    l => l.HasOne<GroupTask>().WithMany()
-                        .HasForeignKey("Group_ID", "Task_ID")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("UserGroupTask_GroupTask_fk"),
-                    j =>
-                    {
-                        j.HasKey("Group_ID", "Task_ID", "User_ID").HasName("UserGroupTask_pk");
-                        j.ToTable("UserGroupTask");
-                    });
         });
 
         modelBuilder.Entity<HireHelper>(entity =>

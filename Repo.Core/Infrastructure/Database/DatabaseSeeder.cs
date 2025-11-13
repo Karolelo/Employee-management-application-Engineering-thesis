@@ -1,4 +1,4 @@
-namespace Repo.Core.Infrastructure;
+namespace Repo.Core.Infrastructure.Database;
 
 public class DatabaseSeeder : IDatabaseSeeder
 {

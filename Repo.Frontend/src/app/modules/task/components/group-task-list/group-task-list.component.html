@@ -34,8 +34,7 @@
   </ng-container>
 
   <ng-template #errorTpl>
-    <div class="error-message-container">
-      {{ errorMessage }}
-    </div>
+    <app-info-message title="Problems during taking tasks" [text]="errorMessage">
+    </app-info-message>
   </ng-template>
 </main>

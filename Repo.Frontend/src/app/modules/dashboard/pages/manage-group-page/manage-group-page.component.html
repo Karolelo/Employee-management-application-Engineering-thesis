@@ -43,7 +43,6 @@
             <mat-card-content class="dashboard-card-content">
                 <div class="task-container">
                   <app-group-task-form [groupId]="group.id"
-                                       [groupMembers]="groupUsers"
                                        [taskToEdit]="taskToEdit"
                                        (taskUpdated)="onTaskUpdated()">
 

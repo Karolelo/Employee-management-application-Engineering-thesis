@@ -15,7 +15,7 @@ import {firstValueFrom, Observable} from 'rxjs';
 export class GroupTaskFormComponent implements OnChanges {
   @Input() taskToEdit?: Task;
   @Input() groupId!: number;
-  @Input() groupMembers: Array<{id: number, name: string}> = []; // group users
+  //@Input() groupMembers: Array<{id: number, name: string}> = []; // group users
   @Output() taskUpdated = new EventEmitter<void>();
 
   taskForm!: FormGroup;
@@ -36,7 +36,6 @@ export class GroupTaskFormComponent implements OnChanges {
       estimated_Time: [0, [Validators.required, Validators.min(1)]],
       priority: ['', Validators.required],
       status: ['', Validators.required],
-      assignedToUserId: [null] // generally want to make this parameter optional
     });
   }
 
