@@ -1,8 +1,8 @@
 import { Component,Output,EventEmitter } from '@angular/core';
-
+import { MatIconModule } from '@angular/material/icon';
 @Component({
   selector: 'app-export-image',
-  standalone: false,
+  imports: [MatIconModule],
   templateUrl: './export-image.component.html',
   styleUrl: './export-image.component.css'
 })
@@ -15,10 +15,10 @@ export class ExportImageComponent {
     if (files && files.length > 0) {
       this.file = files[0];
       this.fileName = this.file?.name;
-      console.log('Wysyłam plik:', this.file); // debugging
+      console.log('File sent:', this.file);
       this.fileSent.emit(this.file);
     } else {
-      console.log('Nie wybrano pliku'); // debugging
+      console.log('Not choose a file');
     }
   }
 }
