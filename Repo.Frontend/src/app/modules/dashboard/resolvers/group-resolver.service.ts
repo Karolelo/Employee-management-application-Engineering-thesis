@@ -13,9 +13,9 @@ import {GroupService} from '../services/group/group.service';
 //proxy soo it makes impossible on localhost to do it correcty
 export class GroupResolverService implements Resolve<Group[]>{
 
-  constructor(private groupService: GroupService,router: Router) { }
+  constructor(private group_service: GroupService,router: Router) { }
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Group[]> {
-    return this.groupService.getGroups().pipe(
+    return this.group_service.getGroups().pipe(
       catchError((error) => {
         console.error('Error in resolver:', error);
         //this.router.navigate(['/error']); for now we not redirecting users

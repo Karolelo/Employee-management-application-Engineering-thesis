@@ -47,14 +47,23 @@ export class GroupFormComponent implements OnChanges{
         description: this.group.description,
         admin_ID: this.group.admin_ID
       }, { emitEvent: false });
+
+      this.user_service.getUser(this.group.admin_ID).subscribe(user => {
+
+        this.teamLeaders = [...this.teamLeaders, user];
+
+        this.groupForm.patchValue(
+          { admin_ID: user.id },
+          { emitEvent: false }
+        );
+      });
     }
+
     if (changes['allowAdminEdit']) {
-      this.updateAdminControlState();
-    } else {
-      // Ensure state is correct initially
       this.updateAdminControlState();
     }
   }
+
 
   onSubmit() {
     if (this.group) {

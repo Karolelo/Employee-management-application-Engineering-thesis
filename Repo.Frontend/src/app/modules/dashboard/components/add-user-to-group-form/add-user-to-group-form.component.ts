@@ -1,68 +1,85 @@
-import { Component,Input,ViewChild,AfterViewInit,Output,EventEmitter } from '@angular/core';
+import { Component,Input,ViewChild,OnChanges,Output,EventEmitter,SimpleChanges } from '@angular/core';
 import {UserListComponent} from '../user-list/user-list.component';
 import {GroupService} from '../../services/group/group.service';
-import {Router} from '@angular/router';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {forkJoin} from 'rxjs';
 import {finalize} from 'rxjs/operators';
-import {ProgressBarMode,MatProgressBar} from '@angular/material/progress-bar';
+import {UserService} from '../../services/user/user.service';
+import {pipe,map} from 'rxjs'
 @Component({
   selector: 'app-add-user-to-group-form',
   standalone: false,
   templateUrl: './add-user-to-group-form.component.html',
   styleUrl: './add-user-to-group-form.component.css'
 })
-export class AddUserToGroupFormComponent implements AfterViewInit {
+export class AddUserToGroupFormComponent implements OnChanges {
   @Input() group_id: number = 0;
+  @Output() usersAdded: EventEmitter<boolean> = new EventEmitter<boolean>()
+
   @ViewChild(UserListComponent) userList!: UserListComponent;
   loading: boolean = false;
-  @Output() usersAdded: EventEmitter<boolean> = new EventEmitter<boolean>()
+
+  existingUserIds: number[] =[];
+
   constructor(
     private group_service: GroupService,
-    private router: Router,
+    private user_service: UserService,
     private snackBar: MatSnackBar
   ) {}
 
-  ngAfterViewInit() {
-    setTimeout(() => {
-      this.userList.dataSource.filterExistingGroupUsers(this.group_id);
-    });
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['group_id'] && this.group_id) {
+      this.user_service.getUsersFromGroup(this.group_id).pipe(
+        map(users => users.map(user => user.id))
+      ).subscribe((ids: number[]) => {
+        this.existingUserIds = ids;
+        this.userList.selectedIds = [...ids];
+      });
+    }
   }
-
   onSubmit() {
     this.loading = true;
 
-    if (this.userList.selectedIds.length === 0) {
-      this.snackBar.open('Wybierz przynajmniej jednego użytkownika', 'OK', {
-        duration: 3000
-      });
+    const selectedIds = this.userList.selectedIds;
+
+    if (selectedIds.length === 0) {
+      this.snackBar.open('Choose at least one user', 'OK', { duration: 3000 });
       this.loading = false;
       return;
     }
 
-    const requests = this.userList.selectedIds
-      .map(id => this.group_service.addUserToGroup(id,this.group_id));
+    const toAdd = selectedIds.filter(id => !this.existingUserIds.includes(id));
 
-    console.log(this.userList.selectedIds)
-    console.log(this.group_id)
+    const toRemove = this.existingUserIds.filter(id => !selectedIds.includes(id));
+
+    const addRequests = toAdd.map(id =>
+      this.group_service.addUserToGroup(id, this.group_id)
+    );
+
+    const removeRequests = toRemove.map(id =>
+      this.group_service.removeUserFromGroup(id, this.group_id)
+    );
+
+    const requests = [...addRequests, ...removeRequests];
+
+    if (requests.length === 0) {
+      this.loading = false;
+      this.snackBar.open('No changes', 'OK', { duration: 2000 });
+      return;
+    }
 
     forkJoin(requests)
-      .pipe(
-        finalize(() => this.loading = false)
-      )
+      .pipe(finalize(() => (this.loading = false)))
       .subscribe({
         next: () => {
           this.usersAdded.emit(true);
         },
         error: (error) => {
-          console.error('Error during adding user:', error);
+          console.error('Error during updating group users:', error);
           this.snackBar.open(
-            'Error during adding users to group: '+error.error.message,
+            'Error during updating group users: ' + error.error?.message,
             'OK',
-            {
-              duration: 3000,
-              panelClass: ['error-snackbar']
-            }
+            { duration: 3000, panelClass: ['error-snackbar'] }
           );
         }
       });

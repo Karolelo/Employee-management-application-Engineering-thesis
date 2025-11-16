@@ -22,7 +22,7 @@ export class GroupListComponent {
   }
 
   onEdiGroup(id: number) {
-
+    this.router.navigate(['/dashboard/group/edit/'+id])
   }
 
   onDeleteGroup(id: number) {

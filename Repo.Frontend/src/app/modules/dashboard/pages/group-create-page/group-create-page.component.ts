@@ -39,13 +39,15 @@ export class GroupCreatePageComponent implements CanDeactivate<boolean> {
     if (this.isSecondStepCompleted) {
       return true;
     }
+
     return this.dialog.open(ConfirmDialogComponent, {
       data: {
-        title: "Unsaved changes",
-        message: "You have unsaved changes. Do you want to leave the page?",
-        closeBtn: 'Cancel',
-        confirmBtn: 'Exit'
-      }
+        title: 'Waitt',
+        message: 'You sure you want to leave progress will be gone?',
+        closeBtn: 'Stay',
+        confirmBtn: 'Leave'
+      },
+      disableClose: true
     }).afterClosed().toPromise().then(result => {
       return !!result;
     });

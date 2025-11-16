@@ -44,7 +44,8 @@
                 <div class="task-container">
                   <app-group-task-form [groupId]="group.id"
                                        [taskToEdit]="taskToEdit"
-                                       (taskUpdated)="onTaskUpdated()">
+                                       (taskUpdated)="onTaskUpdated()"
+                  style="margin: 10px 50px">
 
                   </app-group-task-form>
                   <app-group-task-list [groupId]="this.group.id"

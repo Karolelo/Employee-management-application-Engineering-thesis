@@ -43,6 +43,16 @@ export class GroupTaskFormComponent implements OnChanges {
     if (changes['taskToEdit'] && this.taskToEdit) {
       this.updateFormWithTaskData();
     }
+    const control = this.taskForm.get('start_Time');
+    if (!control) return;
+
+    if (this.taskToEdit) {
+      control.clearValidators();
+    } else {
+      control.setValidators(futureDateValidation);
+    }
+
+    control.updateValueAndValidity({ emitEvent: false });
   }
 
   private updateFormWithTaskData(): void {

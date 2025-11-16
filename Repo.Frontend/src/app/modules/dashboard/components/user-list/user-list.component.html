@@ -51,7 +51,7 @@
     <ng-container matColumnDef="Select">
       <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
       <td mat-cell *matCellDef="let row">
-        <input type="checkbox" class="checkbox" (click)="selectUser(row.id,$event)">
+        <input type="checkbox" [checked]="selectedIds.includes(row.id)" class="checkbox" (click)="selectUser(row.id,$event)">
       </td>
     </ng-container>
 

@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ViewChild,Input} from '@angular/core';
 import {MatTable} from '@angular/material/table';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
@@ -20,9 +20,11 @@ export class UserListComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatTable) table!: MatTable<User>;
+
   dataSource!: UserListDataSource;
   selectedIds: number[] = [];
-  activeEditing: boolean = true;
+
+  @Input() activeEditing: boolean = true;
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
   displayedColumns = ['Nickname','Name','Surname','Login','Email','Role','Select'];
@@ -88,7 +90,4 @@ export class UserListComponent implements AfterViewInit {
     }
   }
 
-  disableEdit() {
-    this.activeEditing = false;
-  }
 }

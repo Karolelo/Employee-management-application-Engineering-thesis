@@ -5,7 +5,7 @@
     <button
       mat-raised-button
       color="primary"
-      [disabled]="loading || userList.selectedIds.length === 0"
+      [disabled]="loading || !userList ||userList.selectedIds.length === 0"
       (click)="onSubmit()">
       <mat-spinner
         diameter="20"

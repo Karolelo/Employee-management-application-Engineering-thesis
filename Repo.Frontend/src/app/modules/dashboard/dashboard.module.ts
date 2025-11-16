@@ -28,7 +28,7 @@ import { GroupFormComponent } from './components/group-form/group-form.component
 import { GroupListComponent } from './components/group-list/group-list.component';
 import { TaskModule} from "../task/task.module";
 import { AnnouncementFormComponent } from './components/annoucment-form/announcement-form.component';
-import { MatFormFieldModule,MatFormFieldAppearance } from '@angular/material/form-field';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { AnnouncementListComponent } from './components/announcement-list/announcement-list.component';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { MatDividerModule,MatDivider} from '@angular/material/divider';
@@ -37,10 +37,11 @@ import { AddUserToGroupFormComponent } from './components/add-user-to-group-form
 import { MatProgressBar} from '@angular/material/progress-bar';
 import { MatSpinner} from '@angular/material/progress-spinner';
 import { GroupShortInfoComponent } from './components/group-short-info/group-short-info.component';
-import { AppModule} from '../../app.module';
 import { GroupImageEditFormComponent} from './components/group-image-edit-form/group-image-edit-form.component';
 import {InfoMessageComponent} from '../../common_components/info-message/info-message.component';
 import { UserSimpleListComponent } from './components/user-simple-list/user-simple-list.component';
+import {ExportImageComponent} from '../../common_components/export-image/export-image.component';
+import { GroupEditPageComponent } from './pages/group-edit-page/group-edit-page.component';
 
 @NgModule({
   declarations: [
@@ -61,6 +62,7 @@ import { UserSimpleListComponent } from './components/user-simple-list/user-simp
     GroupShortInfoComponent,
     GroupImageEditFormComponent,
     UserSimpleListComponent,
+    GroupEditPageComponent,
   ],
   imports: [
     CommonModule,
@@ -91,7 +93,8 @@ import { UserSimpleListComponent } from './components/user-simple-list/user-simp
     MatProgressBar,
     MatSpinner,
     InfoMessageComponent,
-    MatDivider
+    MatDivider,
+    ExportImageComponent
   ],
     providers: [
       GroupCreatePageComponent

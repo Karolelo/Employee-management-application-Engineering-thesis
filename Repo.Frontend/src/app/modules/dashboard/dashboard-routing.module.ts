@@ -10,6 +10,8 @@ import {GroupsPageComponent} from './pages/groups-page/groups-page.component';
 import {ManageGroupPageComponent} from './pages/manage-group-page/manage-group-page.component';
 import {GroupFormComponent} from './components/group-form/group-form.component';
 import {GroupCreatePageComponent} from './pages/group-create-page/group-create-page.component';
+import {GroupEditPageComponent} from './pages/group-edit-page/group-edit-page.component';
+import {GroupEditResolverService} from './resolvers/group-edit-resolver.service';
 
 
 const routes: Routes = [
@@ -37,7 +39,12 @@ const routes: Routes = [
   },
   {
     path: 'group/create', component: GroupCreatePageComponent,
-    canDeactivate: [()=> inject(GroupCreatePageComponent).canDeactivate()]}
+    canDeactivate: [()=> inject(GroupCreatePageComponent).canDeactivate()]
+  },
+  {
+    path:'group/edit/:id', component: GroupEditPageComponent,
+    resolve: {group: GroupEditResolverService}
+  }
 ]
 
 @NgModule({

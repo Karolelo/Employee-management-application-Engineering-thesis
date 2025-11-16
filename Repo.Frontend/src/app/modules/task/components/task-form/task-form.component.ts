@@ -57,6 +57,17 @@ export class TaskFormComponent implements OnChanges {
     if (this.shouldUpdateForm(changes)) {
       this.updateFormWithTaskData();
     }
+
+    const control = this.taskForm.get('start_Time');
+    if (!control) return;
+
+    if (this.taskToEdit) {
+      control.clearValidators();
+    } else {
+      control.setValidators(futureDateValidation);
+    }
+
+    control.updateValueAndValidity({ emitEvent: false });
   }
 
   private shouldUpdateForm(changes: SimpleChanges): boolean {

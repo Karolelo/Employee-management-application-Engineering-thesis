@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import {ReactiveFormsModule, FormBuilder, Validators, FormsModule} from '@angular/forms';
+import {ReactiveFormsModule, FormsModule} from '@angular/forms';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -45,8 +45,7 @@ export function tokenGetter() {
     AuthLayoutComponent,
     MainLayoutComponent,
     SidenavbarComponent,
-    UserDetailsNavComponent,
-    ExportImageComponent,
+    UserDetailsNavComponent
   ],
   imports: [
     CommonModule,
@@ -98,8 +97,6 @@ export function tokenGetter() {
     }
   ],
   exports: [
-    ExportImageComponent
-
   ],
   bootstrap: [AppComponent],
 })
