@@ -18,6 +18,7 @@
     <Folder Include="src\app\modules\dashboard\services\group\" />
     <Folder Include="src\app\modules\login\services\user_data\" />
     <Folder Include="src\app\modules\task\components\" />
+    <Folder Include="src\app\modules\task\guards\" />
     <Folder Include="src\app\modules\task\pages\" />
   </ItemGroup>
   <ItemGroup>

@@ -7,7 +7,7 @@ namespace Repo.Server.UserManagmentModule.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(policy: "TeamLeaderOnly")]
+[Authorize]
 public class GroupController(IGroupService groupService) : ControllerBase
 {
     [HttpGet]
@@ -21,7 +21,7 @@ public class GroupController(IGroupService groupService) : ControllerBase
         return Ok(response.Data);
     }
     
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     public async Task<IActionResult> GetGroupById([FromRoute]int id)
     {
         var response = await groupService.GetGroupById(id);
@@ -31,7 +31,22 @@ public class GroupController(IGroupService groupService) : ControllerBase
             
         return Ok(response.Data);
     }
+    
+    [HttpGet("user/{userId:int}")]
+    public async Task<IActionResult> GetUserGroups([FromRoute] int userId)
+    {
+        var response = await groupService.GetUsersGroups(userId);
 
+        if (!response.Success)
+        {
+            return response.Error.Contains("not exists") 
+                ? NotFound(new { Message = response.Error })
+                : BadRequest(new { Message = response.Error }); 
+        }
+
+        return Ok(response.Data);
+    }
+    [Authorize(policy: "TeamLeaderOnly")]
     [HttpPost]
     public async Task<IActionResult> CreateGroup([FromBody]CreateGroupDTO model)
     {
@@ -46,7 +61,7 @@ public class GroupController(IGroupService groupService) : ControllerBase
         var group = response.Data;
         return CreatedAtAction(nameof(GetGroupById), new { id = group.ID }, group);
     }
-
+    [Authorize(policy: "TeamLeaderOnly")]
     [HttpPut]
     public async Task<IActionResult> UpdateGroup([FromBody]UpdateGroupDTO model)
     {
@@ -63,7 +78,8 @@ public class GroupController(IGroupService groupService) : ControllerBase
         return Ok(response.Data);
     }
     
-    [HttpDelete("{id}")]
+    [Authorize(policy: "TeamLeaderOnly")]
+    [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteGroup([FromRoute]int id)
     {
         var response = await groupService.DeleteGroup(id);
@@ -73,7 +89,9 @@ public class GroupController(IGroupService groupService) : ControllerBase
             
         return NoContent();
     }
-    [HttpPost("add-user/{userId}/{groupId}")]
+    
+    [Authorize(policy: "TeamLeaderOnly")]
+    [HttpPost("add-user/{userId:int}/{groupId:int}")]
     public async Task<IActionResult> AddUserToGroup(int userId, int groupId)
     {
         var response = await groupService.AddUserToGroup(userId, groupId);
@@ -84,7 +102,8 @@ public class GroupController(IGroupService groupService) : ControllerBase
         return Ok(response.Data);
     }
     
-    [HttpDelete("remove-user/{userId}/{groupId}")]
+    [Authorize(policy: "TeamLeaderOnly")]
+    [HttpDelete("remove-user/{userId:int}/{groupId:int}")]
     public async Task<IActionResult> RemoveUserFromGroup(int userId, int groupId)
     {
         var response = await groupService.RemoveUserFromGroup(userId, groupId);
@@ -96,7 +115,8 @@ public class GroupController(IGroupService groupService) : ControllerBase
         
     }
     
-    [HttpPut("set-leader/{userId}/{groupId}")]
+    [Authorize(policy: "TeamLeaderOnly")]
+    [HttpPut("set-leader/{userId:int}/{groupId:int}")]
     public async Task<IActionResult> SetLeaderOfGroup(int userId, int groupId)
     {
         var response = await groupService.SetLeaderOfGroup(userId, groupId);
@@ -106,7 +126,8 @@ public class GroupController(IGroupService groupService) : ControllerBase
         return Ok(response.Data);
     }
 
-    [HttpGet("image/{groupId}")]
+    [Authorize(policy: "TeamLeaderOnly")]
+    [HttpGet("image/{groupId:int}")]
     public async Task<IActionResult> GetGroupImage(int groupId)
     {
         var result = await groupService.GetGroupImagePath(groupId);
@@ -117,6 +138,7 @@ public class GroupController(IGroupService groupService) : ControllerBase
         return File(result.Data, "image/*");
     }
     
+    [Authorize(policy: "TeamLeaderOnly")]
     [HttpPost("upload-image"),DisableRequestSizeLimit]
     [Consumes("multipart/form-data")]
     public async Task<IActionResult> UploadGroupImage([FromForm]int groupId,IFormFile? image,[FromForm] bool isUpdate = false)

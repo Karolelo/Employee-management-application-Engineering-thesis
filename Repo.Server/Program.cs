@@ -10,7 +10,6 @@ using Microsoft.OpenApi.Models;
 using Repo.Core.Infrastructure.Database;
 using Repo.Core.Infrastructure.Files;
 using Repo.Core.Infrastructure.Roles;
-using Repo.Core.Infrastructure.SwaggerExtensions;
 using Repo.Server.CalendarModule.Interfaces;
 using Repo.Server.CalendarModule.Repositories;
 using Repo.Server.CalendarModule.Services;

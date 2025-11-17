@@ -1,11 +1,10 @@
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Repo.Core.Infrastructure.Files;
-using Repo.Core.Infrastructure.Roles;
 using Repo.Core.Models;
 using Repo.Core.Models.api;
 using Repo.Core.Models.user;
 using Repo.Server.UserManagmentModule.Interfaces;
+using Repo.Server.UserManagmentModule.Repository;
 
 namespace Repo.Server.UserManagmentModule.Services;
 
@@ -13,13 +12,15 @@ public class GroupService : IGroupService
 {
     private readonly IGroupRepository _groupRepository;
     private readonly IFileOperations _file;
+    private readonly IUserRepository _userRepository;
     public GroupService(IGroupRepository groupRepository
         , IFileOperations file
-        , IOptions<RoleConfiguration> roleConfiguration
+        , IUserRepository userRepository
         )
     {
         _groupRepository = groupRepository;
         _file = file;
+        _userRepository = userRepository;
     }
 
     public async Task<Response<List<GroupDTO>>> GetAllGroups()
@@ -47,6 +48,27 @@ public class GroupService : IGroupService
         }catch (Exception ex)
         {
             return Response<GroupDTO?>.Fail($"Error while fetching group: {ex.Message}");
+        }
+    }
+
+    public async Task<Response<List<GroupDTO>>> GetUsersGroups(int userId)
+    {
+        try
+        {
+            if (await _userRepository.GetUserById(userId) == null)
+                return Response<List<GroupDTO>>.Fail("User not exists");
+
+            var groups = await _groupRepository.GetAllGroups();
+            var result = groups
+                .Where(g => g.Users.Any(u => u.ID == userId))
+                .Select(MapToGroupDTO)
+                .ToList();
+        
+            return Response<List<GroupDTO>>.Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return Response<List<GroupDTO>>.Fail($"Error while fetching group: {ex.Message}");
         }
     }
 

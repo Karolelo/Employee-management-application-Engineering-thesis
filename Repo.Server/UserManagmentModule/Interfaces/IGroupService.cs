@@ -7,6 +7,7 @@ public interface IGroupService
 {
     Task<Response<List<GroupDTO>>> GetAllGroups();
     Task<Response<GroupDTO?>> GetGroupById(int id);
+    Task<Response<List<GroupDTO>>> GetUsersGroups(int userId);
     Task<Response<GroupDTO>> CreateGroup(CreateGroupDTO dto);
     Task<Response<GroupDTO>> UpdateGroup(UpdateGroupDTO group);
     Task<Response<bool>> DeleteGroup(int id);
