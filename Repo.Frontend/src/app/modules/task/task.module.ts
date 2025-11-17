@@ -23,43 +23,54 @@ import {
   MatTable
 } from "@angular/material/table";
 import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
+import { GroupTaskFormComponent } from './components/group-task-form/group-task-form.component';
+import { GroupTaskListComponent } from './components/group-task-list/group-task-list.component';
+import {InfoMessageComponent} from "../../common_components/info-message/info-message.component";
 
 
 @NgModule({
-  declarations: [
-    TaskDetailsComponent,
-    TaskListComponent,
+    declarations: [
+        TaskDetailsComponent,
+        TaskListComponent,
+        TaskFormComponent,
+        TaskPageComponent,
+        TasksDetailPageComponent,
+        GroupTaskFormComponent,
+        GroupTaskListComponent
+    ],
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        TaskRoutingModule,
+        MatProgressSpinner,
+        MatProgressBar,
+        NgIf,
+        NgClass,
+        MatSlideToggle,
+        MatSelect,
+        MatLabel,
+        MatOption,
+        FormsModule,
+        MatTable,
+        MatColumnDef,
+        MatHeaderCell,
+        MatCell,
+        MatHeaderRow,
+        MatRow,
+        MatRowDef,
+        MatHeaderRowDef,
+        MatHeaderCellDef,
+        MatCellDef,
+        MatPaginator,
+        InfoMessageComponent,
+    ],
+  exports: [
     TaskFormComponent,
+    TaskListComponent,
     TaskPageComponent,
-    TasksDetailPageComponent
+    GroupTaskFormComponent,
+    GroupTaskListComponent
   ],
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    TaskRoutingModule,
-    MatProgressSpinner,
-    MatProgressBar,
-    NgIf,
-    NgClass,
-    MatSlideToggle,
-    MatSelect,
-    MatLabel,
-    MatOption,
-    FormsModule,
-    MatTable,
-    MatColumnDef,
-    MatHeaderCell,
-    MatCell,
-    MatHeaderRow,
-    MatRow,
-    MatRowDef,
-    MatHeaderRowDef,
-    MatHeaderCellDef,
-    MatCellDef,
-    MatPaginator,
-  ],
-  providers: [
-    TaskModule
-  ]
+    providers: []
 })
 export class TaskModule { }

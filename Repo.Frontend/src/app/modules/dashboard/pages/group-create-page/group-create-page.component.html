@@ -1,0 +1,14 @@
+<mat-stepper [linear]="isLinear" #stepper>
+  <mat-step
+    [completed]="isFirstStepCompleted">
+    <ng-template matStepLabel>Create group</ng-template>
+    <app-group-form (groupCreatedId)="onGroupCreated($event)"></app-group-form>
+  </mat-step>
+  <mat-step>
+    <ng-template matStepLabel>Add users</ng-template>
+    <app-add-user-to-group-form
+      [group_id]="createdGroupId"
+      (usersAdded)="onUsersAdded($event)">
+    </app-add-user-to-group-form>
+  </mat-step>
+</mat-stepper>

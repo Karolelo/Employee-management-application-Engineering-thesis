@@ -1,0 +1,28 @@
+<div class="group-page">
+  <app-group-short-info [group]="group"></app-group-short-info>
+  <div class="info-data">
+    <div class="task-info">
+      <h1 class="title-header">Tasks</h1>
+    @if (group) {
+      <app-group-task-list [groupId]="group.id" [isLeader]="false"></app-group-task-list>
+    }
+    </div>
+      <mat-divider [vertical]="true"></mat-divider>
+      @if ((announcements$ | async)?.length) {
+        <div class="announcement-container">
+          <h2 class="title-header">Announcements</h2>
+          <app-announcement-list [announcements$]="announcements$">
+          </app-announcement-list>
+        </div>
+      } @else {
+        <app-info-message title="No new announcements"
+                          text=" Stay tuned – new announcements will appear here as soon as they are added.">
+        </app-info-message>
+      }
+    </div>
+  <div class="user-list">
+    <h2 class="title-header">Users in group</h2>
+    <app-user-simple-list [users]="users"></app-user-simple-list>
+  </div>
+</div>
+

@@ -1,0 +1,100 @@
+<mat-vertical-stepper [linear]="false" #stepper animationDuration="2000">
+  <mat-step [stepControl]="userRegistrationForm">
+    <form [formGroup]="userRegistrationForm" (NgSubmit)="onSubmit()">
+      <ng-template matStepLabel>Fill out basic information about user</ng-template>
+      <mat-form-field>
+        <input matInput placeholder="Name" formControlName="Name" required>
+        <mat-error *ngIf="userRegistrationForm.get('Name')?.hasError('required')">
+          Name is required.
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="Surname" formControlName="Surname" required>
+        <mat-error *ngIf="userRegistrationForm.get('Surname')?.hasError('required')">
+          Surname is required.
+        </mat-error>
+      </mat-form-field>
+      <div>
+        <button matButton matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="userRegistrationForm">
+    <form [formGroup]="userRegistrationForm">
+      <ng-template matStepLabel>Fill login informations</ng-template>
+      <mat-form-field>
+        <input matInput placeholder="Nickname" formControlName="Nickname" required>
+        <mat-error *ngIf="userRegistrationForm.get('Nickname')?.hasError('required')">
+          Nickname is required.
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="Login" formControlName="Login" required>
+        <mat-error *ngIf="userRegistrationForm.get('Login')?.hasError('required')">
+          Login is required.
+        </mat-error>
+        <mat-error *ngIf="userRegistrationForm.get('Login')?.hasError('pattern')">
+          <br>
+          Login needs to start with capital letter and be between 6 and 15 characters<br>
+          Login can contain only letters, numbers and underscore.<br>
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="Email" formControlName="Email" required>
+        <mat-error *ngIf="userRegistrationForm.get('Email')?.hasError('required')">
+          Email is required.
+        </mat-error>
+        <mat-error *ngIf="userRegistrationForm.get('Email')?.hasError('email')">
+          Its not correct email.
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput type="password" placeholder="Password" formControlName="Password" required>
+        <mat-error *ngIf="userRegistrationForm.get('Password')?.hasError('required')">
+          Password is required.
+        </mat-error>
+        <mat-error *ngIf="userRegistrationForm.get('Password')?.hasError('minlength')">
+          Password needs to be at least 6 characters long.
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput type="password" placeholder="ConfirmPassword" formControlName="ConfirmPassword" required>
+        <mat-error *ngIf="userRegistrationForm.get('ConfirmPassword')?.hasError('required')">
+          Confirm password is required.
+        </mat-error>
+      </mat-form-field>
+      <div *ngIf="userRegistrationForm.errors?.['passwordMismatch'] && userRegistrationForm.get('ConfirmPassword')?.touched">
+        <p style="color: var(--error-color)">Passwords do not match!</p>
+      </div>
+      <div>
+        <button matButton matStepperPrevious>Back</button>
+        <button matButton matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="userRegistrationForm">
+    <form [formGroup]="userRegistrationForm">
+      <ng-template matStepLabel>Now choose user role and u are done</ng-template>
+      <mat-form-field>
+        <mat-select formControlName="Role" multiple>
+          <mat-option *ngFor="let role of Roles" [value]="role">
+            {{ role }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="userRegistrationForm.get('Role')?.hasError('required')">
+          Role is required.
+        </mat-error>
+      </mat-form-field>
+      <div class="actions">
+        <button matButton matStepperPrevious>Back</button>
+        <button matButton (click)="stepper.reset()">Reset</button>
+        <button type="submit"
+                (click)="onSubmit()"
+                [disabled]="userRegistrationForm.invalid"
+                [ngClass]="{'valid': userRegistrationForm.valid, 'invalid': userRegistrationForm.invalid}">
+          Done
+        </button>
+      </div>
+    </form>
+  </mat-step>
+</mat-vertical-stepper>

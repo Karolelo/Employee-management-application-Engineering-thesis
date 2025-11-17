@@ -57,6 +57,17 @@ export class TaskFormComponent implements OnChanges {
     if (this.shouldUpdateForm(changes)) {
       this.updateFormWithTaskData();
     }
+
+    const control = this.taskForm.get('start_Time');
+    if (!control) return;
+
+    if (this.taskToEdit) {
+      control.clearValidators();
+    } else {
+      control.setValidators(futureDateValidation);
+    }
+
+    control.updateValueAndValidity({ emitEvent: false });
   }
 
   private shouldUpdateForm(changes: SimpleChanges): boolean {
@@ -76,12 +87,6 @@ export class TaskFormComponent implements OnChanges {
       start_Time: new Date(this.taskToEdit!.start_Time).toISOString().split('T')[0]
     };
   }
-
-  /*private setUpTasks(): void
-  {
-    this.loadRelatedTasks();
-    this.updateAvailableTasks()
-  }*/
 
   private async updateAvailableTasks(): Promise<void> {
     const currentTasks = await firstValueFrom(this.tasksAvailableForRemoveRelation$);

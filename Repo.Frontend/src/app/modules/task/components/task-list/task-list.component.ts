@@ -16,6 +16,7 @@ import {Router} from '@angular/router';
   providers: []
 })
 export class TaskListComponent implements OnInit{
+  enableEdit = true;
   loading = false;
   errorMessage: string | null = null;
   tasks$!: Observable<Task[]>;
@@ -83,6 +84,5 @@ export class TaskListComponent implements OnInit{
       default: return 0;
     }
   }
-
 
 }

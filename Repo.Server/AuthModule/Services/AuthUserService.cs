@@ -1,6 +1,6 @@
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Repo.Core.Infrastructure;
+using Repo.Core.Infrastructure.Database;
 using Repo.Core.Models;
 using Repo.Core.Models.api;
 using Repo.Core.Models.auth;
@@ -104,7 +104,7 @@ public class AuthUserService : IAuthUserService
     {
         try
         {
-            var user = await _context.Set<User>().FirstOrDefaultAsync(e => e.Nickname == model.Nickname);
+            var user = await _context.Set<User>().FirstOrDefaultAsync(e => e.Nickname == model.Nickname && e.Deleted != 1);
 
             if (user == null)
             {
@@ -121,7 +121,7 @@ public class AuthUserService : IAuthUserService
             var Roles = await GetUserRoles(user.ID);
             
             if (refreshToken != null && refreshToken.RevokedAt == null &&
-                refreshToken.ExpireDate > DateTime.Now.AddDays(1))
+                refreshToken.ExpireDate < DateTime.Now.AddDays(1))
             {
                 return Response<TokenModel>.Ok(new TokenModel()
                 {

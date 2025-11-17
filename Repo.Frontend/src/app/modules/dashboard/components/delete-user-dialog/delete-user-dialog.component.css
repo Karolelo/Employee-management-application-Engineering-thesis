@@ -1,0 +1,75 @@
+.warning-window {
+  background: white;
+  min-height: 300px;
+  min-width: 400px;
+  max-width: 600px;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: auto 1fr auto;
+  gap: 16px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+
+
+h2 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--primary-color, #333);
+  grid-column: 1 / -1; /* Rozciąga na wszystkie kolumny */
+  margin-bottom: 1rem;
+  text-align: center;
+  position: relative;
+}
+
+h2::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 3px;
+  background-color: var(--accent-color, #6c5ce7);
+}
+
+.button-container {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1rem;
+}
+
+.button-container button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  color: white;
+  background-color: var(--secondary-color, #6c5ce7);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
+  min-width: 120px;
+}
+
+.button-container button.close-btn {
+  background-color: #f1c40f;
+}
+
+.button-container button.close-btn:hover {
+  background-color: #e1b60f;
+}
+
+.button-container button.delete-btn {
+  background-color: #e74c3c;
+}
+
+.button-container button.delete-btn:hover {
+  background-color: #c0392b;
+}

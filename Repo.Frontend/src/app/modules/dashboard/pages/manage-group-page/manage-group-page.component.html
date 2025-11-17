@@ -1,0 +1,62 @@
+<div class="grid-container">
+  <h1 class="title-header">Manage your group</h1>
+  <mat-grid-list cols="2" rowHeight="350px">
+    @for(card of cards | async; track card) {
+      <mat-grid-tile [colspan]="card.cols" [rowspan]="card.rows">
+        <mat-card class="dashboard-card">
+          @if (card.type === 'announcement')
+          {
+          <mat-card-header>
+            <h2 class="header-mat">Manage announcements</h2>
+          </mat-card-header>
+          <mat-card-content class="dashboard-card-content">
+              <div class="announcement-container">
+                  <app-announcement-list [announcements$]="announcements$"
+                                         (deleteAnnouncement)="onDeleteAnnouncement($event)"
+                                         (editAnnouncement)="onEditAnnouncement($event)"
+                                         #listAnnouncement>
+                  </app-announcement-list>
+                  <app-announcement-form
+                    [announcement]="selectedAnnouncement"
+                    [group_ID]="group.id">
+                  </app-announcement-form>
+               </div>
+          </mat-card-content>
+          } @else if (card.type === 'groupDetails')
+          {
+            <mat-card-header>
+              <h2 class="header-mat">Group details</h2>
+            </mat-card-header>
+            <mat-card-content class="dashboard-card-content">
+              <app-group-short-info [group]="group"></app-group-short-info>
+              <div class="group-container">
+                  <app-group-image-edit-form [group]="group"></app-group-image-edit-form>
+                  <app-group-form [group]="group" [allowAdminEdit]="canEditAdminId" [transparentBackground]="true"></app-group-form>
+              </div>
+            </mat-card-content>
+          }
+          @else if (card.type === 'taskStats')
+          {
+            <mat-card-header>
+              <h2 class="header-mat">Task creating for the group</h2>
+            </mat-card-header>
+            <mat-card-content class="dashboard-card-content">
+                <div class="task-container">
+                  <app-group-task-form [groupId]="group.id"
+                                       [taskToEdit]="taskToEdit"
+                                       (taskUpdated)="onTaskUpdated()"
+                  style="margin: 10px 50px">
+
+                  </app-group-task-form>
+                  <app-group-task-list [groupId]="this.group.id"
+                                       [isLeader]="true"
+                                       (editTask)="onTaskEdit($event)" style="margin-left: 50px">
+                  </app-group-task-list>
+                </div>
+            </mat-card-content>
+          }
+        </mat-card>
+      </mat-grid-tile>
+    }
+  </mat-grid-list>
+</div>

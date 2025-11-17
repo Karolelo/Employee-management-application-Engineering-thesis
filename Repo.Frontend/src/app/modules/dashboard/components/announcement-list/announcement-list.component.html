@@ -1,0 +1,18 @@
+<ul class="announcement-list">
+  @for (announcement of announcements$ | async; track announcement.id) {
+    <li class="announcement-item">
+      <h3>{{announcement.title}}</h3>
+      <p>{{announcement.text}}</p>
+      @if (enableEdit) {
+        <div class="actions-container">
+          <button (click)="onEditAnnoucement(announcement)" >
+            <i class="fa fa-edit edit-icon"></i>
+          </button>
+          <button (click)="onDeleteAnnoucement(announcement.id)">
+            <i class="fa fa-trash delete-icon"></i>
+          </button>
+        </div>
+      }
+    </li>
+  }
+</ul>

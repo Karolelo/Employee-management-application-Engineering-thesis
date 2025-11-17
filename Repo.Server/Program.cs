@@ -1,11 +1,15 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Data.SqlClient;
 using Microsoft.IdentityModel.Tokens;
 using Repo.Core.Infrastructure;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
+using Repo.Core.Infrastructure.Database;
+using Repo.Core.Infrastructure.Files;
+using Repo.Core.Infrastructure.Roles;
 using Repo.Server.CalendarModule.Interfaces;
 using Repo.Server.CalendarModule.Repositories;
 using Repo.Server.CalendarModule.Services;
@@ -13,6 +17,9 @@ using Repo.Server.Controllers;
 using Repo.Server.Controllers.Interfaces;
 using Repo.Server.TaskModule;
 using Repo.Server.TaskModule.interafaces;
+using Repo.Server.UserManagmentModule.Interfaces;
+using Repo.Server.UserManagmentModule.Repository;
+using Repo.Server.UserManagmentModule.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
@@ -23,8 +30,21 @@ builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<IPriorityService, PriorityService>();
 builder.Services.AddScoped<IStatusService, StatusService>();
 builder.Services.AddScoped<AuthenticationHelpers>();
-builder.Services.AddScoped<IEventRepository, EventRepo>();
+builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<ICalendarService,CalendarService>();
+builder.Services.AddScoped<IUserRepository,UserRepository>();
+builder.Services.AddScoped<IUserService,UserService>();
+builder.Services.AddScoped<IRoleRepository,RoleRepository>();
+builder.Services.AddScoped<IGroupRepository,GroupRepository>();
+builder.Services.AddScoped<IGroupService,GroupService>();
+builder.Services.AddScoped<IFileOperations,FileOperation>();
+builder.Services.AddScoped<IAnnoucementService,AnnouncementService>();
+builder.Services.AddScoped<IAnnoucementRepository,AnnoucementRepository>();
+
+//Creating getting role from appseting
+builder.Services.Configure<RoleConfiguration>(
+    builder.Configuration.GetSection("Roles"));
+
 
 // Connection priority - changeable if needed
 var candidateNames = new[] { "Mroziu-workspace", "DefaultConnection" };
@@ -76,11 +96,22 @@ builder.Services.AddAuthentication(options =>
         };
     });
 
+builder.Services.Configure<FormOptions>(o =>
+{
+    o.ValueLengthLimit = int.MaxValue;
+    o.MultipartBodyLengthLimit = int.MaxValue;
+    o.MemoryBufferThreshold = int.MaxValue;
+});
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
 {
+    option.SwaggerDoc("v1",new OpenApiInfo{Title = "API engineer thesis", Version = "v1"
+        , Description = "API for Employee management application"});
+    //option.OperationFilter<FileUploadOperationFilter>();
+    
     option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
@@ -120,8 +151,8 @@ builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
     options.AddPolicy("UserOnly", policy => policy.RequireRole("User","TeamLeader","Admin","Accountant"));
-    options.AddPolicy("TeamLeader",policy => policy.RequireRole("TeamLeader"));
-    options.AddPolicy("Accountant", policy => policy.RequireRole("Admin", "Accountant"));
+    options.AddPolicy("TeamLeaderOnly",policy => policy.RequireRole("TeamLeader","Admin"));
+    options.AddPolicy("AccountantOnly", policy => policy.RequireRole("Admin", "Accountant"));
     
 });
 var app = builder.Build();
@@ -134,6 +165,7 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
         c.RoutePrefix = string.Empty; 
     });
+    app.UseHttpsRedirection();
 }
 
 static async Task<(string Name, string Conn)> ChooseFirstWorkingAsync(
@@ -160,9 +192,23 @@ static async Task<(string Name, string Conn)> ChooseFirstWorkingAsync(
 
     throw new InvalidOperationException("Failed to find a working ConnectionString");
 }
-
+app.Use(async (context, next) =>
+{
+    if (context.Request.Path.StartsWithSegments("/images"))
+    {
+        Console.WriteLine($"Próba dostępu do ścieżki: {context.Request.Path}");
+    }
+    await next();
+});
 app.UseHttpsRedirection();
+
+app.UseDefaultFiles();
 app.UseStaticFiles();
+app.UseStaticFiles(new StaticFileOptions()
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(),@"wwwroot")),
+    RequestPath = new PathString("/Resources")
+});
 
 app.UseRouting();
 
@@ -171,10 +217,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-// Hmmm we could use it, but i read that is more appropriate for MVC
-// and we prefere more explicit api
-/*app.MapControllerRoute(
-    name: "default",
-    pattern: "api/{controller=Home}/{action=Index}/{id?}");*/
 
 app.Run();

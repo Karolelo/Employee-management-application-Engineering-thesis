@@ -16,7 +16,7 @@ export class AuthInterceptorService implements HttpInterceptor {
     if (this.isPublicEndpoint(request.url)) {
       return next.handle(request);
     }
-    console.log('intercept');
+
     const token = this.authService.getToken();
     if (token) {
       request = this.addTokenHeader(request, token);
@@ -47,13 +47,27 @@ export class AuthInterceptorService implements HttpInterceptor {
     return publicUrls.some(publicUrl => url.includes(publicUrl));
   }
 
-  private addTokenHeader(request: HttpRequest<any>, token: string): HttpRequest<any> {
+  /*private addTokenHeader(request: HttpRequest<any>, token: string): HttpRequest<any> {
     return request.clone({
       headers: new HttpHeaders({
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       })
     });
+  }*/
+  private addTokenHeader(request: HttpRequest<any>, token: string): HttpRequest<any> {
+    // Check if request is form
+    const isFormData = request.body instanceof FormData;
+
+    // In all other cases just push it as regular application/json
+    const headers = isFormData
+      ? new HttpHeaders({ 'Authorization': `Bearer ${token}` })
+      : new HttpHeaders({
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      });
+
+    return request.clone({ headers });
   }
 
   private handle401Error(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {

@@ -14,12 +14,14 @@
           <mat-progress-bar [value]="setProgressBarValue(task.status)"></mat-progress-bar>
         </div>
         <div>
+          <ng-container *ngIf="enableEdit">
           <button (click)="onEditTask(task)">
             <i class="fa fa-edit edit-icon"></i>
           </button>
           <button (click)="onDeleteTask(task.id)">
             <i class="fa fa-trash delete-icon"></i>
           </button>
+          </ng-container>
           <button (click)="onViewTask(task)">
             <i class="fa fa-eye view-icon"></i>
           </button>

@@ -1,0 +1,22 @@
+<div class="form-container">
+  <app-user-list></app-user-list>
+
+  <div class="actions">
+    <button
+      mat-raised-button
+      color="primary"
+      [disabled]="loading || !userList ||userList.selectedIds.length === 0"
+      (click)="onSubmit()">
+      <mat-spinner
+        diameter="20"
+        *ngIf="loading">
+      </mat-spinner>
+      <span>Add User</span>
+    </button>
+  </div>
+
+  <mat-progress-bar
+    *ngIf="loading"
+    mode="indeterminate">
+  </mat-progress-bar>
+</div>

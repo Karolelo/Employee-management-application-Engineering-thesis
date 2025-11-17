@@ -1,0 +1,20 @@
+<ng-container>
+  <div *ngIf="!groups?.length">
+    <h1 class="no-content-found-message">No team available</h1>
+  </div>
+
+  <div class="list-view" *ngIf="groups?.length">
+    <div class="navigation-arrows">
+      <button class="left-arrow" (click)="onLeftArrowClick()">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <button class="right-arrow" (click)="onRightArrowClick()">
+        <mat-icon>arrow_forward</mat-icon>
+      </button>
+    </div>
+    <app-group-list [groups]="selectedGroups" (groupDeleteEvent)="deleteGroup($event)"></app-group-list>
+  </div>
+</ng-container>
+<ng-template #deleteGroupDialog>
+  <h1 class="title-header">You sure my friend you want to delete it ? </h1>
+</ng-template>

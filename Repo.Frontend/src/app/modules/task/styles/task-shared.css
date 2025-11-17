@@ -1,0 +1,117 @@
+/* ==================== SHARED TASK STYLES ==================== */
+/* Common styles for all task components in the task module */
+
+/* ========== FORM BASE STYLES ========== */
+.task-form {
+  max-width: 800px;
+  width: 90%;
+  margin: 1rem auto;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 20px 40px 20px rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+  transition: all 0.3s ease;
+}
+
+.task-form:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* Variant for transparent backgrounds (used in cards) */
+.task-form--transparent {
+  background: transparent;
+  box-shadow: none;
+}
+
+.task-form--transparent:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+/* ========== LIST BASE STYLES ========== */
+.task-list {
+  max-width: 800px;
+  width: 90%;
+  margin: 3rem auto;
+  background: linear-gradient(135deg, #ffffff 0%, #f3f3f3 100%);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px var(--shadow-color);
+  padding: 2.5rem;
+  transition: all 0.3s ease;
+}
+
+.task-list:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px var(--shadow-color);
+}
+
+/* Variant for transparent list backgrounds */
+.task-list--transparent {
+  background: transparent;
+  box-shadow: none;
+}
+
+.task-list--transparent:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+/* Variant for compact lists (used in cards) */
+.task-list--compact {
+  margin: 1rem auto;
+  padding: 1.5rem;
+}
+
+/* ========== TASK INFO SECTION ========== */
+.task-info {
+  width: 100%;
+}
+
+/* ========== ICON CONTAINER & ICONS ========== */
+.icon-container {
+  display: flex;
+  align-items: center;
+}
+
+.icon-container button {
+  background-color: #f0f0f0;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 4px;
+  transition: all 0.3s ease;
+}
+
+.icon-container button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.icon-container button i {
+  font-size: 1rem;
+}
+
+Icon colors
+ .edit-icon {
+   color: #3498db;
+ }
+
+.delete-icon {
+  color: #e74c3c;
+}
+
+.view-icon {
+  color: #2ecc71;
+}
+
+.show-icon {
+  color: #f39c12;
+}
+
+.refresh-icon {
+  color: #2ecc71;
+}

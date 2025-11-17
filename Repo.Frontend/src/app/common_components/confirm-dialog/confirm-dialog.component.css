@@ -1,0 +1,57 @@
+.warning-window {
+  background: white;
+  min-height: 300px;
+  min-width: 400px;
+  max-width: 600px;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto auto 1fr;
+  gap: 16px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.question-text {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1rem;
+  margin-top: auto;
+}
+
+.button-container button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
+  min-width: 120px;
+}
+
+.button-container .close-btn {
+  background-color: var(--low-priority);
+}
+
+.button-container .close-btn:hover {
+  background-color: #77d8a3
+}
+
+.button-container .confirm-btn {
+  background-color: #e74c3c;
+}
+
+.button-container .confirm-btn:hover {
+  background-color: #c0392b;
+}

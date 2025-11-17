@@ -3,7 +3,6 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Task} from '../../interfaces/task';
 import {RelatedTasks} from '../../interfaces/related-tasks';
-//Everu class posibble was change for map, for better angular assert to Angular convention
 @Injectable({
   providedIn: 'root'
 })
@@ -50,7 +49,13 @@ export class TaskService {
   }
 
   createTaskForGroup(groupId: number, task: Task): Observable<Task> {
-    return this.http.post<Task>(`${this.apiUrl}/group/add/${groupId}`, task);
+    return this.http.post<Task>(`${this.apiUrl}/group/add/${groupId}`, task)
+      .pipe(map(newTask => {
+        const currentTasks = this.taskSubject.getValue();
+        this.taskSubject.next([...currentTasks, newTask]);
+        return newTask;
+        })
+      );
   }
 
   createTaskRelation(taskId: number, relatedTaskId: number): Observable<Task> {

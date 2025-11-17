@@ -111,14 +111,14 @@ public class TaskController : ControllerBase
 
     //Methods for updating task
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> UpdateTask(int id, UpdateTaskModel model)
+    public async Task<IActionResult> UpdateTask(int id, UpdateTaskDTO dto)
     {
         if (!ModelState.IsValid)
         {
             return ValidationProblem(ModelState);
         }
         
-        var response = await _taskService.UpdateTask(model, id);
+        var response = await _taskService.UpdateTask(dto, id);
         
         var task = response.Data;
         

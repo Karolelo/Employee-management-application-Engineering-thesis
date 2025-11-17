@@ -5,6 +5,9 @@
 :root {
   --font-main: 'Railway', sans-serif;
   --font-headers: 'RobotSlab', serif;
+  --mdc-filled-text-field-container-color: --secondary-color;
+  --mdc-filled-text-field-input-text-color: --input-bg;
+
 }
 :root {
   --primary-color: #6c5ce7;
@@ -24,6 +27,117 @@
   --completed-status: #2ecc71;
 }
 
+.short-info-text {
+  font-size: 0.8rem;
+  color: var(--text-color);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+
+.title-header {
+  font-family:monospace;
+  color: var(--primary-color);
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  position: relative;
+  padding-bottom: 0.5rem;
+  font-weight: 1000;
+}
+
+.title-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background-color: var(--accent-color);
+}
+
+.mat-mdc-table {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 16px 0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+table[mat-table] {
+  width: 100%;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 1rem 0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.mat-mdc-header-cell {
+  background-color: var(--primary-color);
+  color: var(--text-color);
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 1rem;
+  text-transform: capitalize;
+}
+
+.mat-mdc-cell {
+  padding: 1rem;
+  font-family: var(--font-main);
+  color: var(--text-color);
+}
+
+.mat-mdc-row {
+  transition: background-color 0.3s;
+}
+
+.mat-mdc-paginator {
+  border-radius: 0 0 12px 12px;
+  background: transparent !important;
+  color: var(--text-color);
+}
+.mat-mdc-paginator-page-size-label,
+.mat-mdc-paginator-range-label {
+  color: var(--text-color);
+}
+
+.mat-mdc-row:hover {
+  background-color: rgba(108, 92, 231, 0.1);
+  cursor: pointer;
+}
+
+.mat-mdc-select-panel {
+  background-color: white !important;
+  border-radius: 8px !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
+}
+
+.mat-mdc-option {
+  color: var(--text-color) !important;
+}
+
+.mat-mdc-option:hover:not(.mat-mdc-option-disabled) {
+  background-color: rgba(108, 92, 231, 0.1) !important;
+}
+.mat-mdc-option:active {
+  background-color: var(--primary-color) !important;
+  opacity: 0.8;
+}
+/*style for common buttons*/
+button[type="submit"]:hover {
+  background-color: var(--success-color);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+button[type="submit"]:disabled {
+  background-color: var(--error-color);
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
 
 
 

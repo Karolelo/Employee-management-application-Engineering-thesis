@@ -7,7 +7,7 @@ import {BehaviorSubject, filter, map} from 'rxjs';
   standalone: false,
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
-}) //TODO sprawdzić czy tak lepiej działa
+})
 export class NavbarComponent {
   moduleName: string = "Basic module";
 

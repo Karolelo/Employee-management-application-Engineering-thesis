@@ -1,0 +1,5 @@
+<div class="group-form">
+  <img [src]='imageUrl ?? "/images/defualt.png"' width="400" height="400" alt="No found any image">
+  <app-export-image (fileSent)="onFileSent($event)"></app-export-image>
+</div>
+

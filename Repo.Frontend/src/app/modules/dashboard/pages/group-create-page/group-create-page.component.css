@@ -1,0 +1,60 @@
+.mat-stepper-horizontal {
+  max-width: 1200px;
+  width: 90%;
+  margin: 1rem auto;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 20px 40px 20px rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+  transition: all 0.3s ease;
+}
+
+.mat-stepper-horizontal:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+
+::ng-deep .mat-horizontal-stepper-header {
+  &:hover {
+    background-color: rgba(108, 92, 231, 0.1) !important;
+  }
+
+  .mat-step-label {
+    font-family: var(--font-main);
+    color: var(--text-color);
+  }
+}
+
+/* Style dla zawartości kroków */
+.mat-horizontal-stepper-content {
+  padding: 1.5rem;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1rem;
+}
+
+/* Style dla przycisków nawigacji */
+.stepper-navigation {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+}
+
+button[matStepperNext],
+button[matStepperPrevious]{
+  margin: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #ffffff;
+  background-color: var(--primary-color);
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}

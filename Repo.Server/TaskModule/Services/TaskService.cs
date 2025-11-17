@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Repo.Core.Infrastructure;
+using Repo.Core.Infrastructure.Database;
 using Repo.Core.Models;
 using Repo.Core.Models.api;
 using Repo.Core.Models.DTOs;
@@ -305,7 +306,7 @@ public class TaskService : ITaskService
     }
 
     //Methods for updating task
-    public async Task<Response<TaskDTO>> UpdateTask(UpdateTaskModel model, int id)
+    public async Task<Response<TaskDTO>> UpdateTask(UpdateTaskDTO dto, int id)
     {
         try
         {
@@ -318,27 +319,27 @@ public class TaskService : ITaskService
                 return Response<TaskDTO>.Fail("Task not found");
             }
             
-            var priority = await _context.Set<Priority>().FirstOrDefaultAsync(e => e.Priority1 == model.Priority);
+            var priority = await _context.Set<Priority>().FirstOrDefaultAsync(e => e.Priority1 == dto.Priority);
             if (priority == null)
             {
                 return Response<TaskDTO>.Fail("Priority not found");
             }
 
-            var status = await _context.Set<Status>().FirstOrDefaultAsync(e => e.Status1 == model.Status);
+            var status = await _context.Set<Status>().FirstOrDefaultAsync(e => e.Status1 == dto.Status);
             if (status == null)
             {
                 return Response<TaskDTO>.Fail("Status not found");
             }
 
-            task.Name = model.Name;
-            task.Description = model.Description;
-            task.Start_Time = model.Start_Time;
-            //task.Estimated_Time = model.Estimated_Time;
+            task.Name = dto.Name;
+            task.Description = dto.Description;
+            task.Start_Time = dto.Start_Time;
+            task.Estimated_Time = dto.Estimated_Time;
             task.Priority = priority;
             task.Status = status;
             await _context.SaveChangesAsync();
             
-            var dto = new TaskDTO
+            var taskDto = new TaskDTO
             {
                 ID = task.ID, 
                 Name = task.Name, 
@@ -349,7 +350,7 @@ public class TaskService : ITaskService
                 Status = task.Status.Status1
             };
             
-            return Response<TaskDTO>.Ok(dto);
+            return Response<TaskDTO>.Ok(taskDto);
         }
         catch (DbUpdateConcurrencyException)
         {

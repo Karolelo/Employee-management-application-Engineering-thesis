@@ -1,0 +1,17 @@
+<ul>
+  <li *ngFor="let group of groups
+  | slice: (currentPage-1) * itemsPerPage : currentPage * itemsPerPage">
+    <h2>{{group.name}}</h2>
+    <div>
+      <button (click)="onEdiGroup(group.id)">
+        <i class="fa fa-edit edit-icon"></i>
+      </button>
+      <button (click)="onDeleteGroup(group.id)">
+        <i class="fa fa-trash delete-icon"></i>
+      </button>
+      <button (click)="onShowGroup(group.id)">
+        <i class="fa fa-search show-icon"></i>
+      </button>
+    </div>
+  </li>
+</ul>

@@ -1,0 +1,22 @@
+.simple-user-table {
+  width: 100%;
+}
+
+.simple-user-table th,
+.simple-user-table td {
+  padding: 4px 8px;
+}
+
+button[mat-icon-button] mat-icon {
+  color: inherit;
+  transform: scale(1);
+  transition: color 1s ease,
+  transform 0.3s ease;
+}
+
+
+button[mat-icon-button] mat-icon:hover {
+  scale: 1.2;
+  transition:  color 1s ease;
+  color: var(--primary-color);
+}

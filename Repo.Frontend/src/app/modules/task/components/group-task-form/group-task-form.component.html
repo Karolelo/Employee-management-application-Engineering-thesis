@@ -1,0 +1,80 @@
+<div class="task-form" [ngClass]="{'task-form--transparent': isTransparent}">
+  <button id="restart-button" (click)="resetFormState()">
+    <i class="fa fa-refresh refresh-icon"></i>
+  </button>
+  <h2 class="title-header">
+    <i class="fa fa-users"></i>
+    {{ taskToEdit ? 'Edit Group Task' : 'Add Group Task' }}
+  </h2>
+
+  <form [formGroup]="taskForm" (ngSubmit)="onSubmit()">
+    <div class="floating-label">
+      <input formControlName="name" placeholder=" ">
+      <label>Title</label>
+      <span *ngIf="taskForm.get('name')?.invalid && taskForm.get('name')?.touched" class="error-message">
+        Title is required.
+      </span>
+    </div>
+
+    <div class="floating-label">
+      <textarea formControlName="description" placeholder=" " rows="4" class="task-description"></textarea>
+      <label>Description</label>
+      <div *ngIf="taskForm.get('description')?.invalid
+        && taskForm.get('description')?.touched
+        && taskForm.get('description')?.errors as error" class="error-message">
+        <span *ngIf="error['required']">Description is required.</span>
+        <span *ngIf="error['minlength']">Description must be at least 20 characters long.</span>
+      </div>
+    </div>
+
+    <div class="floating-label">
+      <input formControlName="start_Time" type="date" placeholder="">
+      <label>Task start date</label>
+      <span *ngIf="taskForm.get('start_Time')?.invalid
+      && taskForm.get('start_Time')?.touched" class="error-message">
+        Start date needs to be in future
+      </span>
+    </div>
+
+    <div class="floating-label">
+      <input formControlName="estimated_Time" type="number" placeholder="">
+      <label>Estimated time for task in hours</label>
+      <div *ngIf="taskForm.get('estimated_Time')?.invalid
+      && taskForm.get('estimated_Time')?.touched
+       && taskForm.get('estimated_Time')?.errors as error" class="error-message">
+        <span *ngIf="error['required']">Estimated time is required.</span>
+        <span *ngIf="error['min']">Estimated time must be at least 1 hour.</span>
+      </div>
+    </div>
+
+    <div class="floating-label">
+      <label>Priority</label>
+      <select formControlName="priority" placeholder=" ">
+        <option value="low">Low</option>
+        <option value="normal">Normal</option>
+        <option value="high">High</option>
+      </select>
+      <span *ngIf="taskForm.get('priority')?.invalid && taskForm.get('priority')?.touched" class="error-message">
+        Priority is required.
+      </span>
+    </div>
+
+    <div class="floating-label">
+      <label>Status</label>
+      <select formControlName="status" placeholder="">
+        <option value="To-Do">To-Do</option>
+        <option value="In-Progress">In-Progress</option>
+        <option value="Finished">Finished</option>
+      </select>
+    </div>
+    <span *ngIf="taskForm.get('status')?.invalid && taskForm.get('status')?.touched" class="error-message">
+      Status is required.
+    </span>
+
+    <button type="submit"
+            [disabled]="taskForm.invalid"
+            [ngClass]="{'valid': taskForm.valid, 'invalid': taskForm.invalid}">
+      {{ taskToEdit ? 'Update Group Task' : 'Add Group Task' }}
+    </button>
+  </form>
+</div>

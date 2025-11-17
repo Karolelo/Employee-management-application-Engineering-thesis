@@ -33,8 +33,6 @@ public partial class Task
 
     public virtual Status Status { get; set; } = null!;
 
-    public virtual ICollection<WorkTask> WorkTasks { get; set; } = new List<WorkTask>();
-
     public virtual ICollection<Group> Groups { get; set; } = new List<Group>();
 
     public virtual ICollection<User> Users { get; set; } = new List<User>();

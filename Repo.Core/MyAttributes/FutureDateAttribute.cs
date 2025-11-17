@@ -4,7 +4,7 @@ namespace Repo.Core.MyAttributes;
 
 public class FutureDateAttribute : ValidationAttribute
 {
-    protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+    protected override ValidationResult? IsValid(object value, ValidationContext validationContext)
     {
         DateTime date = (DateTime)value;
         if (date < DateTime.Now)
