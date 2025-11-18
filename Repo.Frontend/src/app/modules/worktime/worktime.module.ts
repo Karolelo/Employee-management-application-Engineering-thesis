@@ -6,6 +6,7 @@ import { WorktimeRoutingModule } from './worktime-routing.module';
 import { WorkEntryFormComponent } from './components/work-entry-form/work-entry-form.component';
 import { WorkEntryListComponent } from './components/work-entry-list/work-entry-list.component';
 import { WorkSummaryComponent } from './components/work-summary/work-summary.component';
+import { WorktimePageComponent } from './pages/worktime-page/worktime-page.component';
 
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
@@ -14,6 +15,7 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
     WorkEntryFormComponent,
     WorkEntryListComponent,
     WorkSummaryComponent,
+    WorktimePageComponent
   ],
   imports: [
     CommonModule,
