@@ -14,15 +14,14 @@ export class TaskService {
   constructor(private http: HttpClient) { }
 
   //Getters
-  getAllUserTask(id: number): Observable<Task[]> {
+  getAllUserTasks(id: number): Observable<Task[]> {
     return this.http.get<Task[]>(`${this.apiUrl}/user/${id}`)
       .pipe(map(userTasks=>{
         this.taskSubject.next(userTasks);
         return this.taskSubject.getValue();
       }));
   }
-
-  getAllGroupTask(id: number): Observable<Task[]> {
+  getAllGroupTasks(id: number): Observable<Task[]> {
     return this.http.get<Task[]>(`${this.apiUrl}/group/${id}`)
       .pipe(map(groupTasks=>{
         this.taskSubject.next(groupTasks);

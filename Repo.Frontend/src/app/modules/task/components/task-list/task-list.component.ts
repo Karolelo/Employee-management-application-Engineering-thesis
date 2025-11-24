@@ -30,7 +30,7 @@ export class TaskListComponent implements OnInit{
     this.userDataStore.getUserData().subscribe({
       next: (user) => {
         if (user) {
-          this.taskService.getAllUserTask(user.id).subscribe({
+          this.taskService.getAllUserTasks(user.id).subscribe({
             next: (task) => {
                 this.loading = false;
                 console.log(task);
