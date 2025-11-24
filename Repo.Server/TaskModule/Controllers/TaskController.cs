@@ -41,20 +41,16 @@ public class TaskController : ControllerBase
     public async Task<IActionResult> GetUserTasks(int userId)
     {
         var response = await _taskService.GetUserTasks(userId);
-    
-        return response.Success 
-            ? Ok(response.Data)
-            : NotFound(new { Message = response.Error }); 
+
+        return response.Success ? Ok(response.Data) : Ok(new List<TaskDTO>());
     }
-    
+
     [HttpGet("group/{groupId:int}")]
     public async Task<IActionResult> GetGroupTasks(int groupId)
     {
         var response = await _taskService.GetGroupTasks(groupId);
         
-        return response.Success 
-            ? Ok(response.Data)
-            : NotFound(new { Message = response.Error });
+        return response.Success ? Ok(response.Data) : Ok(new List<TaskDTO>());
     }
 
     //Methods for creating task

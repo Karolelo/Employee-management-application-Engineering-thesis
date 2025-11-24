@@ -1,15 +1,14 @@
-import {Component,AfterViewInit,ViewChild} from '@angular/core';
+import {Component,ViewChild} from '@angular/core';
 import {Announcement} from '../../interfaces/announcement';
 import {Group} from '../../interfaces/group';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatPaginator} from '@angular/material/paginator';
 import {User} from '../../interfaces/user';
 import {UserService} from '../../services/user/user.service';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute,Router} from '@angular/router';
 import {GroupService} from '../../services/group/group.service';
 import {Observable} from 'rxjs'
 import {AnnouncementService} from '../../services/announcement/announcement.service';
-import {MatDividerModule} from '@angular/material/divider';
 @Component({
   selector: 'app-group-view-page',
   standalone: false,
@@ -25,7 +24,8 @@ export class GroupViewPageComponent {
    constructor(private user_service: UserService,
                private group_service: GroupService,
                private announcement_service: AnnouncementService,
-               private activatedRoute: ActivatedRoute)
+               private activatedRoute: ActivatedRoute,
+               private router: Router)
    {
      this.initializeValues();
    }
@@ -36,8 +36,14 @@ export class GroupViewPageComponent {
      this.group_service
        .getGroup(group_id)
        .subscribe({
-         next: (group:Group) => this.group = group,
-         error: (error) => console.error('Error getting group:', error)
+         next: (group: Group) => this.group = group,
+         error: (error) => {
+           if (error.status === 404) {
+             this.router.navigate(['/404']);
+           } else {
+             console.error('Error:', error);
+           }
+         }
        });
 
      this.user_service.getUsersFromGroup(group_id).subscribe({

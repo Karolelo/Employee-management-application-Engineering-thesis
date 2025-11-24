@@ -13,7 +13,7 @@ import {OnInit} from '@angular/core';
 })
 export class LoginComponent {
   private router = inject(Router);
-  nickname: string ='';
+  login: string ='';
   password: string='';
 
   constructor(private authService: AuthService, private snackBar: MatSnackBar) {
@@ -28,7 +28,7 @@ export class LoginComponent {
   }
   LogIn() {
     const credentials: LoginRequest = {
-      nickname: this.nickname,
+      login: this.login,
       password: this.password
     };
 

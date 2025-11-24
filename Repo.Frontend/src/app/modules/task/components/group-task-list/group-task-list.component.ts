@@ -43,7 +43,7 @@ export class GroupTaskListComponent implements OnInit {
     this.loading = true;
     this.tasks$ = this.taskService.tasks$;
 
-    this.taskService.getAllGroupTask(this.groupId).subscribe({
+    this.taskService.getAllGroupTasks(this.groupId).subscribe({
       next: (tasks) => {
         this.loading = false;
         console.log('Group tasks loaded:', tasks);

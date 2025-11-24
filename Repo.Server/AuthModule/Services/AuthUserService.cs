@@ -104,7 +104,7 @@ public class AuthUserService : IAuthUserService
     {
         try
         {
-            var user = await _context.Set<User>().FirstOrDefaultAsync(e => e.Nickname == model.Nickname && e.Deleted != 1);
+            var user = await _context.Set<User>().FirstOrDefaultAsync(e => e.Login == model.Login && e.Deleted != 1);
 
             if (user == null)
             {

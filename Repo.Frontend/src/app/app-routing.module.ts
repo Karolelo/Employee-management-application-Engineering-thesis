@@ -10,7 +10,15 @@ import {DashboardModule} from './modules/dashboard/dashboard.module';
 import {RoleGuardService} from './guard/roleGuard/role-guard.service';
 import {ForbiddenPage403Component} from './common_components/forbidden-page403/forbidden-page403.component';
 import {NotFoundPage404Component} from './common_components/not-found-page404/not-found-page404.component';
+
 const routes: Routes = [
+  {
+    path: 'login',
+    component: AuthLayoutComponent,
+    children: [
+      { path: '', component: LoginComponent }
+    ]
+  },
   {
     path: '',
     component: MainLayoutComponent,
@@ -18,27 +26,25 @@ const routes: Routes = [
     canActivateChild: [RoleGuardService],
     children: [
       { path: 'tasks', loadChildren: () => TaskModule,
-      data: { title: 'Tasks module',expectedRoles:['User','Admin','TeamLeader','Accountant']}
+        data: { title: 'Tasks module', expectedRoles:['User','Admin','TeamLeader','Accountant']}
       },
       { path: 'calendar', loadChildren: () => CalendarModule,
-      data: { title: 'Calendar module',expectedRoles:['User','Admin','TeamLeader','Accountant']}
+        data: { title: 'Calendar module', expectedRoles:['User','Admin','TeamLeader','Accountant']}
       },
       { path: 'dashboard', loadChildren: () => DashboardModule,
-      data: { title: 'Dashboard module',expectedRoles: ['Admin','TeamLeader']}},
+        data: { title: 'Dashboard module', expectedRoles: ['Admin','TeamLeader']}
+      },
       { path: 'forbidden', component: ForbiddenPage403Component,
-        data: { title: '',expectedRoles: ['User','Admin','TeamLeader','Accountant']}},
-      /*{ path:'**',component: NotFoundPage404Component,
-        data: { title: '',expectedRoles: ['User','Admin','TeamLeader','Accountant']}}*/
+        data: { title: '', expectedRoles: ['User','Admin','TeamLeader','Accountant']}
+      },
+      { path: '404', component: NotFoundPage404Component,
+        data: { title: '', expectedRoles: ['User','Admin','TeamLeader','Accountant']}
+      }
     ]
   },
-  {
-    path: '',
-    component: AuthLayoutComponent,
-    children: [
-      { path: 'login', component: LoginComponent }
-    ]
-  }
+  { path: '**', redirectTo: '/404' }
 ];
+
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]

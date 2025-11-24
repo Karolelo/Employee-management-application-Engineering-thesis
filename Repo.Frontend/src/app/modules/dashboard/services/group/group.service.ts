@@ -13,8 +13,13 @@ export class GroupService {
   getGroups(): Observable<Group[]>{
     return this.http.get<Group[]>(this.basiceUrl);
   }
-  getGroup(id:number){
+  getGroup(id: number){
     return this.http.get<Group>(this.basiceUrl+'/'+id);
+  }
+
+  getUserGroups(userId: number)
+  {
+    return this.http.get<Group[]>(this.basiceUrl+'/user/'+userId)
   }
 
   createGroup(data: any): Observable<Group>{
