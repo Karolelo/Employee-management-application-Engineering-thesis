@@ -1,0 +1,14 @@
+<div>
+  <h2 class="title-header">Choose group to see</h2>
+  <mat-select class="selection" [(ngModel)]="selectedGroupId">
+    <mat-option *ngFor="let group of groups" [value]="group.id">
+      {{group.name}}
+    </mat-option>
+  </mat-select>
+  <button mat-raised-button color="accent" class="confirm-btn" (click)="onButtonClick()">
+    Go to group
+  </button>
+  @if (errorMessage.length > 0){
+    <p class="error-message">{{errorMessage}}</p>
+  }
+</div>

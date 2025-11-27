@@ -1,3 +1,5 @@
+/*prebuilt color for angular, we should next time consider use it more ofter*/
+/*@import '@angular/material/prebuilt-themes/purple-green.css';*/
 @font-face {
   font-family: 'Railway';
   src: url('../public/fonts/Raleway-VariableFont_wght.ttf') format('truetype');

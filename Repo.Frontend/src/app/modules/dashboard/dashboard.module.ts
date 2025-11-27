@@ -23,7 +23,6 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { CdkStepperModule } from '@angular/cdk/stepper';
 import { GroupsPageComponent } from './pages/groups-page/groups-page.component';
 import { ManageGroupPageComponent } from './pages/manage-group-page/manage-group-page.component';
-import { GroupViewPageComponent } from './pages/group-view-page/group-view-page.component';
 import { GroupFormComponent } from './components/group-form/group-form.component';
 import { GroupListComponent } from './components/group-list/group-list.component';
 import { TaskModule} from "../task/task.module";
@@ -52,7 +51,6 @@ import { GroupEditPageComponent } from './pages/group-edit-page/group-edit-page.
     EditUserFormComponent,
     GroupsPageComponent,
     ManageGroupPageComponent,
-    GroupViewPageComponent,
     GroupFormComponent,
     GroupListComponent,
     AnnouncementFormComponent,
@@ -96,9 +94,14 @@ import { GroupEditPageComponent } from './pages/group-edit-page/group-edit-page.
     MatDivider,
     ExportImageComponent
   ],
-    providers: [
-      GroupCreatePageComponent
-    ]
+  exports: [
+    UserSimpleListComponent,
+    AnnouncementListComponent,
+    GroupShortInfoComponent
+  ],
+  providers: [
+    GroupCreatePageComponent
+  ]
 })
 export class DashboardModule {
 

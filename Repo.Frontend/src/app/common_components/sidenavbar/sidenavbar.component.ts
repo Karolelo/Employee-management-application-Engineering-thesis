@@ -12,6 +12,6 @@ export class SidenavbarComponent {
     { link: '/profile', icon: 'account_circle' },
     { link: '/tasks', icon: 'assignment' },
     { link: '/calendar', icon: 'today' },
-    { link: 'MyGroups',icon: 'group'}
+    { link: '/myGroups',icon: 'group'}
   ];
 }

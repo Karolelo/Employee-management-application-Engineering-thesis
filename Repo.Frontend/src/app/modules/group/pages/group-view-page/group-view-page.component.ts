@@ -1,14 +1,14 @@
 import {Component,ViewChild} from '@angular/core';
-import {Announcement} from '../../interfaces/announcement';
-import {Group} from '../../interfaces/group';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatPaginator} from '@angular/material/paginator';
-import {User} from '../../interfaces/user';
-import {UserService} from '../../services/user/user.service';
-import {ActivatedRoute,Router} from '@angular/router';
-import {GroupService} from '../../services/group/group.service';
 import {Observable} from 'rxjs'
-import {AnnouncementService} from '../../services/announcement/announcement.service';
+import {User} from '../../../dashboard/interfaces/user';
+import {Announcement} from '../../../dashboard/interfaces/announcement';
+import {Group} from '../../../dashboard/interfaces/group';
+import {UserService} from '../../../dashboard/services/user/user.service';
+import {GroupService} from '../../../dashboard/services/group/group.service';
+import {AnnouncementService} from '../../../dashboard/services/announcement/announcement.service';
+import {Router,ActivatedRoute} from '@angular/router'
 @Component({
   selector: 'app-group-view-page',
   standalone: false,
