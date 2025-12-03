@@ -25,21 +25,8 @@ export class TaskListComponent implements OnInit{
   errorMessage: string | null = null;
   tasks$!: Observable<Task[]>;
   @Output() editTask = new EventEmitter<Task>();
-
-  //variables for updating other users tasks
-  selectedUsersId: number|undefined;
-  groupUsers$!:Observable<User[]>;
-  errorMessageUsers: string = ''
-  isTeamLead:boolean = false;
   constructor(private taskService: TaskService,private userDataStore: UserStoreService, private dialog: MatDialog,
-              private router: Router, private user_service: UserService,private group_service: GroupService) {
-    if(userDataStore.hasRole('TeamLeader'))
-    {
-      this.isTeamLead = true;
-      const adminId = this.userDataStore.getUserId();
-      if(adminId)
-        this.getUsersFromGroupByAdminId(adminId)
-    }
+              private router: Router){
   }
   ngOnInit(): void {
     this.loading = true;
@@ -100,25 +87,6 @@ export class TaskListComponent implements OnInit{
       case 'done' : return 100;
       default: return 0;
     }
-  }
-
-  private getUsersFromGroupByAdminId(adminId:number)
-  {
-    this.group_service.getGroupByAdminId(adminId).subscribe({
-        next: (group: Group) => {
-          this.groupUsers$ = this.user_service.getUsersFromGroup(group.id);
-        },
-        error: (error: any) =>{
-          if(error.status === 404)
-          {
-            this.errorMessageUsers = 'You not have any group'
-          } else
-          {
-            this.errorMessageUsers = 'Error during taking users from group'
-          }
-        }
-      }
-    )
   }
 
 }

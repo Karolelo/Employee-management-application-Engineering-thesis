@@ -22,11 +22,11 @@ import {
   MatRowDef,
   MatTable
 } from "@angular/material/table";
-import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
+import {MatPaginator} from '@angular/material/paginator';
 import { GroupTaskFormComponent } from './components/group-task-form/group-task-form.component';
 import { GroupTaskListComponent } from './components/group-task-list/group-task-list.component';
 import {InfoMessageComponent} from "../../common_components/info-message/info-message.component";
-
+import {MatFormField} from '@angular/material/form-field'
 
 @NgModule({
     declarations: [
@@ -63,6 +63,7 @@ import {InfoMessageComponent} from "../../common_components/info-message/info-me
         MatCellDef,
         MatPaginator,
         InfoMessageComponent,
+        MatFormField
     ],
   exports: [
     TaskFormComponent,
