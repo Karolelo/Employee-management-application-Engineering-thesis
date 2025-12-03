@@ -59,6 +59,7 @@ app-announcement-form {
   flex-direction: row;
   align-content: center;
   align-items: center;
+  width: 100%;
 }
 .task-container {
   display: flex;
