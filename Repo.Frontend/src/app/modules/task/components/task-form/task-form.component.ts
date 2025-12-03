@@ -169,9 +169,12 @@ export class TaskFormComponent implements OnChanges {
       throw new Error('No user with this id');
     }
 
+    const creator_ID = this.userDataStore.getUserId()
+
     const newTask: Task = {
       ...formValue,
       start_Time: date,
+      creator_ID: creator_ID
     };
 
     const createdTask = await firstValueFrom(

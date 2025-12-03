@@ -1,5 +1,15 @@
 <!--suppress ALL-->
 <!--only add this because of idea error with ngClass-->
+<ng-template *ngIf="isTeamLead">
+  <mat-select class="selection" [(ngModel)]="selectedUsersId">
+    <mat-option *ngFor="let user of groupUsers$ | async" [value]="user.id">
+      {{user.name}}
+    </mat-option>
+  </mat-select>
+  <p *ngIf="errorMessageUsers" class="error-message">
+    {{ errorMessageUsers }}
+  </p>
+</ng-template>
 <main class="task-list">
   <ng-container *ngIf="!errorMessage; else errorTpl">
     <div *ngIf="loading" class="loading-spinner">

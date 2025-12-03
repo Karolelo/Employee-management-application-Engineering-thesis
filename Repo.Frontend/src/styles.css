@@ -141,6 +141,11 @@ button[type="submit"]:disabled {
   transform: none;
 }
 
+.error-message {
+  color: red;
+  font-size: 1.5rem;
+  font-family: var(--font-main);
+}
 
 
 

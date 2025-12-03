@@ -31,6 +31,16 @@ public class GroupController(IGroupService groupService) : ControllerBase
             
         return Ok(response.Data);
     }
+
+    [HttpGet("admin/{id:int}")]
+    public async Task<IActionResult> GetGroupByAdminId([FromRoute] int id)
+    {
+        var response = await groupService.GetGroupByAdminId(id);
+
+        if (!response.Success)
+            return NotFound(new { Message = response.Error });
+        return Ok(response.Data);
+    }
     
     [HttpGet("user/{userId:int}")]
     public async Task<IActionResult> GetUserGroups([FromRoute] int userId)
@@ -92,7 +102,7 @@ public class GroupController(IGroupService groupService) : ControllerBase
     
     [Authorize(policy: "TeamLeaderOnly")]
     [HttpPost("add-user/{userId:int}/{groupId:int}")]
-    public async Task<IActionResult> AddUserToGroup(int userId, int groupId)
+    public async Task<IActionResult> AddUserToGroup([FromRoute] int userId,[FromRoute] int groupId)
     {
         var response = await groupService.AddUserToGroup(userId, groupId);
         
@@ -104,7 +114,7 @@ public class GroupController(IGroupService groupService) : ControllerBase
     
     [Authorize(policy: "TeamLeaderOnly")]
     [HttpDelete("remove-user/{userId:int}/{groupId:int}")]
-    public async Task<IActionResult> RemoveUserFromGroup(int userId, int groupId)
+    public async Task<IActionResult> RemoveUserFromGroup([FromRoute] int userId,[FromRoute] int groupId)
     {
         var response = await groupService.RemoveUserFromGroup(userId, groupId);
         
@@ -117,7 +127,7 @@ public class GroupController(IGroupService groupService) : ControllerBase
     
     [Authorize(policy: "TeamLeaderOnly")]
     [HttpPut("set-leader/{userId:int}/{groupId:int}")]
-    public async Task<IActionResult> SetLeaderOfGroup(int userId, int groupId)
+    public async Task<IActionResult> SetLeaderOfGroup([FromRoute] int userId,[FromRoute] int groupId)
     {
         var response = await groupService.SetLeaderOfGroup(userId, groupId);
         

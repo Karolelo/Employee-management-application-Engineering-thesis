@@ -28,12 +28,12 @@ public class AuthUserService : IAuthUserService
             try
             {
 
-                if (_context.Set<User>().Any(x => x.Email == model.Email))
+                if (_context.Set<User>().Any(x => x.Email == model.Email && x.Deleted != 1))
                 {
                     return Response<User>.Fail("User with this email already exists");
                 }
 
-                if (_context.Set<User>().Any(x => x.Nickname == model.Nickname))
+                if (_context.Set<User>().Any(x => x.Nickname == model.Nickname && x.Deleted != 1))
                 {
                     return Response<User>.Fail("User with this nickname already exists");
                 }

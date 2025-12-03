@@ -7,6 +7,10 @@ import {TaskDetailsComponent} from '../task-details/task-details.component';
 import {UserStoreService} from '../../../login/services/user_data/user-store.service';
 import {Observable, tap,async} from 'rxjs';
 import {Router} from '@angular/router';
+import {User} from '../../../dashboard/interfaces/user';
+import {UserService} from '../../../dashboard/services/user/user.service';
+import {GroupService} from '../../../dashboard/services/group/group.service';
+import {Group} from '../../../dashboard/interfaces/group';
 
 @Component({
   selector: 'app-task-list',
@@ -16,13 +20,26 @@ import {Router} from '@angular/router';
   providers: []
 })
 export class TaskListComponent implements OnInit{
-  enableEdit = true;
-  loading = false;
+  enableEdit:boolean = true;
+  loading:boolean = false;
   errorMessage: string | null = null;
   tasks$!: Observable<Task[]>;
   @Output() editTask = new EventEmitter<Task>();
+
+  //variables for updating other users tasks
+  selectedUsersId: number|undefined;
+  groupUsers$!:Observable<User[]>;
+  errorMessageUsers: string = ''
+  isTeamLead:boolean = false;
   constructor(private taskService: TaskService,private userDataStore: UserStoreService, private dialog: MatDialog,
-              private router: Router) {
+              private router: Router, private user_service: UserService,private group_service: GroupService) {
+    if(userDataStore.hasRole('TeamLeader'))
+    {
+      this.isTeamLead = true;
+      const adminId = this.userDataStore.getUserId();
+      if(adminId)
+        this.getUsersFromGroupByAdminId(adminId)
+    }
   }
   ngOnInit(): void {
     this.loading = true;
@@ -83,6 +100,25 @@ export class TaskListComponent implements OnInit{
       case 'done' : return 100;
       default: return 0;
     }
+  }
+
+  private getUsersFromGroupByAdminId(adminId:number)
+  {
+    this.group_service.getGroupByAdminId(adminId).subscribe({
+        next: (group: Group) => {
+          this.groupUsers$ = this.user_service.getUsersFromGroup(group.id);
+        },
+        error: (error: any) =>{
+          if(error.status === 404)
+          {
+            this.errorMessageUsers = 'You not have any group'
+          } else
+          {
+            this.errorMessageUsers = 'Error during taking users from group'
+          }
+        }
+      }
+    )
   }
 
 }

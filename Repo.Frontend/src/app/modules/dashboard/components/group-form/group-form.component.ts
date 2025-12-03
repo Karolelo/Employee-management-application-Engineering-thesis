@@ -5,6 +5,8 @@ import {UserService} from '../../services/user/user.service';
 import {User} from '../../interfaces/user';
 import {Group} from '../../interfaces/group';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import { switchMap } from 'rxjs/operators';
+import { of } from 'rxjs';
 @Component({
   selector: 'app-group-form',
   standalone: false,
@@ -67,35 +69,53 @@ export class GroupFormComponent implements OnChanges{
 
   onSubmit() {
     if (this.group) {
-      const payload = { id: this.group.id, ...this.groupForm.getRawValue() };
+      const adminId = this.groupForm.get('admin_ID')?.value;
+
       this.group_service
-        .updateGroup(payload)
+        .updateGroup({ id: this.group.id, ...this.groupForm.getRawValue() })
+        .pipe(
+          switchMap(() => {
+            if(this.group && adminId) {
+              return this.group_service.addUserToGroup(adminId, this.group.id);
+            }
+            return of(null);
+          })
+        )
         .subscribe({
           next: () => {
-            console.log('Group updated successfully')
-            this.snackBar.open('group updated','Hide',{duration: 3000});
+            this.snackBar.open('Group updated and admin added', 'Hide', { duration: 3000 });
           },
-          error: (error) => console.log(error)
+          error: (error) => {
+            console.error('Error:', error);
+            this.snackBar.open('Error updating group', 'Hide', { duration: 3000 });
+          }
         });
       return;
     }
 
+    const adminId = this.groupForm.get('admin_ID')?.value;
+
     this.group_service
       .createGroup(this.groupForm.value)
-      .subscribe(
-        {
-          next: (response) => {
-            console.log('Group created successfully')
-            console.log(response)
-            this.groupCreatedId.emit(response.id)
-          },
-          error: (error) => {
-            console.log(error)
+      .pipe(
+        switchMap(response => {
+          this.groupCreatedId.emit(response.id);
+          if(adminId) {
+            return this.group_service.addUserToGroup(adminId, response.id);
           }
-        }
+          return of(response);
+        })
       )
+      .subscribe({
+        next: () => {
+          this.snackBar.open('Group created and admin added', 'Hide', { duration: 3000 });
+        },
+        error: (error) => {
+          console.error('Error:', error);
+          this.snackBar.open('Error creating group', 'Hide', { duration: 3000 });
+        }
+      });
   }
-
   private updateAdminControlState(){
     const ctrl = this.groupForm.get('admin_ID');
     if(!ctrl) return;

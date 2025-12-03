@@ -36,18 +36,35 @@ public class GroupService : IGroupService
         }
     }
 
-    public async Task<Response<GroupDTO?>> GetGroupById(int id)
+    public async Task<Response<GroupDTO>> GetGroupById(int id)
     {
         try
         {
             var result = await _groupRepository.GetGroupById(id);
 
             return result is null
-                ? Response<GroupDTO?>.Fail("Group with this id not founded")
-                : Response<GroupDTO?>.Ok(MapToGroupDTO(result));
+                ? Response<GroupDTO>.Fail("Group with this id not founded")
+                : Response<GroupDTO>.Ok(MapToGroupDTO(result));
         }catch (Exception ex)
         {
             return Response<GroupDTO?>.Fail($"Error while fetching group: {ex.Message}");
+        }
+    }
+
+    public async Task<Response<GroupDTO>> GetGroupByAdminId(int adminId)
+    {
+        try
+        {
+            var groups = await _groupRepository.GetAllGroups();
+            var result = groups.FirstOrDefault(e=> e.Admin_ID==adminId);
+            
+            return result is null 
+                ? Response<GroupDTO>.Fail("Group with this adminId not founded")
+                : Response<GroupDTO>.Ok(MapToGroupDTO(result));
+        }
+        catch (Exception ex)
+        {
+            return Response<GroupDTO>.Fail($"Error while fetching group: {ex.Message}");
         }
     }
 
@@ -68,7 +85,7 @@ public class GroupService : IGroupService
         }
         catch (Exception ex)
         {
-            return Response<List<GroupDTO>>.Fail($"Error while fetching group: {ex.Message}");
+            return Response<List<GroupDTO>>.Fail($"Error while fetching groups: {ex.Message}");
         }
     }
 

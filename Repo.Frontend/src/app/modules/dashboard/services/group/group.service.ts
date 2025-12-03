@@ -16,6 +16,10 @@ export class GroupService {
   getGroup(id: number){
     return this.http.get<Group>(this.basiceUrl+'/'+id);
   }
+  getGroupByAdminId(adminId: number)
+  {
+    return this.http.get<Group>(this.basiceUrl+'/admin/'+adminId)
+  }
 
   getUserGroups(userId: number)
   {
