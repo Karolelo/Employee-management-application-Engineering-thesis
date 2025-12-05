@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Repo.Core.Models;
 using Type = Repo.Core.Models.Type;
 using Task = Repo.Core.Models.Task;
+using WorkEntry = Repo.Core.Models.WorkEntry;
 
 namespace Repo.Core.Infrastructure;
 
@@ -512,12 +513,16 @@ public partial class MyDbContext : DbContext
 
             entity.ToTable("Task", tb =>
                 {
-                    tb.HasTrigger("task_event_add");
-                    tb.HasTrigger("task_event_update");
+                    // tb.HasTrigger("task_event_add");
+                    // tb.HasTrigger("task_event_update");
                 });
 
             entity.Property(e => e.Name).HasMaxLength(100);
             entity.Property(e => e.Start_Time).HasColumnType("datetime");
+            
+            entity.Property(e => e.Estimated_Time)
+                .HasColumnName("Estimated_Time")
+                .HasColumnType("int");
 
             entity.HasOne(d => d.Priority).WithMany(p => p.Tasks)
                 .HasForeignKey(d => d.Priority_ID)
