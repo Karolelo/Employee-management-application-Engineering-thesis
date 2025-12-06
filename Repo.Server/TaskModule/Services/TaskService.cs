@@ -188,6 +188,59 @@ public class TaskService : ITaskService
             ? Response<ICollection<TaskDTO>>.Fail("Status has no tasks")
             : Response<ICollection<TaskDTO>>.Ok(tasks);
     }
+    
+    public async Task<Response<ICollection<GanttTaskDTO>>> GetGanttTasks(int userId)
+    {
+        var tasks = await _context.Tasks
+            .AsNoTracking()
+            .Include(t => t.Priority)
+            .Include(t => t.Status)
+            .Include(t => t.Users)
+            .Where(t => t.Users.Any(u => u.ID == userId) && t.Deleted == 0)
+            .ToListAsync();
+
+        if (tasks.Count == 0)
+            return Response<ICollection<GanttTaskDTO>>.Fail("User has no tasks");
+
+        var taskIds = tasks.Select(t => t.ID).ToList();
+        
+        var relations = await _context.RelatedTasks
+            .AsNoTracking()
+            .Where(rt => taskIds.Contains(rt.Main_Task_ID))
+            .ToListAsync();
+
+        var dependenciesLookup = relations
+            .GroupBy(rt => rt.Main_Task_ID)
+            .ToDictionary(
+                g => g.Key,
+                g => g.Select(rt => rt.Related_Task_ID).Distinct().ToList()
+            );
+
+        var ganttTasks = tasks.Select(t =>
+        {
+            var endTime = t.Start_Time.AddHours(t.Estimated_Time);
+
+
+            dependenciesLookup.TryGetValue(t.ID, out var deps);
+            deps ??= new List<int>();
+
+            return new GanttTaskDTO
+            {
+                ID = t.ID,
+                Name = t.Name,
+                Start_Time = t.Start_Time,
+                End_Time = endTime,
+                Priority = t.Priority.Priority1,
+                Status = t.Status.Status1,
+                OwnerUserId = userId,
+                Dependencies = deps
+            };
+        }).ToList();
+
+        return Response<ICollection<GanttTaskDTO>>.Ok(ganttTasks);
+    }
+
+
 
     //Methods for creating task
     public async Task<Response<TaskDTO>> CreateTask(CreateTaskModel model)
