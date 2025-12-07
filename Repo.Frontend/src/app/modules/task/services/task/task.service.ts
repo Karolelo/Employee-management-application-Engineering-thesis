@@ -3,13 +3,16 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Task} from '../../interfaces/task';
 import {RelatedTasks} from '../../interfaces/related-tasks';
+import {GanttTask} from '../../interfaces/gantt-task';
 //Everu class posibble was change for map, for better angular assert to Angular convention
 @Injectable({
   providedIn: 'root'
 })
 export class TaskService {
   private taskSubject = new BehaviorSubject<Task[]>([]);
+  private ganttSubject = new BehaviorSubject<GanttTask[]>([]);
   tasks$ = this.taskSubject.asObservable();
+  ganttTasks$ = this.ganttSubject.asObservable();
   private readonly apiUrl = 'api/Task';
 
   constructor(private http: HttpClient) { }
@@ -33,6 +36,21 @@ export class TaskService {
 
   getRelatedTasksByTaskId(id: number): Observable<RelatedTasks> {
     return this.http.get<RelatedTasks>(`${this.apiUrl}/${id}/relations`);
+  }
+
+  loadUserGanttTasks(userId: number): Observable<GanttTask[]> {
+    return this.http
+      .get<GanttTask[]>(`/api/task/user/${userId}/gantt`)
+      .pipe(
+        tap(tasks => {
+          const mapped = tasks.map(t => ({
+            ...t,
+            start_Time: new Date(t.start_Time),
+            end_Time: new Date(t.end_Time),
+          }));
+          this.ganttSubject.next(mapped);
+        })
+      );
   }
 
   //Posts
