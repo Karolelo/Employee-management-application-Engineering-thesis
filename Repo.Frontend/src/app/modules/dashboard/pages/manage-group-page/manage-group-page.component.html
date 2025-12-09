@@ -31,7 +31,7 @@
               <app-group-short-info [group]="group"></app-group-short-info>
               <div class="group-container">
                   <app-group-image-edit-form [group]="group"></app-group-image-edit-form>
-                  <app-group-form style="margin-left: 50px" [group]="group" [allowAdminEdit]="canEditAdminId" [transparentBackground]="true"></app-group-form>
+                  <app-group-form class="group-form" style="margin-left: 50px" [group]="group" [allowAdminEdit]="canEditAdminId" [transparentBackground]="true"></app-group-form>
               </div>
             </mat-card-content>
           }
@@ -45,7 +45,7 @@
                   <app-group-task-form [groupId]="group.id"
                                        [taskToEdit]="taskToEdit"
                                        (taskUpdated)="onTaskUpdated()"
-                  style="margin: 10px 50px">
+                  style="margin: 10px 50px; width: 40%">
 
                   </app-group-task-form>
                   <app-group-task-list [groupId]="this.group.id"

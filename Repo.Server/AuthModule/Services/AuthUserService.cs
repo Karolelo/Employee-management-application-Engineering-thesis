@@ -121,7 +121,7 @@ public class AuthUserService : IAuthUserService
             var Roles = await GetUserRoles(user.ID);
             
             if (refreshToken != null && refreshToken.RevokedAt == null &&
-                refreshToken.ExpireDate < DateTime.Now.AddDays(1))
+                refreshToken.ExpireDate > DateTime.Now.AddDays(1))
             {
                 return Response<TokenModel>.Ok(new TokenModel()
                 {
@@ -129,6 +129,13 @@ public class AuthUserService : IAuthUserService
                     RefreshToken = refreshToken.Token
                 });
             }
+            //removing old token
+            if (refreshToken != null)
+            {
+                refreshToken.RevokedAt = DateTime.Now;
+                await _context.SaveChangesAsync();
+            }
+
             //creatng new token if neccesary
             var tokens = _authenticationHelpers.GenerateTokens(user.ID,user.Nickname,Roles);
             var token = new RefreshToken()
@@ -189,7 +196,7 @@ public class AuthUserService : IAuthUserService
     private async Task<bool> ValidateRefreshToken(string username, string refreshToken)
     {
         var user = await _context.Set<User>()
-            .FirstOrDefaultAsync(e => e.Nickname == username);
+            .FirstOrDefaultAsync(e => e.Nickname == username && e.Deleted != 1);
         
         if (user == null)
         {
@@ -213,7 +220,7 @@ public class AuthUserService : IAuthUserService
             .SelectMany(u => u.Roles)
             .Select(r => r.Role_Name)
             .ToListAsync();
-        //I add basic rolle
+        //I add basic roles
         return roles.Count > 0 ? roles : new List<string>(){"User"};
     }
 

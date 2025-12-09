@@ -1,4 +1,4 @@
-import { Component,Input,OnChanges,SimpleChanges } from '@angular/core';
+import { Component,Input,OnChanges,SimpleChanges,OnDestroy } from '@angular/core';
 import {Group} from '../../interfaces/group';
 import {GroupService} from '../../services/group/group.service';
 import {DomSanitizer,SafeUrl} from '@angular/platform-browser';
@@ -8,9 +8,10 @@ import {DomSanitizer,SafeUrl} from '@angular/platform-browser';
   templateUrl: './group-short-info.component.html',
   styleUrl: './group-short-info.component.css'
 })
-export class GroupShortInfoComponent implements OnChanges {
+export class GroupShortInfoComponent implements OnChanges, OnDestroy {
   @Input() group?: Group;
   imageUrl?: SafeUrl;
+  private oldBlobUrl?: string;
 
   constructor(private group_service: GroupService,
               private sanitizer: DomSanitizer) {}
@@ -25,19 +26,27 @@ export class GroupShortInfoComponent implements OnChanges {
   initializeValues() {
     if (!this.group) return;
 
+    // Deleting old url
+    if(this.oldBlobUrl) URL.revokeObjectURL(this.oldBlobUrl);
+
     this.group_service.getGroupImagePath(this.group.id).subscribe({
       next: (blob: Blob) => {
         const objectUrl = URL.createObjectURL(blob);
+        this.oldBlobUrl = objectUrl;
         this.imageUrl = this.sanitizer.bypassSecurityTrustUrl(objectUrl);
       },
       error: (error) => {
-          if(error.status == 404){
-            console.log("Image not found")
-            return
-          }
-          if(error.status != 404)
-            console.error('Error during taking image:', error);
+        if(error.status == 404){
+          console.log("Image not found")
+          return
         }
+        if(error.status != 404)
+          console.error('Error during taking image:', error);
+      }
     });
+  }
+
+  ngOnDestroy(): void {
+    if(this.oldBlobUrl) URL.revokeObjectURL(this.oldBlobUrl);
   }
 }

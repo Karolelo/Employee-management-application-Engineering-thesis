@@ -11,6 +11,7 @@ import {RoleGuardService} from './guard/roleGuard/role-guard.service';
 import {ForbiddenPage403Component} from './common_components/forbidden-page403/forbidden-page403.component';
 import {NotFoundPage404Component} from './common_components/not-found-page404/not-found-page404.component';
 import {GroupModule} from './modules/group/group.module';
+import {DebugComponent} from './debug_component/app-debug/app-debug.component';
 
 const routes: Routes = [
   {
@@ -49,6 +50,9 @@ const routes: Routes = [
       {
         path: 'myGroups', loadChildren: () => GroupModule,
         data: {title: 'My groups', expectedRoles: ['User','Admin','TeamLeader','Accountant']}
+      },
+      {
+        path:'tmpTest', component: DebugComponent, data: {expectedRoles: ['User','Admin','TeamLeader','Accountant']}
       }
     ]
   },

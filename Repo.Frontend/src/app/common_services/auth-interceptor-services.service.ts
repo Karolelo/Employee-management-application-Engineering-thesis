@@ -30,7 +30,7 @@ export class AuthInterceptorService implements HttpInterceptor {
           } else if (error.status === 403) {
             // Manage not access
             //this.authService.logout();
-            return throwError(() => new Error('NO access'));
+            return throwError(() => new Error('No access'));
           }
         }
         return throwError(() => error);
@@ -46,15 +46,6 @@ export class AuthInterceptorService implements HttpInterceptor {
     ];
     return publicUrls.some(publicUrl => url.includes(publicUrl));
   }
-
-  /*private addTokenHeader(request: HttpRequest<any>, token: string): HttpRequest<any> {
-    return request.clone({
-      headers: new HttpHeaders({
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      })
-    });
-  }*/
   private addTokenHeader(request: HttpRequest<any>, token: string): HttpRequest<any> {
     // Check if request is form
     const isFormData = request.body instanceof FormData;
@@ -77,29 +68,33 @@ export class AuthInterceptorService implements HttpInterceptor {
       this.refreshTokenSubject.next(null);
 
       return this.authService.refreshToken().pipe(
-        switchMap((token) => {
+        switchMap((response) => {
           this.isRefreshing = false;
+          const token = response.token || response;
           this.refreshTokenSubject.next(token);
-          return next.handle(this.addTokenHeader(request, token.token.accessToken));
+          return next.handle(this.addTokenHeader(request, token.accessToken));
         }),
         catchError((error) => {
           this.isRefreshing = false;
+          console.log('Token refresh failed:', error);
           this.authService.logout();
-          return throwError(() => new Error('Session not working. Log in again'));
+          return throwError(() => new Error('Session expired. Please log in again'));
         }),
-        // refreshing flag
         finalize(() => {
           this.isRefreshing = false;
         })
       );
     }
 
-    // wating for refresh token
     return this.refreshTokenSubject.pipe(
       filter(token => token !== null),
       take(1),
       switchMap(token => {
         return next.handle(this.addTokenHeader(request, token.accessToken));
+      }),
+      catchError((error) => {
+        this.authService.logout();
+        return throwError(() => error);
       })
     );
   }

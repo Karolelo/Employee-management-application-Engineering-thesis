@@ -15,7 +15,7 @@ export class GroupImageEditFormComponent implements OnChanges {
   @Input() group?: Group;
   imageForm: FormGroup;
   imageUrl?: SafeUrl;
-
+  oldBlobUrl?: string;
   constructor(
     private fb: FormBuilder,
     private groupService: GroupService,
@@ -36,9 +36,12 @@ export class GroupImageEditFormComponent implements OnChanges {
   initializeValues() {
     if (!this.group) return;
 
+    if(this.oldBlobUrl) URL.revokeObjectURL(this.oldBlobUrl)
+
     this.groupService.getGroupImagePath(this.group.id).subscribe({
       next: (blob: Blob) => {
         const objectUrl = URL.createObjectURL(blob);
+        this.oldBlobUrl = objectUrl;
         this.imageUrl = this.sanitizer.bypassSecurityTrustUrl(objectUrl);
       },
       error: (error) => {

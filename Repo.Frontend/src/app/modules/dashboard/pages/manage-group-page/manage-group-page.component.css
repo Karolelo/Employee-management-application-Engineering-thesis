@@ -57,13 +57,20 @@ app-announcement-form {
 .group-container {
   display: flex;
   flex-direction: row;
-  align-content: center;
+  align-content: space-between;
   align-items: center;
   width: 100%;
+  padding: 35px;
 }
 .task-container {
   display: flex;
   flex-direction: row;
   align-content: space-evenly;
   align-items: center;
+  padding: 50px;
+  width: 100%;
+}
+
+.group-form {
+  width: 100%;
 }

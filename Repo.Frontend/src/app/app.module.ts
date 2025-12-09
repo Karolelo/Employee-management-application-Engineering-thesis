@@ -34,6 +34,7 @@ import {MatToolbar} from '@angular/material/toolbar';
 import {MatStepperModule} from '@angular/material/stepper';
 import { NotFoundPage404Component } from './common_components/not-found-page404/not-found-page404.component';
 import { ExportImageComponent } from './common_components/export-image/export-image.component';
+import { DebugComponent } from './debug_component/app-debug/app-debug.component';
 export function tokenGetter() {
   return localStorage.getItem('auth_token');
 }
@@ -45,7 +46,7 @@ export function tokenGetter() {
     AuthLayoutComponent,
     MainLayoutComponent,
     SidenavbarComponent,
-    UserDetailsNavComponent
+    UserDetailsNavComponent,
   ],
   imports: [
     CommonModule,
