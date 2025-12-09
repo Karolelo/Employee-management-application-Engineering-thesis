@@ -1,0 +1,68 @@
+.gantt-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 12px;
+}
+
+.gantt-container {
+  border: 2px solid #5d3ea8;
+  border-radius: 8px;
+  padding: 12px;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,.08);
+}
+
+.gantt-header {
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.gantt-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.gantt-row {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 8px;
+  align-items: center;
+}
+
+.gantt-row-label {
+  font-weight: 600;
+}
+
+.gantt-row-label .meta {
+  font-size: 11px;
+  opacity: .7;
+  display: block;
+}
+
+.gantt-row-track {
+  position: relative;
+  height: 24px;
+  border-radius: 12px;
+  background: #f3eafe;
+  overflow: hidden;
+}
+
+.gantt-bar {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  border-radius: 10px;
+}
+
+.gantt-bar.todo {
+  background: #9ca3af;
+}
+
+.gantt-bar.progress {
+  background: #f59e0b;
+}
+
+.gantt-bar.done {
+  background: #16a34a;
+}

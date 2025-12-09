@@ -1,0 +1,34 @@
+<div class="gantt-toolbar">
+  <button mat-raised-button color="primary" type="button" (click)="exportToPdf()">
+    Export to PDF
+  </button>
+</div>
+
+<div #ganttContainer class="gantt-container" *ngIf="tasks && tasks.length; else emptyTpl">
+  <div class="gantt-header">
+    <span *ngIf="minDate && maxDate">
+      {{ minDate | date: 'shortDate' }} – {{ maxDate | date: 'shortDate' }}
+    </span>
+  </div>
+
+  <div class="gantt-rows">
+    <div class="gantt-row" *ngFor="let t of tasks">
+      <div class="gantt-row-label">
+        {{ t.name }}
+        <span class="meta">({{ t.start_Time | date:'shortDate' }} → {{ t.end_Time | date:'shortDate' }})</span>
+      </div>
+      <div class="gantt-row-track">
+        <div
+          class="gantt-bar"
+          [ngClass]="barClass(t)"
+          [style.left.%]="getLeftPercent(t)"
+          [style.width.%]="getWidthPercent(t)"
+        ></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #emptyTpl>
+  <p>No tasks for selected user.</p>
+</ng-template>

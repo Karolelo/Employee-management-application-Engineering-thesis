@@ -1,0 +1,25 @@
+<div class="overlay" (click)="close.emit()">
+  <div class="card" (click)="$event.stopPropagation()">
+    <h2 class="title">Select a user:</h2>
+
+    <div class="input-row">
+      <label class="sr-only" for="user-input">Enter ID or choose from the list</label>
+      <input id="user-input" type="text" [formControl]="query"
+             placeholder="Enter ID or choose from the list"
+             (keydown.enter)="submitId()">
+      <button class="icon" type="button" (click)="clear()" aria-label="Clear">×</button>
+    </div>
+
+    <div class="list" *ngIf="!loading; else spinner">
+      <button class="item" *ngFor="let u of users" type="button" (click)="pick(u)">
+        <div class="name">{{ displayName(u) }}</div>
+        <div class="sub">ID: {{ u.id }}</div>
+      </button>
+      <div *ngIf="!users.length" class="empty">No users.</div>
+    </div>
+
+    <ng-template #spinner>
+      <div class="loading"><mat-spinner></mat-spinner></div>
+    </ng-template>
+  </div>
+</div>

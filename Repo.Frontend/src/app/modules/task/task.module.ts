@@ -23,6 +23,9 @@ import {
   MatTable
 } from "@angular/material/table";
 import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
+import { TaskGanttPageComponent } from './pages/task-gantt-page/task-gantt-page.component';
+import { TaskGanttComponent } from './components/task-gantt/task-gantt.component';
+import {UserSwitchOverlayComponent} from './components/user-switch-overlay/user-switch-overlay.component';
 
 
 @NgModule({
@@ -31,7 +34,10 @@ import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
     TaskListComponent,
     TaskFormComponent,
     TaskPageComponent,
-    TasksDetailPageComponent
+    TasksDetailPageComponent,
+    TaskGanttPageComponent,
+    TaskGanttComponent,
+    UserSwitchOverlayComponent
   ],
   imports: [
     CommonModule,
