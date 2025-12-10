@@ -26,7 +26,7 @@ import {AuthInterceptorService} from './common_services/auth-interceptor-service
 import {TaskModule} from './modules/task/task.module';
 import {JwtModule} from '@auth0/angular-jwt';
 import {MatListItem, MatNavList} from '@angular/material/list';
-import {CommonModule, NgClass,NgOptimizedImage} from '@angular/common';
+import {CommonModule, NgClass,NgOptimizedImage,IMAGE_LOADER} from '@angular/common';
 import {SidenavbarComponent} from './common_components/sidenavbar/sidenavbar.component';
 import {UserDetailsNavComponent} from './common_components/user-details-nav/user-details-nav.component';
 import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';

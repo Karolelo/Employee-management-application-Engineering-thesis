@@ -17,8 +17,6 @@ export class ExportImageComponent {
       this.fileName = this.file?.name;
       console.log('File sent:', this.file);
       this.fileSent.emit(this.file);
-    } else {
-      console.log('Not choose a file');
     }
   }
 }

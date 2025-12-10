@@ -17,6 +17,11 @@ export const groupGuard: CanActivateFn = (route, state) => {
     return router.createUrlTree(['myGroups']);
   }
 
+  if(userStoreService.hasRole('Admin') || userStoreService.hasRole("TeamLeader"))
+  {
+    return true;
+  }
+
   return groupService.getUserGroups(userId).pipe(
     map((groups: Group[]) =>
       groups.some(g => g.id === groupId)

@@ -219,7 +219,9 @@ public class GroupService : IGroupService
             var absolutePath = Path.Combine("wwwroot", relativePath);
             
             Directory.CreateDirectory(Path.GetDirectoryName(absolutePath)!);
-
+            
+            relativePath = relativePath.Replace('\\', '/');
+            
             if (isUpdate)
             {
                 var path = await _groupRepository.GetPathToImageFile(groupId);

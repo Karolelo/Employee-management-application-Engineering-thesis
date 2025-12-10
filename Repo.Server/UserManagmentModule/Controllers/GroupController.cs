@@ -136,7 +136,7 @@ public class GroupController(IGroupService groupService) : ControllerBase
         return Ok(response.Data);
     }
 
-    [Authorize(policy: "TeamLeaderOnly")]
+    /*[Authorize]
     [HttpGet("image/{groupId:int}")]
     public async Task<IActionResult> GetGroupImage(int groupId)
     {
@@ -146,6 +146,18 @@ public class GroupController(IGroupService groupService) : ControllerBase
         
         //I'm not returning files because it's not any kind private data    
         return File(result.Data, "image/*");
+    }*/
+    [Authorize]
+    [HttpGet("image/{groupId:int}")]
+    public async Task<IActionResult> GetGroupImage(int groupId)
+    {
+        var result = await groupService.GetGroupImagePath(groupId);
+        if (!result.Success)
+            return NotFound(new { Message = result.Error });
+        
+        //I'm not returning files because it's not any kind private data
+        var imageUrl = $"/Resources/{result.Data}";
+        return Ok(new { path = imageUrl });
     }
     
     [Authorize(policy: "TeamLeaderOnly")]

@@ -46,10 +46,10 @@ export class GroupService {
     return this.http.delete(this.basiceUrl + `/remove-user/${userId}/${groupId}`)
   }
 
-  getGroupImagePath(id: number): Observable<Blob> {
-    return this.http.get(`${this.basiceUrl}/image/${id}`, {
+  getGroupImagePath(id: number): Observable<any> {
+    return this.http.get(`${this.basiceUrl}/image/${id}`)/*, {
       responseType: 'blob'
-    });
+    });*/
   }
   saveGroupImage(id: number, file: File, isUpdate: boolean): Observable<any> {
     const formData = new FormData();
