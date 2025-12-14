@@ -4,29 +4,74 @@
   </button>
 </div>
 
-<div #ganttContainer class="gantt-container" *ngIf="tasks && tasks.length; else emptyTpl">
-  <div class="gantt-header">
-    <span *ngIf="minDate && maxDate">
-      {{ minDate | date: 'shortDate' }} – {{ maxDate | date: 'shortDate' }}
-    </span>
-  </div>
-
-  <div class="gantt-rows">
-    <div class="gantt-row" *ngFor="let t of tasks">
-      <div class="gantt-row-label">
-        {{ t.name }}
-        <span class="meta">({{ t.start_Time | date:'shortDate' }} → {{ t.end_Time | date:'shortDate' }})</span>
+<div #ganttWrapper class="gantt-with-arrows" *ngIf="tasks && tasks.length; else emptyTpl">
+  <div class="gantt-container">
+    <div class="gantt-header" *ngIf="minDate && maxDate">
+      <div class="range">
+        {{ minDate | date:'dd.MM.yyyy' }} – {{ maxDate | date:'dd.MM.yyyy' }}
       </div>
-      <div class="gantt-row-track">
+      <div class="ticks">
         <div
-          class="gantt-bar"
-          [ngClass]="barClass(t)"
-          [style.left.%]="getLeftPercent(t)"
-          [style.width.%]="getWidthPercent(t)"
-        ></div>
+          class="tick"
+          *ngFor="let day of getDaysArray()"
+          [style.width.%]="100 / getTotalDays()"
+        >
+          {{ day | date:'dd.MM' }}
+        </div>
+      </div>
+    </div>
+
+    <div class="gantt-date-lines" *ngIf="minDate && maxDate">
+      <div
+        class="gantt-date-line"
+        *ngFor="let day of getDaysArray(); let i = index"
+        [style.left.%]="(i / getTotalDays()) * 100"
+      ></div>
+    </div>
+
+    <div class="gantt-rows">
+      <div class="gantt-row" *ngFor="let t of tasks">
+        <div class="gantt-row-label">
+          <div class="title">{{ t.name }}</div>
+          <div class="meta">
+            {{ t.start_Time | date:'dd.MM.yyyy HH:mm' }}
+            →
+            {{ t.end_Time   | date:'dd.MM.yyyy HH:mm' }}
+            · {{ getDurationHours(t) }} h
+            · {{ t.priority }} · {{ t.status }}
+          </div>
+        </div>
+
+        <div class="gantt-row-track">
+          <div
+            class="gantt-bar"
+            [attr.data-task-id]="t.id"
+            [ngClass]="barClass(t)"
+            [style.left.%]="getLeftPercent(t)"
+            [style.width.%]="getWidthPercent(t)"
+            (click)="openDetails(t.id)"
+          ></div>
+        </div>
       </div>
     </div>
   </div>
+
+  <svg
+    class="gantt-arrows"
+    #arrowsSvg
+  >
+    <defs>
+      <marker id="ganttArrowHead" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+        <path d="M0,0 L6,3 L0,6 z" fill="#4b5563"></path>
+      </marker>
+    </defs>
+
+    <path
+      *ngFor="let a of arrows"
+      [attr.d]="a.d"
+      class="gantt-arrow"
+    ></path>
+  </svg>
 </div>
 
 <ng-template #emptyTpl>
