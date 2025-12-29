@@ -9,13 +9,12 @@ public interface IUserRepository
     Task<List<User>> GetAllUsers();
     Task<List<User>> GetAllUsersFromGroup(int groupId);
     Task<User?> GetUserById(int id);
-    //This method I created for validation of user
-    //For example to not create same user x time
     Task<User?> GetUserByEmail(string email);
     Task<User?> GetUserByNickname(string nickname);
-    //Registration we handle in authModule
-    //Because of addintional logic included in creating user like salting password etc ...
-    /*Task<bool> CreateUser(RegistrationModel model);*/
+    Task<User?> GetUserByLogin(string login);
+    Task<User> CreateUser(User user);
     Task<User> UpdateUser(User user);
     Task<bool> DeleteUser(int id);
+    Task<List<string>> GetUserRoles(int userId);
+
 }

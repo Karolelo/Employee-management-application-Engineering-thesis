@@ -10,6 +10,8 @@ using Microsoft.OpenApi.Models;
 using Repo.Core.Infrastructure.Database;
 using Repo.Core.Infrastructure.Files;
 using Repo.Core.Infrastructure.Roles;
+using Repo.Core.Infrastructure.UnityOfWork;
+using Repo.Server.AuthModule.Interfaces;
 using Repo.Server.CalendarModule.Interfaces;
 using Repo.Server.CalendarModule.Repositories;
 using Repo.Server.CalendarModule.Services;
@@ -17,6 +19,7 @@ using Repo.Server.Controllers;
 using Repo.Server.Controllers.Interfaces;
 using Repo.Server.TaskModule;
 using Repo.Server.TaskModule.interafaces;
+using Repo.Server.UnityOfWork;
 using Repo.Server.UserManagmentModule.Interfaces;
 using Repo.Server.UserManagmentModule.Repository;
 using Repo.Server.UserManagmentModule.Services;
@@ -40,8 +43,10 @@ builder.Services.AddScoped<IGroupService,GroupService>();
 builder.Services.AddScoped<IFileOperations,FileOperation>();
 builder.Services.AddScoped<IAnnoucementService,AnnouncementService>();
 builder.Services.AddScoped<IAnnoucementRepository,AnnoucementRepository>();
+builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+builder.Services.AddScoped<IUnityOfWork<MyDbContext>, UnityOfWork>();
 
-//Creating getting role from appseting
+//Creating getting a role from appseting
 builder.Services.Configure<RoleConfiguration>(
     builder.Configuration.GetSection("Roles"));
 
@@ -66,7 +71,9 @@ Console.WriteLine($"[DB] Chosen ConnectionString: {chosen.Name}");
 
 // Ensure the ApplicationDbContext is registered as a service
 builder.Services.AddDbContext<MyDbContext>(conf =>
-    conf.UseSqlServer(chosen.Conn, o => o.EnableRetryOnFailure()));
+    conf.UseSqlServer(chosen.Conn) /*o => o.EnableRetryOnFailure(maxRetryCount: 10,
+        maxRetryDelay: TimeSpan.FromSeconds(30),
+        errorNumbersToAdd: null))*/);
 // builder.Services.AddDbContext<MyDbContext>(conf=> conf
 //     .UseSqlServer(builder
 //         .Configuration

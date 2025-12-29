@@ -19,7 +19,7 @@ public partial class MyDbContext : DbContext
     }
 
     public virtual DbSet<AbsenceDay> AbsenceDays { get; set; }
-
+    
     public virtual DbSet<Announcement> Announcements { get; set; }
 
     public virtual DbSet<Application> Applications { get; set; }
@@ -35,15 +35,15 @@ public partial class MyDbContext : DbContext
     public virtual DbSet<Document> Documents { get; set; }
 
     public virtual DbSet<DocumentType> DocumentTypes { get; set; }
-
+    
     public virtual DbSet<Event> Events { get; set; }
 
     public virtual DbSet<Grade> Grades { get; set; }
-
+    
     public virtual DbSet<Group> Groups { get; set; }
-
+   
     public virtual DbSet<GroupImage> GroupImages { get; set; }
-
+   
     public virtual DbSet<HireHelper> HireHelpers { get; set; }
 
     public virtual DbSet<Priority> Priorities { get; set; }
@@ -343,6 +343,9 @@ public partial class MyDbContext : DbContext
                         j.HasKey("Group_ID", "User_ID").HasName("GroupUser_pk");
                         j.ToTable("GroupUser");
                     });
+            
+            //My own query filter
+            entity.HasQueryFilter(e => e.Deleted != 1);
         });
 
         modelBuilder.Entity<GroupImage>(entity =>
@@ -548,6 +551,9 @@ public partial class MyDbContext : DbContext
                 .HasForeignKey(d => d.Status_ID)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("Task_Status");
+            
+            //my own query filter
+            entity.HasQueryFilter(e => e.Deleted != 1);
         });
 
         modelBuilder.Entity<Type>(entity =>
@@ -611,6 +617,9 @@ public partial class MyDbContext : DbContext
                         j.HasKey("User_ID", "Task_ID").HasName("UserTask_pk");
                         j.ToTable("UserTask");
                     });
+            
+            //My own query filter
+            entity.HasQueryFilter(e => e.Deleted != 1);
         });
 
         modelBuilder.Entity<WorkTable>(entity =>

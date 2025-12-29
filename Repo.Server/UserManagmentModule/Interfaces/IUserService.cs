@@ -1,9 +1,9 @@
 using Repo.Core.Models;
 using Repo.Core.Models.api;
+using Repo.Core.Models.auth;
 using Repo.Core.Models.user;
 using Task = Repo.Core.Models.Task;
 namespace Repo.Server.UserManagmentModule.Interfaces;
-
 public interface IUserService
 {
     Task<Response<List<UserDTO>>> GetAllUsers();
