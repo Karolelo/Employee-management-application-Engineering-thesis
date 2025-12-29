@@ -36,7 +36,7 @@ const routes: Routes = [
         data: { title: 'Dashboard module', expectedRoles: ['Admin','TeamLeader']}
       },
       { path: 'grades', loadChildren: () => GradeModule,
-        data: { title: 'Grades module', expectedRole: 'User'}
+        data: { title: 'Grades module', expectedRoles: ['User','Admin','TeamLeader']}
       },
       { path: 'forbidden', component: ForbiddenPage403Component,
         data: { title: '', expectedRoles: ['User','Admin','TeamLeader','Accountant']}

@@ -34,7 +34,7 @@ builder.Services.AddScoped<IStatusService, StatusService>();
 builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<IGradeService, GradeService>();
 builder.Services.AddScoped<ITargetService, TargetService>();
-builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserGradeService, UserGradeService>();
 builder.Services.AddScoped<AuthenticationHelpers>();
 builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<ICalendarService,CalendarService>();

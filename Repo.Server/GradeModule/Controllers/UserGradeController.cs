@@ -9,13 +9,13 @@ namespace Repo.Server.GradeModule.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Authorize(Policy = "TeamLeader")]
-public class UserController : ControllerBase
+public class UserGradeController : ControllerBase
 {
-    private readonly IUserService _userService;
+    private readonly IUserGradeService _userGradeService;
 
-    public UserController(IUserService userService)
+    public UserGradeController(IUserGradeService userGradeService)
     {
-        _userService = userService;
+        _userGradeService = userGradeService;
     }
     
     //[HttpGet] methods
@@ -23,7 +23,7 @@ public class UserController : ControllerBase
     public async Task<IActionResult> GetUsers([FromQuery] string? q, [FromQuery] int page = 1,
         [FromQuery] int pageSize = 20)
     {
-        var response = await _userService.GetUsers(q, page, pageSize);
+        var response = await _userGradeService.GetUsers(q, page, pageSize);
         return response.Success
             ? Ok(response.Data)
             : NotFound(new { message = response.Error });
@@ -32,7 +32,7 @@ public class UserController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetUserById(int id)
     {
-        var response = await _userService.GetUserById(id);
+        var response = await _userGradeService.GetUserById(id);
         return response.Success
             ? Ok(response.Data)
             : NotFound(new { message = response.Error });

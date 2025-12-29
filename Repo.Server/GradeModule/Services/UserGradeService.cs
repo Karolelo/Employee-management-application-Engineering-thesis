@@ -1,16 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Repo.Core.Infrastructure;
+using Repo.Core.Infrastructure.Database;
 using Repo.Core.Models.api;
 using Repo.Server.GradeModule.DTOs;
 using Repo.Server.GradeModule.Interfaces;
 
 namespace Repo.Server.GradeModule.Services;
 
-public class UserService : IUserService
+public class UserGradeService : IUserGradeService
 {
     private readonly MyDbContext _context;
 
-    public UserService(MyDbContext context)
+    public UserGradeService(MyDbContext context)
     {
         _context = context;
     }
