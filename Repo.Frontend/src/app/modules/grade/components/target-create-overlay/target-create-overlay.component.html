@@ -1,0 +1,34 @@
+<div class="overlay" (click)="dismiss()">
+  <div class="card" (click)="$event.stopPropagation()">
+    <h2 class="title">{{ target ? 'Target editor' : 'Target creator' }}</h2>
+    <button class="close" type="button" (click)="dismiss()">×</button>
+
+    <form [formGroup]="form" (ngSubmit)="create()" class="form">
+      <label>Name:</label>
+      <input type="text" formControlName="name" placeholder="Name">
+
+      <label>Description:</label>
+      <textarea rows="6" formControlName="description" placeholder="Description..."></textarea>
+
+      <label>Start (date & time):</label>
+      <input type="datetime-local" formControlName="start_Time">
+
+      <label>Finish (date & time):</label>
+      <input type="datetime-local" formControlName="finish_Time">
+
+      <label>Tag (optional):</label>
+      <input type="text" formControlName="tag" placeholder="Tag">
+
+      <div class="errors" *ngIf="form.hasError('finishBeforeStart')">
+        Finish time cannot be earlier than start time.
+      </div>
+
+      <div class="actions">
+        <button mat-button type="button" (click)="dismiss()">Cancel</button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || submitting">
+          Create
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

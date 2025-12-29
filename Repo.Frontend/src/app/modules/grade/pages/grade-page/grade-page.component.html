@@ -1,0 +1,120 @@
+<header class="page-header">
+  <button class="back-btn" routerLink="/"><i class="fa fa-arrow-left"></i></button>
+  <h1>Grades and progression</h1>
+  <span *ngIf="isLeaderOrAdmin" class="selected-user">
+    Selected user: {{ selectedUsername || '—' }}
+  </span>
+
+  <button *ngIf="isLeaderOrAdmin"
+          type="button"
+          class="icon-btn more"
+          aria-label="More actions"
+          (click)="onHeaderMenu()">⋮</button>
+</header>
+
+<main class="grade-layout">
+  <!-- Column 1: Grades -->
+  <section class="panel">
+    <div class = "panel-head">
+      <div class="panel-title"></div>
+      <button *ngIf="isLeaderOrAdmin"
+              type="button"
+              class="icon-btn"
+              aria-label="Add grade"
+              (click)="onAddGrade()">＋</button>
+    </div>
+    <div class="panel-scroll">
+      <app-user-grade-list
+        [userId]="selectedUserId"
+        [usernameOverride]="selectedUsername"
+        (select)="onGradeSelect($event)">
+      </app-user-grade-list>
+    </div>
+  </section>
+
+  <!-- Column 2: Targets -->
+  <section class="panel">
+    <div class="panel-head">
+      <div class="panel-title">Personal targets</div>
+      <button *ngIf="isLeaderOrAdmin"
+              type="button"
+              class="icon-btn"
+              aria-label="Add target"
+              (click)="onAddTarget()">＋</button>
+    </div>
+    <div class="panel-sub">Number of targets: {{targetCount}}</div>
+    <div class="panel-scroll">
+      <app-target-list
+        [userId]="selectedUserId"
+        (select)="onTargetSelect($event)">
+      </app-target-list>
+    </div>
+  </section>
+
+  <!-- Column 3: Courses -->
+  <section class="panel">
+    <div class="panel-head">
+      <div class="panel-title">Courses</div>
+      <button *ngIf="isLeaderOrAdmin"
+              type="button"
+              class="icon-btn"
+              aria-label="Add course"
+              (click)="onAddCourse()">＋</button>
+    </div>
+    <div class="panel-sub">You can select a course from the list:</div>
+    <div class="panel-scroll">
+      <app-course-list
+        [userId]="selectedUserId"
+        (select)="onCourseSelect($event)">
+      </app-course-list>
+    </div>
+  </section>
+</main>
+
+<!-- Course details overlay -->
+<app-course-enroll-overlay
+  *ngIf="selectedCourseId"
+  [courseId]="selectedCourseId!"
+  (close)="onCourseOverlayClose($event)">
+</app-course-enroll-overlay>
+
+<!-- Target details overlay -->
+<app-target-details-overlay
+  *ngIf="selectedTargetId"
+  [targetId]="selectedTargetId!"
+  (close)="onTargetOverlayClose($event)">
+</app-target-details-overlay>
+
+<!-- Grade details overlay -->
+<app-grade-details-overlay
+  *ngIf="selectedGradeId"
+  [gradeId]="selectedGradeId!"
+  (close)="onGradeOverlayClose($event)"
+></app-grade-details-overlay>
+
+<!-- User switch overlay -->
+<app-user-switch-overlay
+  *ngIf="userSwitchOpen"
+  (close)="onUserSwitchClose()"
+  (selected)="onUserSelected($event)"
+></app-user-switch-overlay>
+
+<!-- Course creator overlay -->
+<app-course-create-overlay
+  *ngIf="createCourseOpen"
+  (close)="onCourseCreated($event)"
+></app-course-create-overlay>
+
+<!-- Target creator overlay -->
+<app-target-create-overlay
+  *ngIf="createTargetOpen"
+  [userId]="selectedUserId"
+  (close)="onTargetCreated($event)">
+</app-target-create-overlay>
+
+<!-- Grade creator overlay -->
+<app-grade-create-overlay
+  *ngIf="createGradeOpen"
+  [userId]="selectedUserId"
+  (close)="onGradeCreated($event)">
+</app-grade-create-overlay>

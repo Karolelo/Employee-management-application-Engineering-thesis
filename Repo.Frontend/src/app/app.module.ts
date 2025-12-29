@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import {ReactiveFormsModule, FormsModule} from '@angular/forms';
+import {ReactiveFormsModule, FormBuilder, Validators, FormsModule} from '@angular/forms';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -24,13 +24,14 @@ import {CalendarModule} from './modules/calendar-module/calendar.module';
 import {HTTP_INTERCEPTORS} from '@angular/common/http';
 import {AuthInterceptorService} from './common_services/auth-interceptor-services.service';
 import {TaskModule} from './modules/task/task.module';
-import {JwtModule} from '@auth0/angular-jwt';
+import {JwtHelperService, JwtModule} from '@auth0/angular-jwt';
 import {MatListItem, MatNavList} from '@angular/material/list';
 import {CommonModule, NgClass,NgOptimizedImage} from '@angular/common';
 import {SidenavbarComponent} from './common_components/sidenavbar/sidenavbar.component';
 import {UserDetailsNavComponent} from './common_components/user-details-nav/user-details-nav.component';
 import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 import {MatToolbar} from '@angular/material/toolbar';
+import {GradeModule} from './modules/grade/grade.module';
 import {MatStepperModule} from '@angular/material/stepper';
 import { NotFoundPage404Component } from './common_components/not-found-page404/not-found-page404.component';
 import { ExportImageComponent } from './common_components/export-image/export-image.component';
@@ -68,6 +69,7 @@ export function tokenGetter() {
     MatIcon,
     CalendarModule,
     TaskModule,
+    GradeModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,

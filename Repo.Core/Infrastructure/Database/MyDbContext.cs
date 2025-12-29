@@ -197,6 +197,8 @@ public partial class MyDbContext : DbContext
                     tb.HasTrigger("course_event_update");
                 });
 
+            entity.Property(e => e.ID).ValueGeneratedOnAdd();
+
             entity.Property(e => e.Name).HasMaxLength(100);
 
             entity.HasMany(d => d.Users).WithMany(p => p.Courses)
@@ -279,8 +281,10 @@ public partial class MyDbContext : DbContext
 
             entity.ToTable("Grade");
 
+            entity.Property(e => e.ID).ValueGeneratedOnAdd();
+
             entity.Property(e => e.Grade1)
-                .HasColumnType("decimal(2, 2)")
+                .HasColumnType("decimal(3, 2)")
                 .HasColumnName("Grade");
 
             entity.HasMany(d => d.Users).WithMany(p => p.Grades)
@@ -499,6 +503,8 @@ public partial class MyDbContext : DbContext
             entity.HasKey(e => e.ID).HasName("Target_pk");
 
             entity.ToTable("Target");
+
+            entity.Property(e => e.ID).ValueGeneratedOnAdd();
 
             entity.Property(e => e.Finish_Time).HasColumnType("datetime");
             entity.Property(e => e.Name).HasMaxLength(100);

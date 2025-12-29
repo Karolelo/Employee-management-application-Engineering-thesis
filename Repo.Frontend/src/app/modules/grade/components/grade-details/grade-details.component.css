@@ -1,0 +1,3 @@
+.details { padding: 16px; }
+.loading { display: flex; justify-content: center; padding: 24px; }
+.error { color: #B00020; }

@@ -1,10 +1,11 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes} from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import {LoginComponent} from './modules/login/login.component';
 import {AuthLayoutComponent} from './layouts/auth-layout/auth-layout.component';
 import {MainLayoutComponent} from './layouts/main-layout/main-layout.component';
 import {CalendarModule} from './modules/calendar-module/calendar.module';
 import {TaskModule} from './modules/task/task.module';
+import {GradeModule} from './modules/grade/grade.module';
 import {AuthGuardService} from './guard/authGuard/auth-guard.service';
 import {DashboardModule} from './modules/dashboard/dashboard.module';
 import {RoleGuardService} from './guard/roleGuard/role-guard.service';
@@ -33,6 +34,9 @@ const routes: Routes = [
       },
       { path: 'dashboard', loadChildren: () => DashboardModule,
         data: { title: 'Dashboard module', expectedRoles: ['Admin','TeamLeader']}
+      },
+      { path: 'grades', loadChildren: () => GradeModule,
+        data: { title: 'Grades module', expectedRole: 'User'}
       },
       { path: 'forbidden', component: ForbiddenPage403Component,
         data: { title: '', expectedRoles: ['User','Admin','TeamLeader','Accountant']}

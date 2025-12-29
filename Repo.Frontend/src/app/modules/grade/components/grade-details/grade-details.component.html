@@ -1,0 +1,11 @@
+<main class="details">
+  <div *ngIf="loading" class="loading"><mat-spinner></mat-spinner></div>
+  <div *ngIf="!loading && grade">
+    <h2>Grade details</h2>
+    <p><strong>Grade:</strong> {{ grade.grade }}</p>
+    <p><strong>Description:</strong> {{ grade.description }}</p>
+    <p><strong>Start date:</strong> {{ grade.start_Date }}</p>
+    <p><strong>Finish date:</strong> {{ grade.finish_Date }}</p>
+  </div>
+  <div *ngIf="!loading && !grade" class="error">{{ errorMessage }}</div>
+</main>
