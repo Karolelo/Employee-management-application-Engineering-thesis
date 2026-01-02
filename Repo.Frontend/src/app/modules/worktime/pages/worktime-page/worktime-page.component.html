@@ -1,0 +1,26 @@
+<main class="worktime-page">
+  <section class="work-entry-form-section">
+    <ng-container *ngIf="isAdmin; else noPermission">
+      <app-work-entry-form
+        [entryToEdit]="selectedEntry"
+        (entrySaved)="onEntrySaved()">
+      </app-work-entry-form>
+    </ng-container>
+
+    <ng-template #noPermission>
+      <p class="no-permission">
+        You do not have permission to add work entries.
+      </p>
+    </ng-template>
+  </section>
+
+  <section class="work-entry-list-section">
+    <h2 class="section-title">Work time entries</h2>
+    <app-work-entry-list
+      (editEntry)="onEditEntry($event)"
+      [isAdmin]="isAdmin">
+    </app-work-entry-list>
+
+    <app-work-summary></app-work-summary>
+  </section>
+</main>

@@ -6,6 +6,7 @@ import {MainLayoutComponent} from './layouts/main-layout/main-layout.component';
 import {CalendarModule} from './modules/calendar-module/calendar.module';
 import {TaskModule} from './modules/task/task.module';
 import {GradeModule} from './modules/grade/grade.module';
+import {WorktimeModule} from './modules/worktime/worktime.module';
 import {AuthGuardService} from './guard/authGuard/auth-guard.service';
 import {DashboardModule} from './modules/dashboard/dashboard.module';
 import {RoleGuardService} from './guard/roleGuard/role-guard.service';
@@ -37,6 +38,9 @@ const routes: Routes = [
       },
       { path: 'grades', loadChildren: () => GradeModule,
         data: { title: 'Grades module', expectedRoles: ['User','Admin','TeamLeader']}
+      },
+      { path: 'worktime', loadChildren: () => WorktimeModule,
+        data: { title: 'Worktime module', expectedRoles: ['User','Admin','Accountant']}
       },
       { path: 'forbidden', component: ForbiddenPage403Component,
         data: { title: '', expectedRoles: ['User','Admin','TeamLeader','Accountant']}

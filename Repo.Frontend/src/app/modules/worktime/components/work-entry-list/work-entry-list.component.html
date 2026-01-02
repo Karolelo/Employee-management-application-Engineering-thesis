@@ -1,0 +1,71 @@
+<main class="work-entry-list">
+  <div class="filter-bar">
+    <div class="filter-field">
+      <label>From</label>
+      <input type="date" [(ngModel)]="fromDate">
+    </div>
+    <div class="filter-field">
+      <label>To</label>
+      <input type="date" [(ngModel)]="toDate">
+    </div>
+
+    <div class="filter-field" *ngIf="isAdmin">
+      <label>User</label>
+      <select [(ngModel)]="selectedUserId">
+        <option [ngValue]="null">All</option>
+        <option *ngFor="let u of availableUsers" [ngValue]="u.id">
+          {{ u.nickname }} (ID: {{ u.id }})
+        </option>
+      </select>
+    </div>
+
+    <button (click)="reloadEntries()">Filter</button>
+    <button (click)="clearFilter()">Clear</button>
+  </div>
+
+  <ng-container *ngIf="!errorMessage; else errorTpl">
+    <div *ngIf="loading" class="loading-spinner">
+      <mat-spinner></mat-spinner>
+    </div>
+
+    <ng-container *ngIf="!loading">
+      <table class="entries-table">
+        <thead>
+        <tr>
+          <th>Date</th>
+          <th>Task</th>
+          <th>Hours</th>
+          <th>Comment</th>
+          <th *ngIf="isAdmin">User</th>
+          <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let entry of entries$ | async">
+          <td>{{ entry.work_Date }}</td>
+          <td>{{ entry.taskName || '-' }}</td>
+          <td>{{ entry.hours_Worked }}</td>
+          <td>{{ entry.comment || '-' }}</td>
+          <td *ngIf="isAdmin">{{ entry.userNickname }}</td>
+          <td class="actions">
+            <ng-container *ngIf="isAdmin">
+              <button (click)="onEdit(entry)">
+                <i class="fa fa-edit edit-icon"></i>
+              </button>
+              <button (click)="onDelete(entry.id)">
+                <i class="fa fa-trash delete-icon"></i>
+              </button>
+            </ng-container>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </ng-container>
+  </ng-container>
+
+  <ng-template #errorTpl>
+    <div class="error-message">
+      {{ errorMessage }}
+    </div>
+  </ng-template>
+</main>
