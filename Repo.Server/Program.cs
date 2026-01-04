@@ -15,7 +15,6 @@ using Repo.Server.AuthModule.Interfaces;
 using Repo.Server.CalendarModule.Interfaces;
 using Repo.Server.CalendarModule.Repositories;
 using Repo.Server.CalendarModule.Services;
-using Repo.Server.Controllers;
 using Repo.Server.Controllers.Interfaces;
 using Repo.Server.TaskModule;
 using Repo.Server.TaskModule.interafaces;
