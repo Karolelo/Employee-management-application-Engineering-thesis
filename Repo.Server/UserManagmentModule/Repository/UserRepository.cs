@@ -100,4 +100,9 @@ public class UserRepository : IUserRepository
         //I add basic roles
         return roles.Count > 0 ? roles : new List<string>(){"User"};
     }
+
+    public bool IsAdminHasGroup(int adminId)
+    {
+        return _context.Groups.Any(g => g.Admin_ID == adminId);
+    }
 }

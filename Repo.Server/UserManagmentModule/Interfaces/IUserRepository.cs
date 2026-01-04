@@ -16,5 +16,5 @@ public interface IUserRepository
     Task<User> UpdateUser(User user);
     Task<bool> DeleteUser(int id);
     Task<List<string>> GetUserRoles(int userId);
-
+    bool IsAdminHasGroup(int adminId);
 }
