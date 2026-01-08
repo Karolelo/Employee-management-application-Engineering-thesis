@@ -1,0 +1,40 @@
+.worktime-page {
+  display: flex;
+  flex: 1;
+  padding: 5px;
+  gap: 20px;
+}
+
+.work-entry-form-section,
+.work-entry-list-section {
+  flex: 1;
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  height: calc(100vh - 100px);
+  overflow-y: auto;
+}
+
+.work-entry-form-section {
+  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+}
+
+.work-entry-list-section {
+  background: linear-gradient(135deg, #f5f7fa, #e2ebf0);
+}
+
+.section-title {
+  font-family: monospace;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.no-permission {
+  font-family: monospace;
+  color: var(--primary-color);
+  font-size: 1rem;
+  text-align: center;
+  padding: 1rem 0;
+}
+

@@ -1,0 +1,21 @@
+<div *ngIf="loading" class="loading"><mat-spinner></mat-spinner></div>
+
+<ul *ngIf="!loading && courses.length" class="courses">
+  <li *ngFor="let c of courses" class="course-card" (click)="onSelect(c)">
+    <div class="course-content">
+      <div class="title">{{ c.name }}</div>
+      <div class="sub">Starts on: {{ formatDate(c.start_Date) }}</div>
+    </div>
+
+    <div class="status"
+         [class.ok]="c.status==='participating'"
+         [class.warn]="c.status==='undecided'"
+         [class.bad]="c.status==='expired'">
+      <span *ngIf="c.status==='participating'">✓</span>
+      <span *ngIf="c.status==='undecided'">?</span>
+      <span *ngIf="c.status==='expired'">✕</span>
+    </div>
+  </li>
+
+  <li *ngIf="!courses.length" class="empty">No courses.</li>
+</ul>

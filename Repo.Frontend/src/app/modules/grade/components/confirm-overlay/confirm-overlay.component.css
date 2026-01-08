@@ -1,0 +1,6 @@
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.25);display:grid;place-items:center;z-index:60}
+.card{width:min(420px,92vw);background:#fff;border-radius:14px;padding:14px;border:3px solid #5D3EA8;
+  box-shadow:0 12px 40px rgba(0,0,0,.25)}
+.title{font-weight:800;margin:0 0 6px}
+.msg{margin:0 0 12px}
+.actions{display:flex;justify-content:flex-end;gap:8px}
