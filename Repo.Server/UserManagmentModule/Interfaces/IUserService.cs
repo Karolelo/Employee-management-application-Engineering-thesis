@@ -11,6 +11,8 @@ public interface IUserService
     Task<Response<List<UserDTO>>> GetAllUsersFromGroup(int groupId);
 
     Task<Response<List<UserDTO>>> GetTeamLeadersWithoutGroup();
+
+    Task<Response<List<UserDTO>>> GetUsersWithoutGroup();
     
     Task<Response<UserDTO>> GetUserById(int id);
 

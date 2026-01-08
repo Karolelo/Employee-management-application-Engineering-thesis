@@ -91,7 +91,7 @@ public class UserService : IUserService
                 
                 return Response<List<UserDTO>>.Ok(users);
             }
-            return Response<List<UserDTO>>.Fail("No available teamLead found ");
+            return Response<List<UserDTO>>.Fail("No available teamLead found");
         }
         catch (Exception e)
         {
