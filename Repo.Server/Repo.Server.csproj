@@ -31,7 +31,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="TaskModule\Repositories\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 

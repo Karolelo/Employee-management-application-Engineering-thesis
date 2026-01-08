@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
 using FluentAssertions;
 using JetBrains.Annotations;
+using Microsoft.AspNetCore.Http;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Repo.Core.Infrastructure.Files;
@@ -148,7 +151,7 @@ public class GroupServiceTest
    
    #endregion
 
-   #region GetGroupByAdminId
+   #region GetGroupByAdminId Tests
 
    [TestMethod]
    public async Task GetGroupByAdminId_ShouldReturnGroup_WhenGroupExists()
@@ -455,9 +458,162 @@ public class GroupServiceTest
 
    #endregion
 
+   #region GetGroupImagePath Tests
+
+   [TestMethod]
+   public async Task GetGroupImagePath_ShouldReturnPath_WhenGroupIDExists()
+   {
+      //Arrange
+      var pathToImage = "C://pliki/plik.txt";
+      var groupId = 1;
+      _mockGroupRepository.Setup(x => x.GetPathToImageFile(groupId)).ReturnsAsync(pathToImage);
+      
+      //Act
+      var result = await _groupService.GetGroupImagePath(groupId);
+      
+      //Assertion
+      result.Data.Should().Be(pathToImage);
+   }
+   
+   [TestMethod]
+   public async Task GetGroupImagePath_ShouldReturnFailResponse_WhenGroupDoesNotHaveImage()
+   {
+      //Arrange
+      var groupId = 1;
+      _mockGroupRepository.Setup(x => x.GetPathToImageFile(groupId)).ReturnsAsync("");
+      
+      //Act
+      var result = await _groupService.GetGroupImagePath(groupId);
+      
+      //Assertion
+      result.Success.Should().BeFalse();
+      result.Error.Should().Contain("Group does not");
+   }
+
+   [TestMethod]
+   public async Task GetGroupImagePath_ShouldReturnFailResponse_WhenErrorOccured()
+   {
+      var groupId = 1;
+      _mockGroupRepository.Setup(x => x.GetPathToImageFile(groupId)).Throws(new Exception("database error"));
+      
+      //Act
+      var result = await _groupService.GetGroupImagePath(groupId);
+      
+      //Assertion
+      result.Success.Should().BeFalse();
+      result.Error.Should().Contain("database error");
+   }
+
+   #endregion
+
    #region Additional test methods
 
-   private Mock<IFromFile> CreateMockFile(string content, string fileName)
+   #region SaveGroupImage Tests
+
+   [TestMethod]
+   public async Task SaveGroupImage_ShouldSaveFile_WhenGroupExists()
+   {
+      // Arrange
+      var groupId = 1;
+      var content = "JasioIStatsioLubiaSpiewacWDomuPiosenki";
+      var fileName = "testImage.jpg";
+      var file = CreateMockFile(content, fileName);
+      var group = new Group { ID = groupId, Name = "Test Group" };
+
+      _mockGroupRepository.Setup(x => x.GetGroupById(groupId))
+         .ReturnsAsync(group);
+      _mockFile.Setup(x => x.SaveFile(It.IsAny<string>(), It.IsAny<byte[]>()))
+         .Verifiable();
+
+      // Act
+      var result = await _groupService.SaveGroupImage(groupId, file.Object);
+
+      // Assert
+      result.Success.Should().BeTrue();
+      result.Data.Should().Contain("group_1_");
+      result.Data.Should().EndWith(".jpg");
+      _mockFile.Verify(x => x.SaveFile(It.IsAny<string>(), It.IsAny<byte[]>()), Times.Once);
+      _mockGroupRepository.Verify(x => x.SavePathToImageFile(groupId, It.IsAny<string>()), Times.Once);
+   }
+
+   [TestMethod]
+   public async Task UpdateGroupImage_ShouldSaveFile_WhenGroupExists()
+   {
+      //Arrange
+      var groupId = 1;
+      var content = "JasioIStatsioLubiaSpiewacWDomuPiosenki";
+      var fileName = "testImage.jpg";
+      var file = CreateMockFile(content, fileName);
+      var group = new Group { ID = groupId, Name = "Test Group" };
+      var examplePath = "C://Files/files.jpg";
+      
+      _mockGroupRepository.Setup(x => x.GetGroupById(groupId)).ReturnsAsync(group);
+      _mockFile.Setup(x => x.SaveFile(It.IsAny<string>(), It.IsAny<byte[]>())).Verifiable();
+      _mockGroupRepository.Setup(x => x.GetPathToImageFile(groupId)).ReturnsAsync(examplePath).Verifiable();
+      _mockGroupRepository.Setup(x => x.UpdateImageFile(groupId, It.IsAny<string>())).ReturnsAsync(examplePath).Verifiable();
+      
+      //Act
+      var result = await _groupService.SaveGroupImage(groupId, file.Object, true);
+      
+      //Assert
+      result.Success.Should().BeTrue();
+      result.Data.Should().Contain("group_1_");
+      result.Data.Should().EndWith(".jpg");
+      _mockFile.Verify(x=>x.SaveFile(It.IsAny<string>(), It.IsAny<byte[]>()),Times.Once);
+      _mockGroupRepository.Verify(x => x.UpdateImageFile(groupId,It.IsAny<string>()),Times.Once);
+      _mockGroupRepository.Verify(x=>x.GetPathToImageFile(groupId),Times.Once);
+   }
+   
+   [TestMethod]
+   public async Task SaveGroupImage_ShouldReturnFailResponse_WhenGroupNotExists()
+   {
+      // Arrange
+      var groupId = 999;
+      var file = CreateMockFile("content", "test.jpg");
+
+      _mockGroupRepository.Setup(x => x.GetGroupById(groupId))
+         .ReturnsAsync(null as Group);
+
+      // Act
+      var result = await _groupService.SaveGroupImage(groupId, file.Object);
+
+      // Assert
+      result.Success.Should().BeFalse();
+      result.Error.Should().Contain("not found");
+   }
+
+   [TestMethod]
+   public async Task SaveGroupImage_ShouldReturnFailResponse_WhenExceptionOccurs()
+   {
+      // Arrange
+      var groupId = 1;
+      var file = CreateMockFile("content", "test.jpg");
+
+      _mockGroupRepository.Setup(x => x.GetGroupById(groupId))
+         .ThrowsAsync(new Exception("Database error"));
+
+      // Act
+      var result = await _groupService.SaveGroupImage(groupId, file.Object);
+
+      // Assert
+      result.Success.Should().BeFalse();
+      result.Error.Should().Contain("Database error");
+   }
+   
+   #endregion
+
+   private Mock<IFormFile> CreateMockFile(string content, string fileName)
+   {
+      var mock = new Mock<IFormFile>();
+      var stream = new MemoryStream(Encoding.UTF8.GetBytes(content));
+
+      mock.Setup(x => x.OpenReadStream()).Returns(stream);
+      mock.Setup(x => x.FileName).Returns(fileName);
+      mock.Setup(x => x.Length).Returns(stream.Length);
+      mock.Setup(x => x.ContentType).Returns("text/plain");
+   
+      return mock;
+   }
 
    #endregion
 }

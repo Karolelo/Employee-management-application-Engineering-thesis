@@ -42,7 +42,8 @@ const routes: Routes = [
         data: { title: 'Dashboard module', expectedRoles: ['Admin','TeamLeader']}
       },
       {
-        path: 'forbidden', component: ForbiddenPage403Component,
+        path: 'forbidden', component: ForbiddenPage403Component, data: {title: 'Forbidden', expectedRoles: []}
+      },
       { path: 'grades', loadChildren: () => GradeModule,
         data: { title: 'Grades module', expectedRoles: ['User','Admin','TeamLeader']}
       },
