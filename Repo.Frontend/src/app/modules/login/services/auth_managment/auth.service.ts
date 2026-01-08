@@ -72,7 +72,7 @@ export class AuthService {
 
   refreshToken(): Observable<TokenResponse> {
     const accessToken = this.getToken();
-    const refreshToken = localStorage.getItem(this.REFRESH_TOKEN_KEY);
+    const refreshToken = this.getRefreshToken();
 
     if (!accessToken || !refreshToken) {
       this.logout();
@@ -101,6 +101,10 @@ export class AuthService {
 
   getToken(): string | null {
     return localStorage.getItem(this.TOKEN_KEY);
+  }
+
+  getRefreshToken(): string | null {
+    return localStorage.getItem(this.REFRESH_TOKEN_KEY);
   }
 
   isAuthenticated(): Observable<boolean> {

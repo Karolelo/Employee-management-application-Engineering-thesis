@@ -19,14 +19,13 @@ public class GroupRepository : IGroupRepository
     public async Task<List<Group>> GetAllGroups()
     {
         return await _context.Set<Group>()
-            .Where(g => g.Deleted != 1)
             .Include(g=> g.Users)
             .ToListAsync();
     }
 
     public async Task<Group?> GetGroupById(int id)
     {
-        return await _context.Set<Group>().FirstOrDefaultAsync(g => g.ID == id && g.Deleted != 1);
+        return await _context.Set<Group>().FirstOrDefaultAsync(g => g.ID == id);
     }
 
     public async Task<Group> CreateGroup(Group group)

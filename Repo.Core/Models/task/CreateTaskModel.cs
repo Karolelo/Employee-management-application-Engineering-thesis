@@ -19,4 +19,6 @@ public class CreateTaskModel
     public string Priority { get; set; }
 
     public string Status { get; set; }
+    
+    public int Creator_ID { get; set; }
 }

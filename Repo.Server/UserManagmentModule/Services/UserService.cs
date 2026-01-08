@@ -11,17 +11,15 @@ namespace Repo.Server.UserManagmentModule.Services;
 
 public class UserService : IUserService
 {
-    private readonly MyDbContext _context;
     private readonly IUserRepository _userRepository;
     private readonly IRoleRepository _roleRepository;
     private readonly IGroupRepository _groupRepository;
     private readonly RoleConfiguration _roleConfiguration;
-    public UserService(MyDbContext context,IUserRepository userRepository
+    public UserService(IUserRepository userRepository
         ,IRoleRepository roleRepository
         ,IGroupRepository groupRepository
         ,IOptions<RoleConfiguration> roleConfiguration)
     {
-        _context = context;
         _userRepository = userRepository;
         _roleRepository = roleRepository;
         _groupRepository = groupRepository;
@@ -88,12 +86,12 @@ public class UserService : IUserService
                     return Response<List<UserDTO>>.Fail($"Role: {role} is not available");
                 
                 var users = response.Data
-                    .Where(u => u.Roles.Contains(role)&&!_context.Groups.Any(g=>g.Admin_ID==u.ID))
+                    .Where(u => u.Roles.Contains(role)&&!_userRepository.IsAdminHasGroup(u.ID))
                     .ToList();
                 
                 return Response<List<UserDTO>>.Ok(users);
             }
-            return Response<List<UserDTO>>.Fail("No available teamLead found ");
+            return Response<List<UserDTO>>.Fail("No available teamLead found");
         }
         catch (Exception e)
         {

@@ -200,7 +200,8 @@ public class TaskService : ITaskService
                 Name = model.Name,
                 Description = model.Description,
                 Start_Time = model.Start_Time,
-                Estimated_Time = model.Estimated_Time
+                Estimated_Time = model.Estimated_Time,
+                Creator_ID = model.Creator_ID
             };
 
             var priority = await _context.Set<Priority>().FirstOrDefaultAsync(e => e.Priority1 == model.Priority);

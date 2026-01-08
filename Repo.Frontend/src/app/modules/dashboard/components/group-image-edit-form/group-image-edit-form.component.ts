@@ -1,8 +1,8 @@
 import { Component,Input,OnChanges,SimpleChanges } from '@angular/core';
 import { FormGroup,FormBuilder } from '@angular/forms';
 import {GroupService} from '../../services/group/group.service';
-import {DomSanitizer,SafeUrl} from '@angular/platform-browser';
 import {Group} from '../../interfaces/group';
+import { NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-group-image-edit-form',
@@ -11,15 +11,15 @@ import {Group} from '../../interfaces/group';
   styleUrl: './group-image-edit-form.component.css'
 })
 export class GroupImageEditFormComponent implements OnChanges {
-  private static readonly IMAGE_REFRESH_DELAY_MS = 3000;
+  private static readonly IMAGE_REFRESH_DELAY_MS = 1000;
+
   @Input() group?: Group;
   imageForm: FormGroup;
-  imageUrl?: SafeUrl;
+  imageUrl?: string;
 
   constructor(
     private fb: FormBuilder,
-    private groupService: GroupService,
-    private sanitizer: DomSanitizer
+    private groupService: GroupService
   ) {
     this.imageForm = this.fb.group({
       image: [null],
@@ -37,9 +37,9 @@ export class GroupImageEditFormComponent implements OnChanges {
     if (!this.group) return;
 
     this.groupService.getGroupImagePath(this.group.id).subscribe({
-      next: (blob: Blob) => {
-        const objectUrl = URL.createObjectURL(blob);
-        this.imageUrl = this.sanitizer.bypassSecurityTrustUrl(objectUrl);
+      next: (response: any) => {
+        this.imageUrl = response.path;
+        console.log(this.imageUrl);
       },
       error: (error) => {
         if (error.status === 404) {
@@ -71,5 +71,10 @@ export class GroupImageEditFormComponent implements OnChanges {
       }
     });
   }
-}
 
+  getFullImageUrl(): string {
+    return this.imageUrl
+      ? 'http://localhost:5239' + this.imageUrl
+      : '/images/default.png';
+  }
+}

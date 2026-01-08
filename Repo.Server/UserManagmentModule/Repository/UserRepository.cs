@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Repo.Core.Infrastructure;
 using Repo.Core.Infrastructure.Database;
 using Repo.Core.Models;
+using Repo.Core.Models.auth;
 using Repo.Core.Models.user;
 using Repo.Server.UserManagmentModule.Interfaces;
 
@@ -21,7 +22,6 @@ public class UserRepository : IUserRepository
         return await _context.Users
             .Include(u=>u.Roles)
             .Include(u => u.Groups)
-            .Where(u=>u.Deleted!=1)
             .ToListAsync();
     }
 
@@ -29,7 +29,7 @@ public class UserRepository : IUserRepository
     {
         return await _context.Users
             .Include(u=>u.Groups)
-            .Where(u=>u.Deleted!=1 && u.Groups.Any(g=>g.ID==groupId))
+            .Where(u=> u.Groups.Any(g=>g.ID==groupId))
             .ToListAsync();
     }
 
@@ -53,35 +53,56 @@ public class UserRepository : IUserRepository
             .Include(u => u.Roles)
             .FirstOrDefaultAsync(u => u.Nickname.ToLower() == nickname.ToLower());
     }
+    
+    public async Task<User?> GetUserByLogin(string login)
+    {
+        return await _context.Users
+            .Include(u => u.Roles)
+            .FirstOrDefaultAsync(u => u.Login.ToLower() ==login.ToLower());
+    }
+
+    public async Task<User> CreateUser(User user)
+    {
+        await _context.Users.AddAsync(user);
+        await _context.SaveChangesAsync();
+        return user;
+    }
 
     public async Task<User> UpdateUser(User user)
     {
-        var existingUser = await _context.Users
-            .Include(u => u.Roles)
-            .FirstOrDefaultAsync(u => u.ID == user.ID);
-
-        if (existingUser == null)
-            throw new InvalidOperationException($"User with ID {user.ID} not found");
+        _context.Entry(user).CurrentValues.SetValues(user);
         
-        _context.Entry(existingUser).CurrentValues.SetValues(user);
-        
-        existingUser.Roles.Clear();
+        user.Roles.Clear();
         foreach (var role in user.Roles)
         {
-            existingUser.Roles.Add(role);
+            user.Roles.Add(role);
         }
         
         await _context.SaveChangesAsync();
-        return existingUser;
+        return user;
     }
-    
-    
 
     public async Task<bool> DeleteUser(int id)
     {
-        var user = _context.Set<User>().Find(id);
+        var user = _context.Users.Find(id);
         user.Deleted = 1;
         var result = await _context.SaveChangesAsync();
         return result > 0;
+    }
+
+    public async Task<List<string>> GetUserRoles(int userId)
+    {
+        var roles = await _context.Users.Include(u=>u.Roles)
+            .Where(u => u.ID == userId)
+            .SelectMany(u => u.Roles)
+            .Select(r => r.Role_Name)
+            .ToListAsync();
+        //I add basic roles
+        return roles.Count > 0 ? roles : new List<string>(){"User"};
+    }
+
+    public bool IsAdminHasGroup(int adminId)
+    {
+        return _context.Groups.Any(g => g.Admin_ID == adminId);
     }
 }

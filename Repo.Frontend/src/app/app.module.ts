@@ -26,7 +26,7 @@ import {AuthInterceptorService} from './common_services/auth-interceptor-service
 import {TaskModule} from './modules/task/task.module';
 import {JwtHelperService, JwtModule} from '@auth0/angular-jwt';
 import {MatListItem, MatNavList} from '@angular/material/list';
-import {CommonModule, NgClass,NgOptimizedImage} from '@angular/common';
+import {CommonModule, NgClass,NgOptimizedImage,IMAGE_LOADER} from '@angular/common';
 import {SidenavbarComponent} from './common_components/sidenavbar/sidenavbar.component';
 import {UserDetailsNavComponent} from './common_components/user-details-nav/user-details-nav.component';
 import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
@@ -35,6 +35,7 @@ import {GradeModule} from './modules/grade/grade.module';
 import {MatStepperModule} from '@angular/material/stepper';
 import { NotFoundPage404Component } from './common_components/not-found-page404/not-found-page404.component';
 import { ExportImageComponent } from './common_components/export-image/export-image.component';
+import { DebugComponent } from './debug_component/app-debug/app-debug.component';
 export function tokenGetter() {
   return localStorage.getItem('auth_token');
 }
@@ -46,7 +47,7 @@ export function tokenGetter() {
     AuthLayoutComponent,
     MainLayoutComponent,
     SidenavbarComponent,
-    UserDetailsNavComponent
+    UserDetailsNavComponent,
   ],
   imports: [
     CommonModule,

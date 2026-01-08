@@ -1,150 +1,120 @@
-using Microsoft.EntityFrameworkCore;
+
 using Repo.Core.Infrastructure;
 using Repo.Core.Infrastructure.Database;
+using Repo.Core.Infrastructure.UnityOfWork;
 using Repo.Core.Models;
 using Repo.Core.Models.api;
 using Repo.Core.Models.auth;
+using Repo.Server.AuthModule.Interfaces;
 using Repo.Server.Controllers.Interfaces;
-
-namespace Repo.Server.Controllers;
+using Repo.Server.UserManagmentModule.Interfaces;
+using Task = System.Threading.Tasks.Task;
 
 public class AuthUserService : IAuthUserService
 {
-    private readonly MyDbContext _context;
     private readonly AuthenticationHelpers _authenticationHelpers;
-    public AuthUserService(MyDbContext context, AuthenticationHelpers auth)
+    private readonly IUnityOfWork<MyDbContext> _unityOfWork;
+    private readonly IUserRepository _userRepository;
+    private readonly IRoleRepository _roleRepository;
+    private readonly IRefreshTokenRepository _refreshTokenRepository;
+    
+    private const int RefreshTokenExpirationDays = 7;
+    private const string DefaultRoleName = "User";
+
+    public AuthUserService(
+        AuthenticationHelpers auth,
+        IUnityOfWork<MyDbContext> unityOfWork,
+        IUserRepository userRepository,
+        IRoleRepository roleRepository,
+        IRefreshTokenRepository refreshTokenRepository)
     {
-        _context = context;
         _authenticationHelpers = auth;
+        _unityOfWork = unityOfWork;
+        _userRepository = userRepository;
+        _roleRepository = roleRepository;
+        _refreshTokenRepository = refreshTokenRepository;
     }
 
     public async Task<Response<User>> CreateUser(RegistrationModel model)
     {
-        var strategy = _context.Database.CreateExecutionStrategy();
-
-        return await strategy.ExecuteAsync(async () =>
+        _unityOfWork.CreateTransaction();
+        try
         {
-            await using var transaction = await _context.Database.BeginTransactionAsync();
-            try
+            var existingUserByEmail = await _userRepository.GetUserByEmail(model.Email);
+            if (existingUserByEmail is not null)
             {
-
-                if (_context.Set<User>().Any(x => x.Email == model.Email))
-                {
-                    return Response<User>.Fail("User with this email already exists");
-                }
-
-                if (_context.Set<User>().Any(x => x.Nickname == model.Nickname))
-                {
-                    return Response<User>.Fail("User with this nickname already exists");
-                }
-
-                byte[] salt = AuthenticationHelpers.GenerateSalt(64);
-
-                User user = new()
-                {
-                    Login = model.Login,
-                    Nickname = model.Nickname,
-                    Email = model.Email,
-                    Password = AuthenticationHelpers.GeneratePasswordHash(model.Password, salt),
-                    Salt = salt,
-                    Name = model.Name,
-                    Surname = model.Surname
-                };
-
-                _context.Set<User>().Add(user);
-                await _context.SaveChangesAsync();
-                user.Roles = new List<Role>();
-
-                //Adding Roles to user
-                if (model.Role != null && model.Role.Any())
-                {
-                    foreach (var roleName in model.Role)
-                    {
-                        var role = await _context.Roles.FirstOrDefaultAsync(r => r.Role_Name == roleName);
-                        if (role != null)
-                        {
-                            user.Roles.Add(role);
-                        }
-                    }
-                }
-                else
-                {
-                    // Basic role if not find any "User"
-                    var defaultRole = await _context.Roles.FirstOrDefaultAsync(r => r.Role_Name == "User");
-                    if (defaultRole != null)
-                    {
-                        user.Roles.Add(defaultRole);
-                    }
-                }
-
-                //Adding refresh token to database
-                var token = new RefreshToken()
-                {
-                    Token = _authenticationHelpers.GenerateRefreshToken(),
-                    User_ID = user.ID,
-                    ExpireDate = DateTime.Now.AddDays(7),
-                    CreatedAt = DateTime.Now
-                };
-
-                await _context.SaveChangesAsync();
-                _context.Set<RefreshToken>().Add(token);
-                await _context.SaveChangesAsync();
-                await transaction.CommitAsync();
-                return Response<User>.Ok(user);
+                return Response<User>.Fail("User with this email already exists");
             }
-            catch (Exception e)
+
+            var existingUserByNickname = await _userRepository.GetUserByNickname(model.Nickname);
+            if (existingUserByNickname is not null)
             {
-                await transaction.RollbackAsync();
-                return Response<User>.Fail($"Error during creating of user: {e.Message}");
+                return Response<User>.Fail("User with this nickname already exists");
             }
-        });
+
+            var user = await CreateUserEntity(model);
+            await AssignRolesToUser(user, model.Role);
+            
+            var refreshToken = CreateRefreshToken(user.ID);
+            await _refreshTokenRepository.Add(refreshToken);
+            
+            _unityOfWork.Save();
+            _unityOfWork.Commit();
+            
+            return Response<User>.Ok(user);
+        }
+        catch (Exception e)
+        {
+            _unityOfWork.Rollback();
+            return Response<User>.Fail($"Error during creating of user: {e.Message}");
+        }
     }
 
     public async Task<Response<TokenModel>> Login(LoginModel model)
     {
         try
         {
-            var user = await _context.Set<User>().FirstOrDefaultAsync(e => e.Login == model.Login && e.Deleted != 1);
-
+            var user = await _userRepository.GetUserByLogin(model.Login);
             if (user == null)
             {
-                return Response<TokenModel>.Fail("User with this nickname does not exist");
+                return Response<TokenModel>.Fail("User with this login does not exist");
             }
 
-            if (!AuthenticationHelpers.VerifyPasswordHash(model.Password,user.Password, user.Salt))
+            if (!AuthenticationHelpers.VerifyPasswordHash(model.Password, user.Password, user.Salt))
             {
                 return Response<TokenModel>.Fail("Wrong password");
             }
+
+            var roles = await _userRepository.GetUserRoles(user.ID);
+            var refreshToken = await _refreshTokenRepository.FindByUserId(user.ID);
             
-            //Validate if our refresh token is valid, if not we make new one
-            var refreshToken = await _context.Set<RefreshToken>().FirstOrDefaultAsync(e => e.User_ID == user.ID);
-            var Roles = await GetUserRoles(user.ID);
-            
-            if (refreshToken != null && refreshToken.RevokedAt == null &&
-                refreshToken.ExpireDate < DateTime.Now.AddDays(1))
+            // Check if existing refresh token is valid
+            if (refreshToken != null && await ValidateRefreshToken(user.Nickname, refreshToken.Token))
             {
-                return Response<TokenModel>.Ok(new TokenModel()
+                return Response<TokenModel>.Ok(new TokenModel
                 {
-                    AccessToken = _authenticationHelpers.GenerateToken(user.ID,user.Nickname,Roles),
+                    AccessToken = _authenticationHelpers.GenerateToken(user.ID, user.Nickname, roles),
                     RefreshToken = refreshToken.Token
                 });
             }
-            //creatng new token if neccesary
-            var tokens = _authenticationHelpers.GenerateTokens(user.ID,user.Nickname,Roles);
-            var token = new RefreshToken()
+
+            // Revoke old token and create new one
+            if (refreshToken != null)
             {
-                Token = tokens.RefreshToken,
-                User_ID = user.ID,
-                ExpireDate = DateTime.Now.AddDays(7),
-                CreatedAt = DateTime.Now
-            };
-                
-            await _context.Set<RefreshToken>().AddAsync(token);
-            await _context.SaveChangesAsync();
+                refreshToken.RevokedAt = DateTime.Now;
+                await _refreshTokenRepository.Update(refreshToken);
+            }
+
+            var newRefreshToken = CreateRefreshToken(user.ID);
+            await _refreshTokenRepository.Add(newRefreshToken);
             
-            return Response<TokenModel>.Ok(tokens);
-            
-        }catch (Exception e)
+            return Response<TokenModel>.Ok(new TokenModel
+            {
+                AccessToken = _authenticationHelpers.GenerateToken(user.ID, user.Nickname, roles),
+                RefreshToken = newRefreshToken.Token
+            });
+        }
+        catch (Exception e)
         {
             return Response<TokenModel>.Fail($"Error during login: {e.Message}");
         }
@@ -152,70 +122,102 @@ public class AuthUserService : IAuthUserService
 
     public async Task<Response<TokenModel>> RefreshToken(TokenModel tokenModel)
     {
-        var accessToken = tokenModel.AccessToken;
-        var refreshToken = tokenModel.RefreshToken;
-   
-        var principals = _authenticationHelpers.GetPrincipalFromExpiredToken(accessToken);
+        var principals = _authenticationHelpers.GetPrincipalFromExpiredToken(tokenModel.AccessToken);
         if (principals == null)
         {
             return Response<TokenModel>.Fail("Bad token format");
         }
 
-        var id = int.Parse(principals.FindFirst("id").Value);
-        var username = principals.Identity.Name;
-   
-        if (username == null)
+        var idClaim = principals.FindFirst("id");
+        if (idClaim == null || !int.TryParse(idClaim.Value, out var userId))
         {
-            return Response<TokenModel>.Fail("Bad token no user was found");
+            return Response<TokenModel>.Fail("Invalid user ID in token");
         }
 
-        if (await ValidateRefreshToken(username, refreshToken) == false)
+        var username = principals.Identity?.Name;
+        if (string.IsNullOrEmpty(username))
+        {
+            return Response<TokenModel>.Fail("Bad token: no user was found");
+        }
+
+        if (!await ValidateRefreshToken(username, tokenModel.RefreshToken))
         {
             return Response<TokenModel>.Fail("Bad refresh token");
         }
-        
-        var roles = await GetUserRoles(id);
-        
-        var newAccessToken = _authenticationHelpers.GenerateToken(id, username, roles);
 
-        return Response<TokenModel>.Ok(new TokenModel()
-            {
-                AccessToken = newAccessToken,
-                RefreshToken = refreshToken
-            }
-        );
+        var roles = await _userRepository.GetUserRoles(userId);
+        var newAccessToken = _authenticationHelpers.GenerateToken(userId, username, roles);
+
+        return Response<TokenModel>.Ok(new TokenModel
+        {
+            AccessToken = newAccessToken,
+            RefreshToken = tokenModel.RefreshToken
+        });
     }
-    
-    private async Task<bool> ValidateRefreshToken(string username, string refreshToken)
+
+    private async Task<User> CreateUserEntity(RegistrationModel model)
     {
-        var user = await _context.Set<User>()
-            .FirstOrDefaultAsync(e => e.Nickname == username);
+        var salt = AuthenticationHelpers.GenerateSalt(64);
         
-        if (user == null)
+        var user = new User
+        {
+            Login = model.Login,
+            Nickname = model.Nickname,
+            Email = model.Email,
+            Password = AuthenticationHelpers.GeneratePasswordHash(model.Password, salt),
+            Salt = salt,
+            Name = model.Name,
+            Surname = model.Surname,
+            Roles = new List<Role>()
+        };
+
+        await _userRepository.CreateUser(user);
+        return user;
+    }
+
+    private async Task AssignRolesToUser(User user, List<string>? requestedRoles)
+    {
+        var roleNames = requestedRoles is { Count: > 0 } 
+            ? requestedRoles 
+            : new List<string> { DefaultRoleName };
+        
+        var existingRoles = await _roleRepository.GetAllRoles();
+        user.Roles = existingRoles
+            .Where(r => roleNames.Contains(r.Role_Name))
+            .ToList();
+
+        await _userRepository.UpdateUser(user);
+    }
+
+    private async Task<bool> ValidateRefreshToken(string nickname, string token)
+    {
+        var user = await _userRepository.GetUserByNickname(nickname);
+        if (user is null)
         {
             return false;
         }
-    
-        var token = await _context.Set<RefreshToken>()
-            .FirstOrDefaultAsync(e => 
-                e.Token == refreshToken && 
-                e.User_ID == user.ID && 
-                e.RevokedAt == null && 
-                e.ExpireDate > DateTime.Now);
-            
-        return token != null;
-    }
-    
-    private async Task<List<string>> GetUserRoles(int userId)
-    {
-        var roles = await _context.Users.Include(u=>u.Roles)
-            .Where(u => u.ID == userId)
-            .SelectMany(u => u.Roles)
-            .Select(r => r.Role_Name)
-            .ToListAsync();
-        //I add basic rolle
-        return roles.Count > 0 ? roles : new List<string>(){"User"};
+
+        var tokenToCheck = await _refreshTokenRepository.FindByUserId(user.ID);
+        if (tokenToCheck is null)
+        {
+            return false;
+        }
+        
+        return tokenToCheck.CreatedAt <= DateTime.Now
+               && tokenToCheck.ExpireDate > DateTime.Now
+               && tokenToCheck.Token == token
+               && tokenToCheck.User_ID == user.ID
+               && tokenToCheck.RevokedAt is null;
     }
 
-   
+    private RefreshToken CreateRefreshToken(int userId)
+    {
+        return new RefreshToken
+        {
+            Token = _authenticationHelpers.GenerateRefreshToken(),
+            User_ID = userId,
+            ExpireDate = DateTime.Now.AddDays(RefreshTokenExpirationDays),
+            CreatedAt = DateTime.Now
+        };
+    }
 }

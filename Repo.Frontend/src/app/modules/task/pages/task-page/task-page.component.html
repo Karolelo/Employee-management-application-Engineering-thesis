@@ -1,6 +1,19 @@
+<ng-container *ngIf="isTeamLead">
+  <mat-form-field appearance="fill">
+    <mat-label>Select User</mat-label>
+    <mat-select class="selection" [(ngModel)]="selectedUserId">
+      <mat-option *ngFor="let user of groupUsers$ | async" [value]="user.id">
+        {{ user.name }}
+      </mat-option>
+    </mat-select>
+    <p *ngIf="errorMessageUsers" class="error-message">
+      {{ errorMessageUsers }}
+    </p>
+  </mat-form-field>
+</ng-container>
 <main class="task-page">
   <section class="task-form-section">
-    <app-task-form [taskToEdit]="selectedTask" (taskUpdated)="onTaskUpdated()"></app-task-form>
+    <app-task-form [taskToEdit]="selectedTask" [otherUserId]="selectedUserId" (taskUpdated)="onTaskUpdated() "></app-task-form>
   </section>
   <section class="task-list-section">
     <h2 class="title-header">Task List</h2>
