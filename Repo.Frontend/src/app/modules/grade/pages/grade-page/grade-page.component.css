@@ -1,0 +1,57 @@
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 8px 16px 12px;
+}
+.page-header h1 {
+  font-weight: 700;
+  font-size: 22px;
+}
+.selected-user { font-size: 14px; opacity: .8; }
+
+.back-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+.icon-btn {
+  width: 28px; height: 28px; border-radius: 50%;
+  border: 0; cursor: pointer;
+  background: #E8DDF5; color: #4c1d95; font-size: 18px; line-height: 28px;
+}
+.icon-btn.more {
+  margin-left: auto; width: 32px; height: 32px; border-radius: 10px;
+  background: transparent; color: #4b5563; font-size: 22px; line-height: 22px;
+}
+.icon-btn:focus { outline: 2px solid #C6B2F3; }
+
+.grade-layout {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;
+  height: calc(100vh - 120px);
+  padding: 0 16px 16px;
+}
+
+.panel {
+  display: grid; grid-template-rows: auto auto 1fr; gap: 8px;
+  background: #faf6ff; border-radius: 16px; padding: 12px;
+  border: 1px solid #eee;
+}
+.panel-head { display: flex; align-items: center; justify-content: space-between; }
+.panel-title { font-weight: 800; letter-spacing: .5px; }
+.panel-sub { font-size: 12px; opacity: .8; margin-top: -4px; }
+.panel-scroll {
+  overflow: auto; height: 100%;
+  padding-right: 4px;
+}
+
+/* edit overlay */
+.overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.25);
+  display: grid; place-items: center; z-index: 20;
+}
+.overlay-card {
+  width: min(560px, 92vw);
+  background: #fff; border-radius: 16px; padding: 16px;
+  box-shadow: 0 10px 40px rgba(0,0,0,.25);
+}

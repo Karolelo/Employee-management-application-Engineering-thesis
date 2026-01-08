@@ -1,0 +1,76 @@
+.grade-wrapper {
+  padding: 16px 24px;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+}
+
+.user-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 20px 0 12px;
+}
+.avatar-circle {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: #E8DDF5;
+  color: #5D3EA8;
+  display: grid;
+  place-items: center;
+  font-size: 48px;
+  font-weight: 700;
+}
+.user-name {
+  font-weight: 800;
+  font-size: 28px;
+  letter-spacing: 0.5px;
+}
+
+.grade-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 520px;
+}
+.grade-list li {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  cursor: pointer;
+}
+.grade-circle {
+  position: relative;
+  width: 44px;
+  height: 44px;
+}
+.grade-circle .circle-value {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-weight: 600;
+}
+.date-pill {
+  background: #5D3EA8;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-weight: 600;
+  min-width: 120px;
+  text-align: center;
+}
+
+.error {
+  color: #B00020;
+  padding: 12px;
+}

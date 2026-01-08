@@ -1,0 +1,10 @@
+<div class="overlay" (click)="cancel.emit()">
+  <div class="card" (click)="$event.stopPropagation()">
+    <h3 class="title">{{ title }}</h3>
+    <p class="msg">{{ message }}</p>
+    <div class="actions">
+      <button mat-button type="button" (click)="cancel.emit()">Cancel</button>
+      <button mat-raised-button color="warn" type="button" (click)="confirm.emit()">Delete</button>
+    </div>
+  </div>
+</div>

@@ -16,10 +16,18 @@
     <Folder Include="src\app\modules\dashboard\resolvers\" />
     <Folder Include="src\app\modules\dashboard\services\announcement\" />
     <Folder Include="src\app\modules\dashboard\services\group\" />
+    <Folder Include="src\app\modules\grade\components\" />
+    <Folder Include="src\app\modules\grade\interfaces\" />
+    <Folder Include="src\app\modules\grade\pages\" />
+    <Folder Include="src\app\modules\grade\services\" />
     <Folder Include="src\app\modules\login\services\user_data\" />
     <Folder Include="src\app\modules\task\components\" />
     <Folder Include="src\app\modules\task\guards\" />
     <Folder Include="src\app\modules\task\pages\" />
+    <Folder Include="src\app\modules\worktime\components\" />
+    <Folder Include="src\app\modules\worktime\interfaces\" />
+    <Folder Include="src\app\modules\worktime\pages\" />
+    <Folder Include="src\app\modules\worktime\services\" />
   </ItemGroup>
   <ItemGroup>
     <Content Update="public\images\defualt.png">

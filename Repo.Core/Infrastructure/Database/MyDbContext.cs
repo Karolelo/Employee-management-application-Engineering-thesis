@@ -70,9 +70,13 @@ public partial class MyDbContext : DbContext
 
     public virtual DbSet<WorkTable> WorkTables { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=localhost,1433;Database=Tmp;User=sa;Password=Haslo1234*;TrustServerCertificate=True;");
+    public virtual DbSet<WorkTask> WorkTasks { get; set; }
+    
+    public virtual DbSet<WorkEntry> WorkEntries { get; set; }
+
+//     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+// #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+//         => optionsBuilder.UseSqlServer("Server=localhost,1433;Database=Tmp;User=sa;Password=Haslo1234*;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -197,6 +201,8 @@ public partial class MyDbContext : DbContext
                     tb.HasTrigger("course_event_update");
                 });
 
+            entity.Property(e => e.ID).ValueGeneratedOnAdd();
+
             entity.Property(e => e.Name).HasMaxLength(100);
 
             entity.HasMany(d => d.Users).WithMany(p => p.Courses)
@@ -279,8 +285,10 @@ public partial class MyDbContext : DbContext
 
             entity.ToTable("Grade");
 
+            entity.Property(e => e.ID).ValueGeneratedOnAdd();
+
             entity.Property(e => e.Grade1)
-                .HasColumnType("decimal(2, 2)")
+                .HasColumnType("decimal(3, 2)")
                 .HasColumnName("Grade");
 
             entity.HasMany(d => d.Users).WithMany(p => p.Grades)
@@ -500,6 +508,8 @@ public partial class MyDbContext : DbContext
 
             entity.ToTable("Target");
 
+            entity.Property(e => e.ID).ValueGeneratedOnAdd();
+
             entity.Property(e => e.Finish_Time).HasColumnType("datetime");
             entity.Property(e => e.Name).HasMaxLength(100);
             entity.Property(e => e.Start_Time).HasColumnType("datetime");
@@ -627,6 +637,48 @@ public partial class MyDbContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("WorkTable_User");
         });
+
+        modelBuilder.Entity<WorkTask>(entity =>
+        {
+            entity.HasKey(e => new { e.WorkTable_ID, e.Task_ID }).HasName("WorkTask_pk");
+
+            entity.ToTable("WorkTask");
+
+            entity.HasOne(d => d.Task).WithMany(p => p.WorkTasks)
+                .HasForeignKey(d => d.Task_ID)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("WorkTask_Task");
+
+            entity.HasOne(d => d.WorkTable).WithMany(p => p.WorkTasks)
+                .HasForeignKey(d => d.WorkTable_ID)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("WorkTask_WorkTable");
+        });
+        
+        modelBuilder.Entity<WorkEntry>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("WorkEntry_pk");
+
+            entity.ToTable("WorkEntry");
+
+            entity.Property(e => e.Work_Date).HasColumnType("date");
+
+            entity.Property(e => e.Hours_Worked).HasColumnType("decimal(5, 2)");
+
+            entity.Property(e => e.Comment).HasMaxLength(500);
+
+            entity.HasOne(d => d.WorkTable)
+                .WithMany()
+                .HasForeignKey(d => d.WorkTable_ID)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("WorkEntry_WorkTable");
+
+            entity.HasOne(d => d.Task)
+                .WithMany()
+                .HasForeignKey(d => d.Task_ID)
+                .HasConstraintName("WorkEntry_Task");
+        });
+
 
         OnModelCreatingPartial(modelBuilder);
     }

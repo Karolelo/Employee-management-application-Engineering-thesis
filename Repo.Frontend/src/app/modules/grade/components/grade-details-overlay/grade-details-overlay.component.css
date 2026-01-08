@@ -1,0 +1,47 @@
+.overlay {
+  position: fixed; inset: 0; z-index: 30;
+  background: rgba(0,0,0,.25);
+  display: grid; place-items: center;
+}
+
+.admin-icons{position:absolute; left:10px; top:8px; display:flex; gap:6px}
+.admin-icons .icon{
+  width:28px;height:28px;border-radius:6px;border:0;cursor:pointer;
+  background:#E8DDF5;color:#4c1d95;font-weight:700;
+}
+
+.card {
+  width: min(560px, 92vw);
+  background: #fff;
+  border-radius: 18px;
+  padding: 20px;
+  border: 4px solid #5D3EA8;
+  box-shadow: 0 10px 40px rgba(0,0,0,.25);
+  position: relative;
+}
+.close {
+  position: absolute; right: 10px; top: 6px;
+  border: 0; background: transparent; font-size: 28px; line-height: 28px; cursor: pointer;
+}
+.title { text-align: center; font-size: 24px; font-weight: 800; margin: 0 0 10px; }
+.loading { display: flex; justify-content: center; padding: 16px; }
+.error { color: #b91c1c; margin-top: 8px; }
+
+.score {
+  display: grid; place-items: center; margin: 8px 0 16px;
+}
+.score .value { font-size: 44px; font-weight: 900; line-height: 1; color: #4c1d95; }
+.score .sub { opacity: .75; }
+
+.desc-scroll {
+  border: 3px solid #E8DDF5; border-radius: 14px;
+  padding: 10px 12px; max-height: 180px; overflow: auto; margin-bottom: 12px;
+}
+
+.meta {
+  display: grid; gap: 6px;
+  border-top: 3px solid #E8DDF5;
+  padding-top: 12px; margin-top: 8px;
+  font-size: 14px;
+}
+.footer { display: flex; justify-content: flex-end; margin-top: 10px; }

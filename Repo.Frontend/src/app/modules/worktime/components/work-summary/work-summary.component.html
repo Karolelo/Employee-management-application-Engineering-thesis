@@ -1,0 +1,28 @@
+<div class="work-summary">
+  <div class="header">
+    <h3>Monthly summary</h3>
+    <div class="month-controls">
+      <button (click)="onMonthChange(-1)">&lt;</button>
+      <span>{{ formatMonth() }}</span>
+      <button (click)="onMonthChange(1)">&gt;</button>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading-spinner">
+    <mat-spinner diameter="30"></mat-spinner>
+  </div>
+
+  <div *ngIf="!loading && summary">
+    <p><strong>Total hours:</strong> {{ summary.totalHours }}</p>
+    <p><strong>Hourly rate:</strong> {{ summary.hourlyRate | number:'1.2-2' }}</p>
+    <p><strong>Total amount:</strong> {{ summary.totalAmount | number:'1.2-2' }}</p>
+  </div>
+
+  <div *ngIf="!loading && !summary && !errorMessage" class="empty">
+    No data for selected month.
+  </div>
+
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+</div>

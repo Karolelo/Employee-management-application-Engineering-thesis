@@ -1,0 +1,59 @@
+.work-summary {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+h3 {
+  font-family: monospace;
+  color: var(--primary-color);
+  margin: 0;
+}
+
+.month-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.month-controls button {
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  border: 1px solid #6c5ce7;
+  background: transparent;
+  cursor: pointer;
+}
+
+.month-controls span {
+  font-weight: 600;
+}
+
+p {
+  margin: 0.25rem 0;
+}
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+}
+
+.empty {
+  color: #7f8c8d;
+  font-style: italic;
+}
+
+.error-message {
+  color: red;
+  font-weight: bold;
+  margin-top: 0.5rem;
+}

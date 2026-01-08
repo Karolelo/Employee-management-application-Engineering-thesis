@@ -1,0 +1,19 @@
+.loading { display: flex; justify-content: center; padding: 16px; }
+
+.courses { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
+.course-card {
+  display: grid; grid-template-columns: 1fr 36px; align-items: center;
+  border: 2px solid #5D3EA8; border-radius: 16px; padding: 12px 16px; background: #fff;
+}
+.title { font-weight: 700; }
+.sub { font-size: 12px; opacity: .8; }
+
+.status {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: grid; place-items: center; font-weight: 900; color: #fff; background: #ddd;
+}
+.status.ok   { background: #16a34a; }  /* ✔ */
+.status.warn { background: #f59e0b; }  /* ? */
+.status.bad  { background: #ef4444; }  /* ✕ */
+
+.empty { opacity: .7; font-style: italic; }
