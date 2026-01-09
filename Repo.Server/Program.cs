@@ -20,6 +20,7 @@ using Repo.Server.GradeModule.Interfaces;
 using Repo.Server.GradeModule.Services;
 using Repo.Server.TaskModule;
 using Repo.Server.TaskModule.interafaces;
+using Repo.Server.TaskModule.Repository;
 using Repo.Server.UnityOfWork;
 using Repo.Server.WorkTimeModule.Interfaces;
 using Repo.Server.WorkTimeModule.Services;
@@ -53,6 +54,8 @@ builder.Services.AddScoped<IAnnoucementService,AnnouncementService>();
 builder.Services.AddScoped<IAnnoucementRepository,AnnoucementRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 builder.Services.AddScoped<IUnityOfWork<MyDbContext>, UnityOfWork>();
+builder.Services.AddScoped<ITaskRepository, TaskRepository>();
+builder.Services.AddScoped<IPriorityService, PriorityService>();
 
 //Creating getting a role from appseting
 builder.Services.Configure<RoleConfiguration>(

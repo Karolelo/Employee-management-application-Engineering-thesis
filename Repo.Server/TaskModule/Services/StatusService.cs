@@ -41,7 +41,7 @@ public class StatusService : IStatusService
             : Response<ICollection<StatusDTO>>.Ok(list);
     }
 
-    public async Task<Response<ICollection<StatusDTO>>> GetStatusByName(string name)
+    public async Task<Response<ICollection<StatusDTO>>> GetStatusByName(string? name)
     {
         var term = (name ?? string.Empty).Trim();
         if (string.IsNullOrWhiteSpace(term))

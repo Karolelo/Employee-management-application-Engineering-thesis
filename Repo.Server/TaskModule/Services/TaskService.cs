@@ -1,5 +1,7 @@
+using System.Collections.Immutable;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Repo.Core.Infrastructure;
 using Repo.Core.Infrastructure.Database;
 using Repo.Core.Models;
@@ -7,232 +9,81 @@ using Repo.Core.Models.api;
 using Repo.Core.Models.DTOs;
 using Repo.Core.Models.task;
 using Repo.Server.TaskModule.interafaces;
+using Repo.Server.UserManagmentModule.Interfaces;
 using Task = Repo.Core.Models.Task;
 
 namespace Repo.Server.TaskModule;
-public class TaskService : ITaskService
+public class TaskService(ITaskRepository taskRepository,IUserService userService,MyDbContext context) : ITaskService
 {
-    private readonly MyDbContext _context;
-    
-    public TaskService(MyDbContext context)
-    {
-        _context = context;
-    }
-    
+    private readonly ITaskRepository _taskRepository = taskRepository;
+
+    private readonly IUserService _userService = userService;
+    //Unfortunately we need this is some places, if we create repository for status
+    //and priority, we going to change this
+    private readonly MyDbContext _context = context;
     //Methods for getting task
     public async Task<Response<TaskDTO>> GetTaskById(int id)
     {
-        var task = await _context.Tasks
-            .AsNoTracking()
-            .Where(t => t.ID == id && t.Deleted == 0)
-            .Select(t => new TaskDTO
-            {
-                ID = t.ID,
-                Name = t.Name,
-                Description = t.Description,
-                Start_Time = t.Start_Time,
-                Estimated_Time = t.Estimated_Time,
-                Priority = t.Priority.Priority1,
-                Status = t.Status.Status1
-            })
-            .FirstOrDefaultAsync();
+        var task = await _taskRepository.GetTaskById(id);
 
         return task == null
             ? Response<TaskDTO>.Fail("Task not found")
-            : Response<TaskDTO>.Ok(task);
+            : Response<TaskDTO>.Ok(MapTaskToDto(task));
     }
 
     public async Task<Response<TaskWithRelatedDTO>> GetTaskWithRelatedTasks(int id)
     {
-        var task = await _context.Tasks
-            .AsNoTracking()
-            .Where(t => t.ID == id)
-            .Select(t => new TaskDTO
-            {
-                ID = t.ID,
-                Name = t.Name,
-                Description = t.Description,
-                Start_Time = t.Start_Time,
-                Estimated_Time = t.Estimated_Time,
-                Priority = t.Priority.Priority1,
-                Status = t.Status.Status1
-            })
-            .FirstOrDefaultAsync();
+        var task = await _taskRepository.GetTaskById(id);
 
         if (task == null)
             return Response<TaskWithRelatedDTO>.Fail("Task not found");
 
-        var relatedIds = await _context.RelatedTasks
-            .AsNoTracking()
-            .Where(rt => rt.Main_Task_ID == id || rt.Related_Task_ID == id)
-            .Select(rt => rt.Main_Task_ID == id ? rt.Related_Task_ID : rt.Main_Task_ID)
-            .Distinct()
-            .ToListAsync();
+        var relatedIds = await _taskRepository.GetRelatedTaskIds(id);
 
-        var relatedDTOs = await _context.Tasks
-            .AsNoTracking()
-            // trzeba podjac decyzje czy filtrujemy soft-delete (&& t.Deleted == 0)
-            .Where(t => relatedIds.Contains(t.ID) && t.Deleted == 0)
-            .Select(t => new TaskDTO
-            {
-                ID = t.ID,
-                Name = t.Name,
-                Description = t.Description,
-                Start_Time = t.Start_Time,
-                Estimated_Time = t.Estimated_Time,
-                Priority = t.Priority.Priority1,
-                Status = t.Status.Status1
-            })
-            .ToListAsync();
+        var relatedTasks = await GetTaskByIds(relatedIds);
 
         return Response<TaskWithRelatedDTO>.Ok(new TaskWithRelatedDTO{
-            Task = task,
-            RelatedTasks = relatedDTOs
+            Task = MapTaskToDto(task),
+            RelatedTasks = relatedTasks.Select(MapTaskToDto).ToImmutableList()
         });
     }
 
     public async Task<Response<ICollection<TaskDTO>>> GetUserTasks(int userId)
     {
-        var tasks = await _context.Tasks
-            .AsNoTracking()
-            .Where(t => t.Users.Any(u => u.ID == userId) && t.Deleted == 0)
-            .Select(t => new TaskDTO
-            {
-                ID = t.ID,
-                Name = t.Name,
-                Description = t.Description,
-                Start_Time = t.Start_Time,
-                Estimated_Time = t.Estimated_Time,
-                Priority = t.Priority.Priority1,
-                Status = t.Status.Status1,
-            })
-            .ToListAsync();
-
-        return tasks.Count == 0
-            ? Response<ICollection<TaskDTO>>.Fail("User has no tasks")
-            : Response<ICollection<TaskDTO>>.Ok(tasks);
+        try
+        {
+            var tasks = await _taskRepository.GetUserTasks(userId);
+            return Response<ICollection<TaskDTO>>.Ok(tasks.Select(MapTaskToDto).ToList());
+        }
+        catch (Exception e)
+        {
+            return Response<ICollection<TaskDTO>>.Fail($"Exception during getting tasks from user: {e.Message}");
+        }
     }
 
     public async Task<Response<ICollection<TaskDTO>>> GetGroupTasks(int groupId)
     {
-        var tasks = await _context.Tasks
-            .AsNoTracking()
-            .Where(t => t.Groups.Any(g => g.ID == groupId) && t.Deleted == 0)
-            .Select(t => new TaskDTO
-            {
-                ID = t.ID,
-                Name = t.Name,
-                Description = t.Description,
-                Start_Time = t.Start_Time,
-                Estimated_Time = t.Estimated_Time,
-                Priority = t.Priority.Priority1,
-                Status = t.Status.Status1
-            })
-            .ToListAsync();
-        
-        return tasks.Count == 0
-            ? Response<ICollection<TaskDTO>>.Fail("Group has no tasks")
-            : Response<ICollection<TaskDTO>>.Ok(tasks);
+        try
+        {
+            var tasks = await _taskRepository.GetGroupTasks(groupId);
+            return Response<ICollection<TaskDTO>>.Ok(tasks.Select(MapTaskToDto).ToList());
+        }
+        catch (Exception e)
+        {
+            return Response<ICollection<TaskDTO>>.Fail($"Exception during getting tasks from user: {e.Message}");
+        }
     }
-
-    public async Task<Response<ICollection<TaskDTO>>> GetTasksByPriorityId(int priorityId)
-    {
-        var priorityExists = await _context.Priorities
-            .AsNoTracking()
-            .AnyAsync(p => p.ID == priorityId);
-        if (!priorityExists)
-            return Response<ICollection<TaskDTO>>.Fail("Priority not found");
-        
-        var tasks = await _context.Tasks
-            .AsNoTracking()
-            .Where(t => t.Priority_ID == priorityId && t.Deleted == 0)
-            .Select(t => new TaskDTO
-            {
-                ID = t.ID,
-                Name = t.Name,
-                Description = t.Description,
-                Start_Time = t.Start_Time,
-                Estimated_Time = t.Estimated_Time,
-                Priority = t.Priority.Priority1,
-                Status = t.Status.Status1
-            })
-            .ToListAsync();
-        return tasks.Count == 0
-            ? Response<ICollection<TaskDTO>>.Fail("Priority has no tasks")
-            : Response<ICollection<TaskDTO>>.Ok(tasks);
-    }
-    
-    public async Task<Response<ICollection<TaskDTO>>> GetTasksByStatusId(int statusId)
-    {
-        var statusExists = await _context.Statuses
-            .AsNoTracking()
-            .AnyAsync(s => s.ID == statusId);
-        if (!statusExists)
-            return Response<ICollection<TaskDTO>>.Fail("Status not found");
-        
-        var tasks = await _context.Tasks
-            .AsNoTracking()
-            .Where(t => t.Status_ID == statusId && t.Deleted == 0)
-            .Select(t => new TaskDTO
-            {
-                ID = t.ID,
-                Name = t.Name,
-                Description = t.Description,
-                Start_Time = t.Start_Time,
-                Estimated_Time = t.Estimated_Time,
-                Priority = t.Priority.Priority1,
-                Status = t.Status.Status1
-            })
-            .ToListAsync();
-        
-        return tasks.Count == 0
-            ? Response<ICollection<TaskDTO>>.Fail("Status has no tasks")
-            : Response<ICollection<TaskDTO>>.Ok(tasks);
-    }
-
     //Methods for creating task
     public async Task<Response<TaskDTO>> CreateTask(CreateTaskModel model)
     {
         try
         {
-            var task = new Task()
-            {
-                Name = model.Name,
-                Description = model.Description,
-                Start_Time = model.Start_Time,
-                Estimated_Time = model.Estimated_Time,
-                Creator_ID = model.Creator_ID
-            };
-
-            var priority = await _context.Set<Priority>().FirstOrDefaultAsync(e => e.Priority1 == model.Priority);
-
-            if (priority == null)
-            {
-                return Response<TaskDTO>.Fail("Priority not found");
-            }
-
-            var status = await _context.Set<Status>().FirstOrDefaultAsync(e => e.Status1 == model.Status);
-            if (status == null)
-            {
-                return Response<TaskDTO>.Fail("Status not found");
-            }
-
-            task.Priority = priority;
-            task.Status = status;
+            var task = await MapCreateTaskModelToTask(model);
 
             await _context.Set<Task>().AddAsync(task);
             await _context.SaveChangesAsync();
 
-            var taskDto = new TaskDTO
-            {
-                ID = task.ID,
-                Name = task.Name,
-                Description = task.Description,
-                Start_Time = task.Start_Time,
-                Estimated_Time = task.Estimated_Time,
-                Priority = task.Priority.Priority1,
-                Status = task.Status.Status1
-            };
+            var taskDto = MapTaskToDto(task);
 
             return Response<TaskDTO>.Ok(taskDto);
         }
@@ -311,10 +162,7 @@ public class TaskService : ITaskService
     {
         try
         {
-            var task = await _context.Set<Task>()
-                .Include(t => t.Priority)
-                .Include(t => t.Status)
-                .FirstOrDefaultAsync(e => e.ID == id);
+            var task = await _taskRepository.GetTaskById(id);
             if (task == null)
             {
                 return Response<TaskDTO>.Fail("Task not found");
@@ -368,20 +216,14 @@ public class TaskService : ITaskService
     {
         try
         {
-            var task = await _context.Set<Task>().FirstOrDefaultAsync(e => e.ID == id);
+            var task = await _taskRepository.GetTaskById(id);
 
             if (task == null)
             {
                 return Response<Task>.Fail("Task not found");
             }
 
-            if (task.Deleted == 1)
-            {
-                return Response<Task>.Fail("Task already deleted");
-            }
-            task.Deleted = 1;
-            _context.Set<Task>().Update(task);
-            await _context.SaveChangesAsync();
+            await _taskRepository.DeleteTask(id);
             return Response<Task>.Ok(task);
         }
         catch (Exception e)
@@ -398,20 +240,12 @@ public class TaskService : ITaskService
             if (taskId == relatedTaskId)
                 return Response<TaskRelationDTO>.Fail("Cannot relate task to itself");
 
-            var ids = await _context.Tasks
-                .AsNoTracking()
-                .Where(t => (t.ID == taskId || t.ID == relatedTaskId) && t.Deleted == 0)
-                .Select(t => t.ID)
-                .ToListAsync();
+            var ids = await GetTaskByIds(new List<int>{taskId, relatedTaskId});
 
             if (ids.Count != 2)
                 return Response<TaskRelationDTO>.Fail("Task not found");
 
-            var exists = await _context.RelatedTasks
-                .AsNoTracking()
-                .AnyAsync(rt =>
-                    (rt.Main_Task_ID == taskId && rt.Related_Task_ID == relatedTaskId) ||
-                    (rt.Main_Task_ID == relatedTaskId && rt.Related_Task_ID == taskId));
+            var exists = await _taskRepository.RelationExists(taskId, relatedTaskId);
             if (exists)
                 return Response<TaskRelationDTO>.Fail("Relation already exists");
 
@@ -420,8 +254,7 @@ public class TaskService : ITaskService
                 Main_Task_ID = taskId,
                 Related_Task_ID = relatedTaskId,
             };
-            _context.RelatedTasks.Add(relation);
-            await _context.SaveChangesAsync();
+            await _taskRepository.AddRelation(taskId, relatedTaskId);
 
             return Response<TaskRelationDTO>.Ok(new TaskRelationDTO(relation.Main_Task_ID, relation.Related_Task_ID));
         }
@@ -439,20 +272,75 @@ public class TaskService : ITaskService
     {
         try
         {
-            var relation = await _context.RelatedTasks
-                .FirstOrDefaultAsync(rt =>
-                    (rt.Main_Task_ID == taskId && rt.Related_Task_ID == relatedTaskId) ||
-                    (rt.Main_Task_ID == relatedTaskId && rt.Related_Task_ID == taskId));
-            if (relation == null)
+            if(!await _taskRepository.RelationExists(taskId,relatedTaskId))
                 return Response<object>.Fail("Relation not found");
-            
-            _context.RelatedTasks.Remove(relation);
-            await _context.SaveChangesAsync();
+
+            _taskRepository.RemoveRelation(taskId, relatedTaskId);
             return Response<object>.Ok(new { removed = true });
         }
         catch (Exception e)
         {
             return Response<object>.Fail($"Error during removing relation: {e.Message}");
         }
+    }
+    
+    //Helpers
+    private TaskDTO MapTaskToDto(Task task)
+    {
+        return new TaskDTO()
+        {
+            ID = task.ID,
+            Name = task.Name,
+            Description = task.Description,
+            Start_Time = task.Start_Time,
+            Estimated_Time = task.Estimated_Time,
+            Priority = task.Priority.Priority1,
+            Status = task.Status.Status1
+        };
+    }
+
+    private async Task<Task> MapCreateTaskModelToTask(CreateTaskModel task)
+    {
+        var taskInformation = await ValidatePriorityAndStatus(task.Priority, task.Status);
+        return new Task()
+        {
+            Name = task.Name,
+            Description = task.Description,
+            Start_Time = task.Start_Time,
+            Estimated_Time = task.Estimated_Time,
+            Priority = taskInformation.Item1,
+            Status = taskInformation.Item2,
+            Creator_ID = task.Creator_ID
+        };
+    }
+
+    private async Task<ICollection<Task>> GetTaskByIds(List<int> ids)
+    {
+        var tasks = new List<Task>();
+        foreach (var id in ids)
+        {
+            var task = await _taskRepository.GetTaskById(id);
+            if (task != null)
+            {
+                tasks.Add(task);
+            }
+        }
+        return tasks;
+    }
+    //Do not validate anything because services got validation inside
+    public async Task<Tuple<Priority, Status>> ValidatePriorityAndStatus(string? priority,string? status)
+    {
+        var priorityResult =  await _context.Priorities
+            .FirstOrDefaultAsync(p => p.Priority1 == priority);
+
+        if (priorityResult == null)
+            throw new ArgumentException("Priority with this name doesn't exists");
+        
+        var statusResult = await _context.Statuses
+            .FirstOrDefaultAsync(s => s.Status1 == status);
+
+        if (statusResult == null)
+            throw new ArgumentException("Status with this name doesn't exists");
+        return new Tuple<Priority, Status>(priorityResult, statusResult);
     }
 }

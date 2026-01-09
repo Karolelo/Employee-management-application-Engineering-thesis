@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Repo.Core.Infrastructure.Database;
 using Repo.Core.Models;
@@ -12,21 +13,31 @@ public class TaskRepository(MyDbContext context) : ITaskRepository
 
     public async Task<Task?> GetTaskById(int id)
     {
-        return await _context.Tasks.FirstOrDefaultAsync(x => x.ID == id);
+        return await _context.Tasks
+            .Include(t=>t.Priority)
+            .Include(t=>t.Status)
+            .FirstOrDefaultAsync(x => x.ID == id);
     }
 
     public async Task<IEnumerable<Task>> GetUserTasks(int userId)
     {
-        return await _context.Tasks
+        
+        var result =  await _context.Tasks
             .Include(t => t.Users)
+            .Include(t=>t.Priority)
+            .Include(t=>t.Status)
             .Where(t => t.Users.Any(u => u.ID == userId))
             .ToListAsync();
+        Debug.WriteLine(result);
+        return result;
     }
 
     public async Task<IEnumerable<Task>> GetGroupTasks(int groupId)
     {
         return await _context.Tasks
             .Include(t => t.Groups)
+            .Include(t=>t.Priority)
+            .Include(t=>t.Status)
             .Where(t => t.Groups.Any(u => u.ID == groupId))
             .ToListAsync();
     }
@@ -50,7 +61,7 @@ public class TaskRepository(MyDbContext context) : ITaskRepository
                 .SetProperty(t => t.Priority_ID, task.Priority_ID)
                 .SetProperty(t => t.Status_ID, task.Status_ID)
             );
-    
+        
         return task;
     }
 
