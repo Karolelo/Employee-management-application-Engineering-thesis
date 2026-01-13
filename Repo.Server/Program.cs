@@ -56,7 +56,8 @@ builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 builder.Services.AddScoped<IUnityOfWork<MyDbContext>, UnityOfWork>();
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 builder.Services.AddScoped<IPriorityService, PriorityService>();
-
+builder.Services.AddScoped<IPriorityRepository, PriorityRepository>();
+builder.Services.AddScoped<IStatusRepository, StatusRepository>();
 //Creating getting a role from appseting
 builder.Services.Configure<RoleConfiguration>(
     builder.Configuration.GetSection("Roles"));

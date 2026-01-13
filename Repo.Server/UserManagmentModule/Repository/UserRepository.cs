@@ -16,7 +16,12 @@ public class UserRepository : IUserRepository
     {
         _context = context;
     }
-    
+
+    public async Task<bool> UserExists(int userId)
+    {
+        return await _context.Users.AnyAsync(u => u.ID == userId);
+    }
+
     public async Task<List<User>> GetAllUsers()
     {
         return await _context.Users
@@ -104,5 +109,27 @@ public class UserRepository : IUserRepository
     public bool IsAdminHasGroup(int adminId)
     {
         return _context.Groups.Any(g => g.Admin_ID == adminId);
+    }
+
+    public async Task<bool> AddTaskToUser(int userId, Core.Models.Task task)
+    {
+        var user = await _context.Users
+            .Include(u=>u.Tasks)
+            .FirstAsync(u => u.ID == userId);
+        user.Tasks.Add(task);
+        var success = await _context.SaveChangesAsync();
+        return success > 0;
+    }
+
+    public async Task<bool> AddTaskToUser(int userId, int taskId)
+    {
+        var user = await _context.Users
+            .Include(u=>u.Tasks)
+            .FirstAsync(u => u.ID == userId);
+        var task = await _context
+            .Tasks
+            .FirstAsync(t => t.ID == taskId);
+        user.Tasks.Add(task);
+        return await _context.SaveChangesAsync() > 0;
     }
 }

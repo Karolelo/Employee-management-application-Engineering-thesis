@@ -9,11 +9,10 @@ namespace Repo.Server.TaskModule.Repository;
 
 public class TaskRepository(MyDbContext context) : ITaskRepository
 {
-    private readonly MyDbContext _context = context;
 
     public async Task<Task?> GetTaskById(int id)
     {
-        return await _context.Tasks
+        return await context.Tasks
             .Include(t=>t.Priority)
             .Include(t=>t.Status)
             .FirstOrDefaultAsync(x => x.ID == id);
@@ -22,7 +21,7 @@ public class TaskRepository(MyDbContext context) : ITaskRepository
     public async Task<IEnumerable<Task>> GetUserTasks(int userId)
     {
         
-        var result =  await _context.Tasks
+        var result =  await context.Tasks
             .Include(t => t.Users)
             .Include(t=>t.Priority)
             .Include(t=>t.Status)
@@ -34,7 +33,7 @@ public class TaskRepository(MyDbContext context) : ITaskRepository
 
     public async Task<IEnumerable<Task>> GetGroupTasks(int groupId)
     {
-        return await _context.Tasks
+        return await context.Tasks
             .Include(t => t.Groups)
             .Include(t=>t.Priority)
             .Include(t=>t.Status)
@@ -44,14 +43,14 @@ public class TaskRepository(MyDbContext context) : ITaskRepository
 
     public async Task<Task> CreateTask(Task task)
     {
-        var result = await _context.Tasks.AddAsync(task);
-        await _context.SaveChangesAsync();
+        var result = await context.Tasks.AddAsync(task);
+        await context.SaveChangesAsync();
         return result.Entity;
     }
 
     public async Task<Task> UpdateTask(Task task)
     {
-        var result = await _context.Tasks
+        var result = await context.Tasks
             .Where(t => t.ID == task.ID)
             .ExecuteUpdateAsync(setters => setters
                 .SetProperty(t => t.Name, task.Name)
@@ -67,7 +66,7 @@ public class TaskRepository(MyDbContext context) : ITaskRepository
 
     public async Task<bool> DeleteTask(int id)
     {
-        var result = await _context.Tasks
+        var result = await context.Tasks
             .Where(t => t.ID == id)
             .ExecuteUpdateAsync(setters =>
                 setters.SetProperty(t => t.Deleted, 1));
@@ -76,19 +75,19 @@ public class TaskRepository(MyDbContext context) : ITaskRepository
 
     public async Task<RelatedTask> AddRelation(int taskId, int relatedTaskId)
     {
-        var result = await _context.RelatedTasks.AddAsync(new RelatedTask
+        var result = await context.RelatedTasks.AddAsync(new RelatedTask
         {
             Main_Task_ID = taskId,
             Related_Task_ID = relatedTaskId
         });
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
 
         return result.Entity;
     }
 
     public async Task<bool> RemoveRelation(int taskId, int relatedTaskId)
     {
-        var result = await _context.RelatedTasks
+        var result = await context.RelatedTasks
             .Where(rt => 
                 (rt.Main_Task_ID == taskId && rt.Related_Task_ID == relatedTaskId) ||
                 (rt.Main_Task_ID == relatedTaskId && rt.Related_Task_ID == taskId))
@@ -98,7 +97,7 @@ public class TaskRepository(MyDbContext context) : ITaskRepository
 
     public async Task<List<int>> GetRelatedTaskIds(int taskId)
     {
-        var relatedIds = await _context.RelatedTasks
+        var relatedIds = await context.RelatedTasks
             .AsNoTracking() 
             .Where(rt => rt.Main_Task_ID == taskId || rt.Related_Task_ID == taskId)
             .Select(rt => rt.Main_Task_ID == taskId ? rt.Related_Task_ID : rt.Main_Task_ID)
@@ -109,7 +108,7 @@ public class TaskRepository(MyDbContext context) : ITaskRepository
 
     public async Task<bool> RelationExists(int taskId, int relatedTaskId)
     {
-        return await _context.RelatedTasks
+        return await context.RelatedTasks
             .AnyAsync(rt =>
                 (rt.Main_Task_ID == taskId && rt.Related_Task_ID == relatedTaskId) ||
                 (rt.Main_Task_ID == relatedTaskId && rt.Related_Task_ID == taskId));
@@ -117,6 +116,6 @@ public class TaskRepository(MyDbContext context) : ITaskRepository
 
     public async Task<bool> TaskExists(int taskId)
     {
-        return await _context.Tasks.AnyAsync(t => t.ID == taskId);
+        return await context.Tasks.AnyAsync(t => t.ID == taskId);
     }
 }

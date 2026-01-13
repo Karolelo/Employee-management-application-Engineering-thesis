@@ -1,6 +1,8 @@
 import { Component,PipeTransform,Pipe } from '@angular/core';
 import {AuthService} from '../../modules/login/services/auth_managment/auth.service';
 import {CommonModule } from '@angular/common'
+import {DashboardModule} from '../../modules/dashboard/dashboard.module';
+
 @Component({
   selector: 'app-debug',
   template: `
@@ -25,6 +27,17 @@ import {CommonModule } from '@angular/common'
 
       <h4>LocalStorage:</h4>
       <pre>{{ storageInfo | json }}</pre>
+      <h3>Bez display: block (źle)</h3>
+      <div class="container">
+        Tekst po canvasie
+        <canvas class="bez-block" style="background: lightblue;"></canvas>
+      </div>
+
+      <h3>Z display: block (dobrze)</h3>
+      <div class="container">
+        Tekst po canvasie
+        <canvas class="z-block" style="background: lightblue;"></canvas>
+      </div>
     </div>
   `,
   styles: [`
@@ -34,8 +47,19 @@ import {CommonModule } from '@angular/common'
       border-radius: 5px;
       overflow-x: auto;
     }
+    canvas.bez-block {
+            /* display: inline (domyślnie) */
+            width: 200px;
+            height: 200px;
+          }
+
+    canvas.z-block {
+      display: block;
+      width: 200px;
+      height: 200px;
+    }
   `],
-  imports: [CommonModule]
+  imports: [CommonModule, DashboardModule]
 })
 export class DebugComponent {
   response: any = null;

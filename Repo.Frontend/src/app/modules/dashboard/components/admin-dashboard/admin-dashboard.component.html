@@ -43,6 +43,11 @@
                 </div>
               </div>
             }
+            @if (card.type === 'taskStats') {
+              <div class="card-content-task">
+                <app-task-stats style="display:block"></app-task-stats>
+              </div>
+            }
           </mat-card-content>
         </mat-card>
       </mat-grid-tile>
