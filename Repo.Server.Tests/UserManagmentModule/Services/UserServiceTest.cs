@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using FluentAssertions;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Options;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Repo.Core.Infrastructure.Database;
 using Repo.Core.Infrastructure.Roles;
 using Repo.Core.Models;
 using Repo.Core.Models.user;
@@ -15,7 +13,6 @@ using Repo.Server.UserManagmentModule.Interfaces;
 using Repo.Server.UserManagmentModule.Services;
 namespace Repo.Server.Tests.UserManagmentModule.Services;
 
-using Type = System.Type;
 using Task = System.Threading.Tasks.Task;
 
 [TestClass]
