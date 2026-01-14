@@ -122,37 +122,44 @@ public class AuthUserService : IAuthUserService
 
     public async Task<Response<TokenModel>> RefreshToken(TokenModel tokenModel)
     {
-        var principals = _authenticationHelpers.GetPrincipalFromExpiredToken(tokenModel.AccessToken);
-        if (principals == null)
+        try
         {
-            return Response<TokenModel>.Fail("Bad token format");
+            var principals = _authenticationHelpers.GetPrincipalFromExpiredToken(tokenModel.AccessToken);
+            if (principals == null)
+            {
+                return Response<TokenModel>.Fail("Bad token format");
+            }
+
+            var idClaim = principals.FindFirst("id");
+            if (idClaim == null || !int.TryParse(idClaim.Value, out var userId))
+            {
+                return Response<TokenModel>.Fail("Invalid user ID in token");
+            }
+
+            var username = principals.Identity?.Name;
+            if (string.IsNullOrEmpty(username))
+            {
+                return Response<TokenModel>.Fail("Bad token: no user was found");
+            }
+
+            if (!await ValidateRefreshToken(username, tokenModel.RefreshToken))
+            {
+                return Response<TokenModel>.Fail("Bad refresh token");
+            }
+
+            var roles = await _userRepository.GetUserRoles(userId);
+            var newAccessToken = _authenticationHelpers.GenerateToken(userId, username, roles);
+
+            return Response<TokenModel>.Ok(new TokenModel
+            {
+                AccessToken = newAccessToken,
+                RefreshToken = tokenModel.RefreshToken
+            });
         }
-
-        var idClaim = principals.FindFirst("id");
-        if (idClaim == null || !int.TryParse(idClaim.Value, out var userId))
+        catch (Exception e)
         {
-            return Response<TokenModel>.Fail("Invalid user ID in token");
+            return Response<TokenModel>.Fail("Error during refreshing token");
         }
-
-        var username = principals.Identity?.Name;
-        if (string.IsNullOrEmpty(username))
-        {
-            return Response<TokenModel>.Fail("Bad token: no user was found");
-        }
-
-        if (!await ValidateRefreshToken(username, tokenModel.RefreshToken))
-        {
-            return Response<TokenModel>.Fail("Bad refresh token");
-        }
-
-        var roles = await _userRepository.GetUserRoles(userId);
-        var newAccessToken = _authenticationHelpers.GenerateToken(userId, username, roles);
-
-        return Response<TokenModel>.Ok(new TokenModel
-        {
-            AccessToken = newAccessToken,
-            RefreshToken = tokenModel.RefreshToken
-        });
     }
 
     private async Task<User> CreateUserEntity(RegistrationModel model)

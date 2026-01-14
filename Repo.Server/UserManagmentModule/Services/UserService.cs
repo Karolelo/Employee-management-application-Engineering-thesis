@@ -214,23 +214,5 @@ public class UserService : IUserService
             return Response<bool>.Fail($"Error while deleting user: {ex.Message}");
         }
     }
-
-    /*public async Task<Response<bool>> AddTaskToUser(int userId,Task task)
-    {
-        try
-        {
-            if (await _userRepository.UserExists(userId))
-            {
-                var result = await _userRepository.AddTaskToUser(userId, task);
-                return result 
-                    ? Response<bool>.Ok(true) 
-                    : Response<bool>.Fail($"Failed to add task to user with: {userId}");
-            }
-            return Response<bool>.Fail($"No user with id: {userId}");
-
-        } catch (Exception ex)
-        {
-            return Response<bool>.Fail($"Error while deleting user: {ex.Message}");
-        }
-    }*/
+    
 }
