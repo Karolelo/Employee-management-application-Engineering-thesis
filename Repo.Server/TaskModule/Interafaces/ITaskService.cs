@@ -15,6 +15,7 @@ public interface ITaskService
     Task<Response<ICollection<TaskDTO>>> GetGroupTasks(int groupId);
     Task<Response<ICollection<TaskDTO>>> GetTasksByPriorityId(int priorityId);
     Task<Response<ICollection<TaskDTO>>> GetTasksByStatusId(int statusId);
+    Task<Response<ICollection<GanttTaskDTO>>> GetGanttTasks(int userId);
 
     //Methods for creating task
     Task<Response<TaskDTO>> CreateTask(CreateTaskModel model);

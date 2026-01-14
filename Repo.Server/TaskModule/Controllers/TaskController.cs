@@ -52,6 +52,17 @@ public class TaskController : ControllerBase
         
         return response.Success ? Ok(response.Data) : Ok(new List<TaskDTO>());
     }
+    
+    [HttpGet("user/{userId:int}/gantt")]
+    public async Task<IActionResult> GetGanttTasks(int userId)
+    {
+        var response = await _taskService.GetGanttTasks(userId);
+
+        return response.Success
+            ? Ok(response.Data)
+            : NotFound(new { Message = response.Error });
+    }
+
 
     //Methods for creating task
     [HttpPost("add")]
