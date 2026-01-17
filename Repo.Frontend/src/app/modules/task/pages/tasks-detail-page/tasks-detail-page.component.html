@@ -10,7 +10,7 @@
   </p>
   <h3>Task starting time:</h3>
   <p>
-    {{taskDetail.task.start_Time}}
+    {{ taskDetail.task.start_Time | date: 'dd MMM yyyy' }}
   </p>
   <h3>Estimated time for task in hours:</h3>
   <p>

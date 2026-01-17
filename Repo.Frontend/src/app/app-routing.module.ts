@@ -12,6 +12,8 @@ import {DashboardModule} from './modules/dashboard/dashboard.module';
 import {RoleGuardService} from './guard/roleGuard/role-guard.service';
 import {ForbiddenPage403Component} from './common_components/forbidden-page403/forbidden-page403.component';
 import {NotFoundPage404Component} from './common_components/not-found-page404/not-found-page404.component';
+import {GroupModule} from './modules/group/group.module';
+import {DebugComponent} from './debug_component/app-debug/app-debug.component';
 
 const routes: Routes = [
   {
@@ -27,14 +29,20 @@ const routes: Routes = [
     canActivate: [AuthGuardService],
     canActivateChild: [RoleGuardService],
     children: [
-      { path: 'tasks', loadChildren: () => TaskModule,
+      {
+        path: 'tasks', loadChildren: () => TaskModule,
         data: { title: 'Tasks module', expectedRoles:['User','Admin','TeamLeader','Accountant']}
       },
-      { path: 'calendar', loadChildren: () => CalendarModule,
+      {
+        path: 'calendar', loadChildren: () => CalendarModule,
         data: { title: 'Calendar module', expectedRoles:['User','Admin','TeamLeader','Accountant']}
       },
-      { path: 'dashboard', loadChildren: () => DashboardModule,
+      {
+        path: 'dashboard', loadChildren: () => DashboardModule,
         data: { title: 'Dashboard module', expectedRoles: ['Admin','TeamLeader']}
+      },
+      {
+        path: 'forbidden', component: ForbiddenPage403Component, data: {title: 'Forbidden', expectedRoles: []}
       },
       { path: 'grades', loadChildren: () => GradeModule,
         data: { title: 'Grades module', expectedRoles: ['User','Admin','TeamLeader']}
@@ -45,8 +53,16 @@ const routes: Routes = [
       { path: 'forbidden', component: ForbiddenPage403Component,
         data: { title: '', expectedRoles: ['User','Admin','TeamLeader','Accountant']}
       },
-      { path: '404', component: NotFoundPage404Component,
+      {
+        path: '404', component: NotFoundPage404Component,
         data: { title: '', expectedRoles: ['User','Admin','TeamLeader','Accountant']}
+      },
+      {
+        path: 'myGroups', loadChildren: () => GroupModule,
+        data: {title: 'My groups', expectedRoles: ['User','Admin','TeamLeader','Accountant']}
+      },
+      {
+        path:'tmpTest', component: DebugComponent, data: {expectedRoles: ['User','Admin','TeamLeader','Accountant']}
       }
     ]
   },

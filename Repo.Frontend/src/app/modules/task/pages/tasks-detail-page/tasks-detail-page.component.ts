@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild,Pipe, PipeTransform} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {TaskService} from '../../services/task/task.service';
 import {RelatedTasks} from '../../interfaces/related-tasks';

@@ -7,6 +7,10 @@ import {TaskDetailsComponent} from '../task-details/task-details.component';
 import {UserStoreService} from '../../../login/services/user_data/user-store.service';
 import {Observable, tap,async} from 'rxjs';
 import {Router} from '@angular/router';
+import {User} from '../../../dashboard/interfaces/user';
+import {UserService} from '../../../dashboard/services/user/user.service';
+import {GroupService} from '../../../dashboard/services/group/group.service';
+import {Group} from '../../../dashboard/interfaces/group';
 
 @Component({
   selector: 'app-task-list',
@@ -16,13 +20,13 @@ import {Router} from '@angular/router';
   providers: []
 })
 export class TaskListComponent implements OnInit{
-  enableEdit = true;
-  loading = false;
+  enableEdit:boolean = true;
+  loading:boolean = false;
   errorMessage: string | null = null;
   tasks$!: Observable<Task[]>;
   @Output() editTask = new EventEmitter<Task>();
   constructor(private taskService: TaskService,private userDataStore: UserStoreService, private dialog: MatDialog,
-              private router: Router) {
+              private router: Router){
   }
   ngOnInit(): void {
     this.loading = true;

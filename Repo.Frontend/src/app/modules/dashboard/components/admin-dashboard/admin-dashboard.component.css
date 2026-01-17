@@ -128,3 +128,9 @@ button[mat-raised-button] {
 .button-container button {
   width: 100%;
 }
+
+card-content-task {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}

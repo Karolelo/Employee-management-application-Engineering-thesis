@@ -36,27 +36,48 @@ public class GroupService : IGroupService
         }
     }
 
-    public async Task<Response<GroupDTO?>> GetGroupById(int id)
+    public async Task<Response<GroupDTO>> GetGroupById(int id)
     {
         try
         {
             var result = await _groupRepository.GetGroupById(id);
 
             return result is null
-                ? Response<GroupDTO?>.Fail("Group with this id not founded")
-                : Response<GroupDTO?>.Ok(MapToGroupDTO(result));
+                ? Response<GroupDTO>.Fail("Group with this id not founded")
+                : Response<GroupDTO>.Ok(MapToGroupDTO(result));
         }catch (Exception ex)
         {
             return Response<GroupDTO?>.Fail($"Error while fetching group: {ex.Message}");
         }
     }
-
+    public async Task<Response<GroupDTO>> GetGroupByAdminId(int adminId)
+    {
+        try
+        {
+            if (await _userRepository.GetUserById(adminId) == null)
+                return Response<GroupDTO>.Fail("Admin does not exists");
+            
+            var groups = await _groupRepository.GetAllGroups();
+            var result = groups.FirstOrDefault(e=> e.Admin_ID == adminId);
+            
+            return result is null 
+                ? Response<GroupDTO>.Fail("Group with this adminId not founded")
+                : Response<GroupDTO>.Ok(MapToGroupDTO(result));
+        }
+        catch (Exception ex)
+        {
+            return Response<GroupDTO>.Fail($"Error while fetching group: {ex.Message}");
+        }
+    }
+    //We should migrate this method to user repository honestly but now it took a lot of afford
+    //Because fronted is integrated
+    //In long term we should move it
     public async Task<Response<List<GroupDTO>>> GetUsersGroups(int userId)
     {
         try
         {
             if (await _userRepository.GetUserById(userId) == null)
-                return Response<List<GroupDTO>>.Fail("User not exists");
+                return Response<List<GroupDTO>>.Fail("User does not exists");
 
             var groups = await _groupRepository.GetAllGroups();
             var result = groups
@@ -68,7 +89,7 @@ public class GroupService : IGroupService
         }
         catch (Exception ex)
         {
-            return Response<List<GroupDTO>>.Fail($"Error while fetching group: {ex.Message}");
+            return Response<List<GroupDTO>>.Fail($"Error while fetching groups: {ex.Message}");
         }
     }
 
@@ -101,7 +122,7 @@ public class GroupService : IGroupService
             var existingGroup = await _groupRepository.GetGroupById(dto.ID);
             if (existingGroup == null)
             {
-                return Response<GroupDTO>.Fail("Group does not exist");
+                return Response<GroupDTO>.Fail("Group does not exists");
             }
             
             existingGroup.Name = dto.Name;
@@ -202,7 +223,9 @@ public class GroupService : IGroupService
             var absolutePath = Path.Combine("wwwroot", relativePath);
             
             Directory.CreateDirectory(Path.GetDirectoryName(absolutePath)!);
-
+            
+            relativePath = relativePath.Replace('\\', '/');
+            
             if (isUpdate)
             {
                 var path = await _groupRepository.GetPathToImageFile(groupId);

@@ -18,6 +18,7 @@
   transform: translateY(-5px);
 }
 
+
 .mat-card-header {
   background: linear-gradient(135deg, #cfd9df, #e2ebf0);
   border-radius: 8px 8px 0 0;
@@ -56,12 +57,20 @@ app-announcement-form {
 .group-container {
   display: flex;
   flex-direction: row;
-  align-content: center;
+  align-content: space-between;
   align-items: center;
+  width: 100%;
+  padding: 35px;
 }
 .task-container {
   display: flex;
   flex-direction: row;
   align-content: space-evenly;
   align-items: center;
+  padding: 50px;
+  width: 100%;
+}
+
+.group-form {
+  width: 100%;
 }

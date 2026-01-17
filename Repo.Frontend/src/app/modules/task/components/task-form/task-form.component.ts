@@ -26,6 +26,8 @@ export class TaskFormComponent implements OnChanges {
   taskForm!: FormGroup;
   enableTaskRelations = false;
 
+  //variable for creating task for other user
+  @Input() otherUserId?: number;
   constructor(
     private fb: FormBuilder,
     private taskService: TaskService,
@@ -58,6 +60,11 @@ export class TaskFormComponent implements OnChanges {
       this.updateFormWithTaskData();
     }
 
+    if(this.shouldUpdateAvailableTasks(changes)){
+      this.getOtherUsersTasks();
+      this.updateAvailableTasks();
+    }
+
     const control = this.taskForm.get('start_Time');
     if (!control) return;
 
@@ -72,6 +79,16 @@ export class TaskFormComponent implements OnChanges {
 
   private shouldUpdateForm(changes: SimpleChanges): boolean {
     return changes['taskToEdit'] && this.taskToEdit !== undefined;
+  }
+
+  private shouldUpdateAvailableTasks(changes: SimpleChanges): boolean {
+    return changes['otherUserId'] && this.otherUserId !== undefined;
+  }
+
+  private getOtherUsersTasks(): void {
+    if(this.otherUserId) {
+      this.taskService.getAllUserTasks(this.otherUserId).subscribe();
+    }
   }
 
   private updateFormWithTaskData(): void {
@@ -164,14 +181,18 @@ export class TaskFormComponent implements OnChanges {
   }
 
   private async createNewTask(formValue: any, date: Date): Promise<void> {
-    const userId = this.userDataStore.getUserId();
+
+    const userId = this.otherUserId ?? this.userDataStore.getUserId();
     if (!userId) {
       throw new Error('No user with this id');
     }
 
+    const creator_ID = this.userDataStore.getUserId()
+
     const newTask: Task = {
       ...formValue,
       start_Time: date,
+      creator_ID: creator_ID
     };
 
     const createdTask = await firstValueFrom(
