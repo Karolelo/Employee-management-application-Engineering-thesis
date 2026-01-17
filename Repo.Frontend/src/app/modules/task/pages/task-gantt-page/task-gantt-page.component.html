@@ -1,0 +1,27 @@
+<main class="task-gantt-page">
+  <div *ngIf="loading" class="loading"><mat-spinner></mat-spinner></div>
+  <div *ngIf="!loading && error" class="error">{{ error }}</div>
+
+  <ng-container *ngIf="!loading && !error">
+    <section class="toolbar">
+      <span>Gantt – tasks</span>
+
+      <ng-container *ngIf="isAdminOrLeader">
+        <button mat-stroked-button type="button" (click)="openUserOverlay()">
+          Select user
+        </button>
+      </ng-container>
+    </section>
+
+    <app-user-switch-overlay
+      *ngIf="userOverlayOpen"
+      (close)="onUserOverlayClosed()"
+      (selected)="onUserChanged($event)"
+    ></app-user-switch-overlay>
+
+
+    <section class="gantt-wrapper">
+      <app-task-gantt [tasks]="ganttTasks$ | async"></app-task-gantt>
+    </section>
+  </ng-container>
+</main>

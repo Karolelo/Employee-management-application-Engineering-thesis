@@ -26,6 +26,10 @@ import {MatPaginator} from '@angular/material/paginator';
 import { GroupTaskFormComponent } from './components/group-task-form/group-task-form.component';
 import { GroupTaskListComponent } from './components/group-task-list/group-task-list.component';
 import {InfoMessageComponent} from "../../common_components/info-message/info-message.component";
+import { TaskGanttPageComponent } from './pages/task-gantt-page/task-gantt-page.component';
+import { TaskGanttComponent } from './components/task-gantt/task-gantt.component';
+import {UserSwitchOverlayComponent} from './components/user-switch-overlay/user-switch-overlay.component';
+
 import {MatFormField} from '@angular/material/form-field'
 
 @NgModule({
@@ -36,7 +40,10 @@ import {MatFormField} from '@angular/material/form-field'
         TaskPageComponent,
         TasksDetailPageComponent,
         GroupTaskFormComponent,
-        GroupTaskListComponent
+        GroupTaskListComponent,
+        TaskGanttPageComponent,
+        TaskGanttComponent,
+        UserSwitchOverlayComponent
     ],
     imports: [
         CommonModule,

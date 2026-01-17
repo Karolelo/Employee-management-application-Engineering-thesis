@@ -1,0 +1,142 @@
+.gantt-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 12px;
+}
+
+.gantt-with-arrows {
+  position: relative;
+}
+
+.gantt-container {
+  position: relative;
+  z-index: 1;
+  border: 2px solid #5d3ea8;
+  border-radius: 8px;
+  padding: 12px;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,.08);
+}
+
+.gantt-date-lines {
+  position: absolute;
+  top: 48px;
+  left: 220px;
+  right: 12px;
+  bottom: 12px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.gantt-date-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(148, 163, 184, 0.7);
+}
+
+
+.gantt-arrows {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.gantt-arrow {
+  fill: none;
+  stroke: #111827;
+  stroke-width: 2;
+  marker-end: url(#ganttArrowHead);
+  stroke-linejoin: round;
+}
+
+#ganttArrowHead path {
+  stroke: none;
+  fill: #111827;
+}
+
+.gantt-header {
+  margin-bottom: 8px;
+}
+
+.gantt-header .range {
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.gantt-header .ticks {
+  display: flex;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #f3eafe;
+  margin-left: 220px;
+}
+
+.gantt-header .tick {
+  text-align: center;
+  font-size: 11px;
+  padding: 2px 0;
+  border-right: 1px solid #e5e7eb;
+}
+
+.gantt-header .tick:last-child {
+  border-right: none;
+}
+
+.gantt-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.gantt-row {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 8px;
+  align-items: center;
+}
+
+.gantt-row-label .title {
+  font-weight: 700;
+}
+
+.gantt-row-label .meta {
+  font-size: 11px;
+  opacity: .75;
+}
+
+.gantt-row-track {
+  position: relative;
+  height: 28px;
+  border-radius: 12px;
+  background: #f3eafe;
+  overflow: visible;
+}
+
+.gantt-bar {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: opacity .15s;
+}
+
+.gantt-bar:hover {
+  opacity: 0.85;
+}
+
+.gantt-bar.todo {
+  background: #9ca3af;
+}
+
+.gantt-bar.progress {
+  background: #f59e0b;
+}
+
+.gantt-bar.done {
+  background: #16a34a;
+}
