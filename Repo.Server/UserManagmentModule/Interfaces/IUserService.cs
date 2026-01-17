@@ -21,4 +21,7 @@ public interface IUserService
     Task<Response<UserDTO>> UpdateUser(UserUpdateDTO dto);
     
     Task<Response<bool>> DeleteUser(int id);
+    
+    //Helper method
+    /*Task<Response<bool>> AddTaskToUser(int userId,Task task);*/
 }

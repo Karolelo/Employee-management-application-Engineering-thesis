@@ -43,8 +43,7 @@ public class AuthenticationHelpers
         string hashedPassword = GeneratePasswordHash(password, storedSalt);
         return hashedPassword == storedHash;
     }
-
-    //Potem zmienić claimy, na inne niz user name
+    
     public string GenerateToken(int userId,string userName,ICollection<string> RoleName = null) {
         var tokenHandler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
         var key = System.Text.Encoding.ASCII.GetBytes(_configuration["JWT:SecretKey"]);
@@ -100,15 +99,6 @@ public class AuthenticationHelpers
         }
     }
     
-    /*public TokenModel GenerateTokens(int userId,string username,ICollection<string> RoleName = null)
-    {
-        return new TokenModel
-        {
-            AccessToken = GenerateToken(userId,username,RoleName),
-            RefreshToken = GenerateRefreshToken()
-        };
-    }*/
-    
     public ClaimsPrincipal? GetPrincipalFromExpiredToken(string token)
     {
         var tokenValidationParameters = new TokenValidationParameters
@@ -138,7 +128,5 @@ public class AuthenticationHelpers
             return null;
         }
     }
-    
-   
     
 }

@@ -6,6 +6,7 @@ using Repo.Core.Models;
 using Repo.Core.Models.api;
 using Repo.Core.Models.user;
 using Repo.Server.UserManagmentModule.Interfaces;
+using Task = Repo.Core.Models.Task;
 
 namespace Repo.Server.UserManagmentModule.Services;
 
@@ -213,4 +214,5 @@ public class UserService : IUserService
             return Response<bool>.Fail($"Error while deleting user: {ex.Message}");
         }
     }
+    
 }

@@ -29,16 +29,6 @@ public class StatusController : ControllerBase
             : NotFound(new { Message = response.Error });
     }
 
-    [HttpGet("{id:int}/tasks")]
-    public async Task<IActionResult> GetTasksForStatus(int id)
-    {
-        var response = await _taskService.GetTasksByStatusId(id);
-
-        return response.Success
-            ? Ok(response.Data)
-            : NotFound(new { Message = response.Error });
-    }
-
     [HttpGet]
     public async Task<IActionResult> GetAllStatus()
     {

@@ -41,7 +41,8 @@ import {InfoMessageComponent} from '../../common_components/info-message/info-me
 import { UserSimpleListComponent } from './components/user-simple-list/user-simple-list.component';
 import {ExportImageComponent} from '../../common_components/export-image/export-image.component';
 import { GroupEditPageComponent } from './pages/group-edit-page/group-edit-page.component';
-
+import { TaskStatsComponent } from './components/task-stats/task-stats.component';
+import { BaseChartDirective } from 'ng2-charts';
 @NgModule({
   declarations: [
     AdminDashboardComponent,
@@ -61,6 +62,7 @@ import { GroupEditPageComponent } from './pages/group-edit-page/group-edit-page.
     GroupImageEditFormComponent,
     UserSimpleListComponent,
     GroupEditPageComponent,
+    TaskStatsComponent,
   ],
   imports: [
     CommonModule,
@@ -92,12 +94,14 @@ import { GroupEditPageComponent } from './pages/group-edit-page/group-edit-page.
     MatSpinner,
     InfoMessageComponent,
     MatDivider,
-    ExportImageComponent
+    ExportImageComponent,
+    BaseChartDirective
   ],
   exports: [
     UserSimpleListComponent,
     AnnouncementListComponent,
-    GroupShortInfoComponent
+    GroupShortInfoComponent,
+    TaskStatsComponent
   ],
   providers: [
     GroupCreatePageComponent
