@@ -4,6 +4,7 @@ using Repo.Core.Models;
 using Repo.Core.Models.api;
 using Repo.Core.Models.DTOs;
 using Repo.Core.Models.task;
+using Repo.Core.Models.user;
 using Repo.Server.TaskModule.interafaces;
 using Repo.Server.UserManagmentModule.Interfaces;
 using Task = Repo.Core.Models.Task;
@@ -66,29 +67,19 @@ public class TaskService(
         }
         catch (Exception e)
         {
-            return Response<ICollection<TaskDTO>>.Fail($"Exception during getting tasks from user: {e.Message}");
+            return Response<ICollection<TaskDTO>>.Fail($"Exception during getting tasks from group: {e.Message}");
         }
     }
-    
+
     public async Task<Response<ICollection<GanttTaskDTO>>> GetGanttTasks(int userId)
     {
-        var tasks = await _context.Tasks
-            .AsNoTracking()
-            .Include(t => t.Priority)
-            .Include(t => t.Status)
-            .Include(t => t.Users)
-            .Where(t => t.Users.Any(u => u.ID == userId) && t.Deleted == 0)
-            .ToListAsync();
+        var tasks = await taskRepository.GetUserTasksForGantt(userId);
 
-        if (tasks.Count == 0)
+        if (!tasks.Any())
             return Response<ICollection<GanttTaskDTO>>.Fail("User has no tasks");
 
         var taskIds = tasks.Select(t => t.ID).ToList();
-        
-        var relations = await _context.RelatedTasks
-            .AsNoTracking()
-            .Where(rt => taskIds.Contains(rt.Main_Task_ID))
-            .ToListAsync();
+        var relations = await taskRepository.GetRelatedTasksByMainTaskIds(taskIds);
 
         var dependenciesLookup = relations
             .GroupBy(rt => rt.Main_Task_ID)
@@ -100,8 +91,6 @@ public class TaskService(
         var ganttTasks = tasks.Select(t =>
         {
             var endTime = t.Start_Time.AddHours(t.Estimated_Time);
-
-
             dependenciesLookup.TryGetValue(t.ID, out var deps);
             deps ??= new List<int>();
 

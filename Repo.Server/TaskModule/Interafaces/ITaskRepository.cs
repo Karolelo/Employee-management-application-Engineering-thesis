@@ -28,4 +28,8 @@ public interface ITaskRepository
     
     // Helpers
     Task<bool> TaskExists(int taskId);
+    
+    //Gant
+    Task<IEnumerable<Core.Models.Task>> GetUserTasksForGantt(int userId);
+    Task<IEnumerable<RelatedTask>> GetRelatedTasksByMainTaskIds(List<int> taskIds);
 }

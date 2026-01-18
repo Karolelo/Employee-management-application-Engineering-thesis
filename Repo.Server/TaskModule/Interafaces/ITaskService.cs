@@ -28,4 +28,7 @@ public interface ITaskService
     //Methods for managing relations
     Task<Response<TaskRelationDTO>> AddRelation(int taskId, int relatedTaskId);
     Task<Response<object>> RemoveRelation(int taskId, int relatedTaskId);
+    
+    //Gant
+    Task<Response<ICollection<GanttTaskDTO>>> GetGanttTasks(int userId);
 }

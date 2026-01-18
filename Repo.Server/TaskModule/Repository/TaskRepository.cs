@@ -118,4 +118,23 @@ public class TaskRepository(MyDbContext context) : ITaskRepository
     {
         return await context.Tasks.AnyAsync(t => t.ID == taskId);
     }
+    
+    public async Task<IEnumerable<Core.Models.Task>> GetUserTasksForGantt(int userId)
+    {
+        return await context.Tasks
+            .AsNoTracking()
+            .Include(t => t.Priority)
+            .Include(t => t.Status)
+            .Include(t => t.Users)
+            .Where(t => t.Users.Any(u => u.ID == userId) && t.Deleted == 0)
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<RelatedTask>> GetRelatedTasksByMainTaskIds(List<int> taskIds)
+    {
+        return await context.RelatedTasks
+            .AsNoTracking()
+            .Where(rt => taskIds.Contains(rt.Main_Task_ID))
+            .ToListAsync();
+    }
 }
