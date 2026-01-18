@@ -9,11 +9,10 @@ import { Component } from '@angular/core';
 export class SidenavbarComponent {
   menuItems = [
     { link: '/dashboard', icon: 'dashboard' },
-    { link: '/profile', icon: 'account_circle' },
     { link: '/tasks', icon: 'assignment' },
+    { link: '/tasks/gantt',icon: 'view_timeline'},
     { link: '/calendar', icon: 'today' },
     { link: 'MyGroups',icon: 'group'},
-    { link: '/tasks/gantt',icon: 'view_timeline'},
     { link: '/grades',icon: 'analytics'},
     { link: '/worktime',icon: 'next_week'}
   ];
