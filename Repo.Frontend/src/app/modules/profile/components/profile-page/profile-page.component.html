@@ -1,0 +1,93 @@
+<main class="profile-page" *ngIf="profile; else loadingTpl">
+  <section class="profile-card profile-main">
+    <h2>Basic info</h2>
+    <div class="profile-fields">
+      <div class="profile-field">
+        <span class="profile-field-label">Nickname</span>
+        <span class="profile-field-value">{{ profile.nickname }}</span>
+      </div>
+      <div class="profile-field">
+        <span class="profile-field-label">Name</span>
+        <span class="profile-field-value">{{ profile.name }}</span>
+      </div>
+      <div class="profile-field">
+        <span class="profile-field-label">Surname</span>
+        <span class="profile-field-value">{{ profile.surname }}</span>
+      </div>
+      <div class="profile-field">
+        <span class="profile-field-label">Login</span>
+        <span class="profile-field-value">{{ profile.login }}</span>
+      </div>
+      <div class="profile-field">
+        <span class="profile-field-label">Email</span>
+        <span class="profile-field-value">{{ profile.email }}</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="profile-card">
+    <h3>Change email</h3>
+    <form class="profile-form" (ngSubmit)="onChangeEmail()">
+      <div class="profile-form-group">
+        <label class="profile-form-label">Current password</label>
+        <input
+          type="password"
+          class="profile-form-input"
+          [(ngModel)]="emailForm.currentPassword"
+          name="curEmailPwd"
+          placeholder="Enter current password"
+          required
+        />
+      </div>
+      <div class="profile-form-group">
+        <label class="profile-form-label">New email</label>
+        <input
+          type="email"
+          class="profile-form-input"
+          [(ngModel)]="emailForm.newEmail"
+          name="newEmail"
+          placeholder="new@example.com"
+          required
+        />
+      </div>
+      <button type="submit" class="profile-form-button">Save email</button>
+    </form>
+  </section>
+
+  <section class="profile-card">
+    <h3>Change password</h3>
+    <form class="profile-form" (ngSubmit)="onChangePassword()">
+      <div class="profile-form-group">
+        <label class="profile-form-label">Current password</label>
+        <input
+          type="password"
+          class="profile-form-input"
+          [(ngModel)]="passwordForm.currentPassword"
+          name="curPwd"
+          placeholder="Enter current password"
+          required
+        />
+      </div>
+      <div class="profile-form-group">
+        <label class="profile-form-label">New password</label>
+        <input
+          type="password"
+          class="profile-form-input"
+          [(ngModel)]="passwordForm.newPassword"
+          name="newPwd"
+          placeholder="New password"
+          required
+          minlength="6"
+        />
+      </div>
+      <button type="submit" class="profile-form-button">Save password</button>
+    </form>
+  </section>
+</main>
+
+<ng-template #loadingTpl>
+  <div class="profile-loading">
+    <mat-spinner diameter="24"></mat-spinner>
+    <span>Loading profile...</span>
+  </div>
+</ng-template>

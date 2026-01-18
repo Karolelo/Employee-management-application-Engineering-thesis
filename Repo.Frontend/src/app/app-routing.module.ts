@@ -12,6 +12,7 @@ import {DashboardModule} from './modules/dashboard/dashboard.module';
 import {RoleGuardService} from './guard/roleGuard/role-guard.service';
 import {ForbiddenPage403Component} from './common_components/forbidden-page403/forbidden-page403.component';
 import {NotFoundPage404Component} from './common_components/not-found-page404/not-found-page404.component';
+import {ProfileModule} from './modules/profile/profile.module';
 
 const routes: Routes = [
   {
@@ -41,6 +42,9 @@ const routes: Routes = [
       },
       { path: 'worktime', loadChildren: () => WorktimeModule,
         data: { title: 'Worktime module', expectedRoles: ['User','Admin','Accountant']}
+      },
+      { path: 'profile', loadChildren: () => ProfileModule,
+        data: { title: 'Profile module', expectedRoles: ['User','Admin','Accountant']}
       },
       { path: 'forbidden', component: ForbiddenPage403Component,
         data: { title: '', expectedRoles: ['User','Admin','TeamLeader','Accountant']}
