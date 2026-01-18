@@ -17,6 +17,8 @@ using Repo.Server.Controllers;
 using Repo.Server.Controllers.Interfaces;
 using Repo.Server.GradeModule.Interfaces;
 using Repo.Server.GradeModule.Services;
+using Repo.Server.ProfileModule;
+using Repo.Server.ProfileModule.Services;
 using Repo.Server.TaskModule;
 using Repo.Server.TaskModule.interafaces;
 using Repo.Server.WorkTimeModule.Interfaces;
@@ -49,6 +51,7 @@ builder.Services.AddScoped<IGroupService,GroupService>();
 builder.Services.AddScoped<IFileOperations,FileOperation>();
 builder.Services.AddScoped<IAnnoucementService,AnnouncementService>();
 builder.Services.AddScoped<IAnnoucementRepository,AnnoucementRepository>();
+builder.Services.AddScoped<IUserProfileService, UserProfileService>();
 
 //Creating getting role from appseting
 builder.Services.Configure<RoleConfiguration>(
