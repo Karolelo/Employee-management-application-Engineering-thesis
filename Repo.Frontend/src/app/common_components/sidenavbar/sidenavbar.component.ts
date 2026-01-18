@@ -12,8 +12,8 @@ export class SidenavbarComponent {
     { link: '/tasks', icon: 'assignment' },
     { link: '/tasks/gantt',icon: 'view_timeline'},
     { link: '/calendar', icon: 'today' },
-    { link: 'MyGroups',icon: 'group'},
     { link: '/grades',icon: 'analytics'},
     { link: '/worktime',icon: 'next_week'}
+    { link: '/myGroups',icon: 'group'}
   ];
 }

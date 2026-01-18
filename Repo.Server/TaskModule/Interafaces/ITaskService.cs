@@ -13,9 +13,6 @@ public interface ITaskService
     Task<Response<TaskWithRelatedDTO>> GetTaskWithRelatedTasks(int id);
     Task<Response<ICollection<TaskDTO>>> GetUserTasks(int userId);
     Task<Response<ICollection<TaskDTO>>> GetGroupTasks(int groupId);
-    Task<Response<ICollection<TaskDTO>>> GetTasksByPriorityId(int priorityId);
-    Task<Response<ICollection<TaskDTO>>> GetTasksByStatusId(int statusId);
-    Task<Response<ICollection<GanttTaskDTO>>> GetGanttTasks(int userId);
 
     //Methods for creating task
     Task<Response<TaskDTO>> CreateTask(CreateTaskModel model);
@@ -23,7 +20,7 @@ public interface ITaskService
     Task<Response<TaskDTO>> CreateTaskAssignToGroup(CreateTaskModel model, int groupId);
 
     //Methods for updating task
-    Task<Response<Repo.Core.Models.DTOs.TaskDTO>> UpdateTask(UpdateTaskDTO dto, int id);
+    Task<Response<TaskDTO>> UpdateTask(UpdateTaskDTO dto, int id);
     
     //Methods for deleting task
     Task<Response<Task>> DeleteTask(int id);

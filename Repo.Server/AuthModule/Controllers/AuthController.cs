@@ -56,8 +56,4 @@ public class AuthController : ControllerBase
          : Unauthorized(new { Message = response.Error });
 
    }
-
-   
-    
-    
 }

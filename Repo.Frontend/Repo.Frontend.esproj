@@ -8,6 +8,7 @@
     <BuildOutputFolder>$(MSBuildProjectDirectory)\dist\Repo.Frontend\browser\</BuildOutputFolder>
   </PropertyGroup>
   <ItemGroup>
+    <Folder Include="src\app\debug_component\" />
     <Folder Include="src\app\guard\authGuard\" />
     <Folder Include="src\app\layouts\" />
     <Folder Include="src\app\modules\calendar-module\components\" />
@@ -16,6 +17,9 @@
     <Folder Include="src\app\modules\dashboard\resolvers\" />
     <Folder Include="src\app\modules\dashboard\services\announcement\" />
     <Folder Include="src\app\modules\dashboard\services\group\" />
+    <Folder Include="src\app\modules\group\components\" />
+    <Folder Include="src\app\modules\group\guards\" />
+    <Folder Include="src\app\modules\group\pages\" />
     <Folder Include="src\app\modules\grade\components\" />
     <Folder Include="src\app\modules\grade\interfaces\" />
     <Folder Include="src\app\modules\grade\pages\" />

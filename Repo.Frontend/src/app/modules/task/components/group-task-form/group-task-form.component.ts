@@ -1,11 +1,11 @@
-
 import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {futureDateValidation} from '../../../../common_validators/fututreDateValidation';
 import {Task} from '../../interfaces/task';
 import {TaskService} from '../../services/task/task.service';
-import {firstValueFrom, Observable} from 'rxjs';
-
+import {firstValueFrom, Observable,of} from 'rxjs';
+import {map,catchError} from 'rxjs/operators'
+import {MatSnackBar} from'@angular/material/snack-bar'
 @Component({
   selector: 'app-group-task-form',
   standalone: false,
@@ -19,11 +19,11 @@ export class GroupTaskFormComponent implements OnChanges {
   @Output() taskUpdated = new EventEmitter<void>();
 
   taskForm!: FormGroup;
-
   isTransparent = true;
   constructor(
     private fb: FormBuilder,
-    private taskService: TaskService
+    private taskService: TaskService,
+    private matSnackBar: MatSnackBar
   ) {
     this.initializeForm();
   }
@@ -64,10 +64,13 @@ export class GroupTaskFormComponent implements OnChanges {
   }
 
   async onSubmit(): Promise<void> {
-    if (!this.taskForm.valid || !this.groupId) {
-      console.error('Form has error or missing groupId');
+    if (!this.taskForm.valid) {
+      this.matSnackBar.open('Form has an error','Ok',{duration:3000})
       return;
     }
+
+    const canAdd = await firstValueFrom(this.checkTaskLimit());
+    if(!canAdd) return
 
     try {
       const formValue = this.taskForm.value;
@@ -112,5 +115,21 @@ export class GroupTaskFormComponent implements OnChanges {
   resetFormState(): void {
     this.taskForm.reset();
     this.taskToEdit = undefined;
+  }
+
+  checkTaskLimit(): Observable<boolean> {
+    return this.taskService.tasks$.pipe(
+      map(tasks => {
+        if(tasks && Array.isArray(tasks) && tasks.length >= 7) {
+          this.matSnackBar.open('Maximum amount task for group is 7', 'Ok', {duration: 3000});
+          return false;
+        }
+        return true;
+      }),
+      catchError(error => {
+        console.error('Error checking task limit:', error);
+        return of(true);
+      })
+    );
   }
 }

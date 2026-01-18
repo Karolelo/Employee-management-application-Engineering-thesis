@@ -28,15 +28,7 @@ public class PriorityController : ControllerBase
             ? Ok(response.Data)
             : NotFound(new { Message = response.Error });
     }
-
-    [HttpGet("{id:int}/tasks")]
-    public async Task<IActionResult> GetTasksForPriority(int id)
-    {
-        var response = await _taskService.GetTasksByPriorityId(id);
-        return response.Success
-            ? Ok(response.Data)
-            : NotFound(new { Message = response.Error });
-    }
+    
 
     [HttpGet]
     public async Task<IActionResult> GetAllPriority()

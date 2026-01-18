@@ -52,7 +52,7 @@ export class ManageGroupPageComponent implements AfterViewInit{
         { title: 'announcements', cols: 2, rows: 2, type: 'announcement' },
         { title: 'Task management', cols: 2, rows: 4, type: 'taskStats' },
         { title: 'Group details', cols: 2, rows: 4, type: 'groupDetails'},
-        { title: 'Users', cols: 1, rows: 1, type: 'usersView' }
+        /*{ title: 'Users', cols: 1, rows: 1, type: 'usersView' }*/
       ];
     })
   );

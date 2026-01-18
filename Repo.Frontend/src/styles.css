@@ -1,3 +1,5 @@
+/*prebuilt color for angular, we should next time consider use it more ofter*/
+/*@import '@angular/material/prebuilt-themes/purple-green.css';*/
 @font-face {
   font-family: 'Railway';
   src: url('../public/fonts/Raleway-VariableFont_wght.ttf') format('truetype');
@@ -139,6 +141,11 @@ button[type="submit"]:disabled {
   transform: none;
 }
 
+.error-message {
+  color: red;
+  font-size: 1.5rem;
+  font-family: var(--font-main);
+}
 
 
 

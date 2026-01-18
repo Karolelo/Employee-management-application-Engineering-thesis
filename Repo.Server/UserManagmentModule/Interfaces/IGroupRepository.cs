@@ -12,6 +12,7 @@ public interface IGroupRepository
     Task<bool> DeleteGroup(int id);
     Task<bool> AddUserToGroup(int userId, int groupId);
     Task<bool> RemoveUserFromGroup(int userId, int groupId);
+    Task<bool> AddTaskToGroup(int groupId, int taskId);
     Task<bool> SetLeaderOfGroup(int userId, int groupId);
     Task<string> GetPathToImageFile(int groupId);
     Task<string> SavePathToImageFile(int groupId, string path);

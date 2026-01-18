@@ -4,7 +4,7 @@ export interface Task {
   description: string;
   start_Time: Date;
   estimated_Time: number;
-  creator: string;
+  creator_ID: number;
   deleted: boolean;
   priority: string;
   status: string;
