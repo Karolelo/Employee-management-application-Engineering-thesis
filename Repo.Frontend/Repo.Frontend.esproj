@@ -25,6 +25,10 @@
     <Folder Include="src\app\modules\grade\pages\" />
     <Folder Include="src\app\modules\grade\services\" />
     <Folder Include="src\app\modules\login\services\user_data\" />
+    <Folder Include="src\app\modules\profile\components\" />
+    <Folder Include="src\app\modules\profile\interfaces\" />
+    <Folder Include="src\app\modules\profile\pages\" />
+    <Folder Include="src\app\modules\profile\services\" />
     <Folder Include="src\app\modules\task\components\" />
     <Folder Include="src\app\modules\task\guards\" />
     <Folder Include="src\app\modules\task\pages\" />
