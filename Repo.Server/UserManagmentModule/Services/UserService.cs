@@ -144,17 +144,17 @@ public class UserService : IUserService
         {
             if (dto == null)
                 return Response<UserDTO>.Fail("Update data cannot be null");
-            
+    
             var existingUser = await _userRepository.GetUserById(dto.ID);
             if (existingUser == null)
                 return Response<UserDTO>.Fail($"User with ID: {dto.ID} not found");
 
-            
+    
             var userWithEmail = await _userRepository.GetUserByEmail(dto.Email.Trim());
             if (userWithEmail != null && userWithEmail.ID != dto.ID)
                 return Response<UserDTO>.Fail("Email is already taken");
 
-            
+    
             if (!string.IsNullOrEmpty(dto.Nickname))
             {
                 var userWithNickname = await _userRepository.GetUserByNickname(dto.Nickname.Trim());
@@ -164,34 +164,21 @@ public class UserService : IUserService
 
             var resultRoles = await _roleRepository.GetAllRoles();
             var userRoles = resultRoles.Where(r => dto.Roles.Contains(r.Role_Name)).ToList();
-            //We doing this becuase of update method
-            //Using dtos made me to do that, but long term
-            //I think there are way to skip this, but
-            //for now it works quiet good
-            var updatedUser = new User
-            {
-                ID = existingUser.ID,
-                Name = dto.Name.Trim(),
-                Surname = dto.Surname?.Trim(),
-                Email = dto.Email.Trim(),
-                Login = dto.Login?.Trim(),
-                Nickname = dto.Nickname?.Trim(),
-                Salt = existingUser.Salt,
-                Roles = userRoles
-            };
-
             
+            existingUser.Name = dto.Name.Trim();
+            existingUser.Surname = dto.Surname?.Trim();
+            existingUser.Email = dto.Email.Trim();
+            existingUser.Login = dto.Login?.Trim();
+            existingUser.Nickname = dto.Nickname?.Trim();
+            existingUser.Roles = userRoles;
+
             if (!string.IsNullOrEmpty(dto.Password))
             {
-                updatedUser.Password = AuthenticationHelpers.GeneratePasswordHash(dto.Password, existingUser.Salt);
+                existingUser.Password = AuthenticationHelpers.GeneratePasswordHash(dto.Password, existingUser.Salt);
             }
-            else
-            {
-                updatedUser.Password = existingUser.Password; //Leaving old password 
-            }
-            
-            var updated = await _userRepository.UpdateUser(updatedUser);
-            
+    
+            var updated = await _userRepository.UpdateUser(existingUser);
+    
             return Response<UserDTO>.Ok(new UserDTO(updated));
         }
         catch (Exception ex)
