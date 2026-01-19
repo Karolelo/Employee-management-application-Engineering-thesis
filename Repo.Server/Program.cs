@@ -67,26 +67,26 @@ builder.Services.Configure<RoleConfiguration>(
 
 
 // Connection priority - changeable if needed
-var candidateNames = new[] { "Mroziu-workspace", "DefaultConnection" };
+//var candidateNames = new[] { "Mroziu-workspace", "DefaultConnection" };
 
 // Collect the connection strings from config
-var candidates = candidateNames
+/*var candidates = candidateNames
     .Select(n => (Name: n, Conn: builder.Configuration.GetConnectionString(n)))
     .Where(x => !string.IsNullOrWhiteSpace(x.Conn))
-    .ToList();
+    .ToList();*/
 
-if (candidates.Count == 0)
+/*if (candidates.Count == 0)
 {
     throw new InvalidOperationException("No defined ConnectionStrings");
-}
+}*/
 
 // Choosing the first working connection string
-var chosen = await ChooseFirstWorkingAsync(candidates);
-Console.WriteLine($"[DB] Chosen ConnectionString: {chosen.Name}");
+//var chosen = await ChooseFirstWorkingAsync(candidates);
+//Console.WriteLine($"[DB] Chosen ConnectionString: {chosen.Name}");
 
 // Ensure the ApplicationDbContext is registered as a service
 builder.Services.AddDbContext<MyDbContext>(conf =>
-    conf.UseSqlServer(chosen.Conn) /*o => o.EnableRetryOnFailure(maxRetryCount: 10,
+    conf.UseSqlServer(builder.Configuration["DockerConnectionString"]) /*o => o.EnableRetryOnFailure(maxRetryCount: 10,
         maxRetryDelay: TimeSpan.FromSeconds(30),
         errorNumbersToAdd: null))*/);
 // builder.Services.AddDbContext<MyDbContext>(conf=> conf

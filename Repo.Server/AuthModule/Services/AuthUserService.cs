@@ -178,8 +178,8 @@ public class AuthUserService : IAuthUserService
             Roles = new List<Role>()
         };
 
-        await _userRepository.CreateUser(user);
-        return user;
+       
+        return  await _userRepository.CreateUser(user);
     }
 
     private async Task AssignRolesToUser(User user, List<string>? requestedRoles)

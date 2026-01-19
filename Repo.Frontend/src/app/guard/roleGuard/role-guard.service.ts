@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import {ActivatedRouteSnapshot, CanActivateChild, Router} from '@angular/router';
-import {AuthService} from '../../modules/login/services/auth_managment/auth.service';
 import {UserStoreService} from '../../modules/login/services/user_data/user-store.service';
 /*
   Basic guard for checking user permissions
@@ -15,8 +14,7 @@ export class RoleGuardService implements CanActivateChild {
 
     const expectedRole: string[] = route.data['expectedRoles'];
 
-    if (
-      this.hasExpectedRole(expectedRole)
+    if (!this.hasExpectedRole(expectedRole)
     ) {
       this.router.navigate(['/forbidden']);
       return false;
@@ -25,7 +23,7 @@ export class RoleGuardService implements CanActivateChild {
   }
 
   private hasExpectedRole(roles: string[]): boolean {
-    return !roles.some(role => this.userStore.hasRole(role));
+    return roles.some(role => this.userStore.hasRole(role));
   }
 
   private handleUnauthorizedAccess(){

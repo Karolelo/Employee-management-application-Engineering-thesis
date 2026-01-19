@@ -13,11 +13,11 @@ public partial class Group
 
     public int Deleted { get; set; }
 
-    public string? Description { get; set; }
+    public string Description { get; set; } = null!;
 
     public virtual ICollection<Announcement> Announcements { get; set; } = new List<Announcement>();
 
-    public virtual GroupImage? GroupImage { get; set; }
+    public virtual Group_image? Group_image { get; set; }
 
     public virtual ICollection<Task> Tasks { get; set; } = new List<Task>();
 

@@ -42,9 +42,6 @@ const routes: Routes = [
         path: 'dashboard', loadChildren: () => DashboardModule,
         data: { title: 'Dashboard module', expectedRoles: ['Admin','TeamLeader']}
       },
-      {
-        path: 'forbidden', component: ForbiddenPage403Component, data: {title: 'Forbidden', expectedRoles: []}
-      },
       { path: 'grades', loadChildren: () => GradeModule,
         data: { title: 'Grades module', expectedRoles: ['User','Admin','TeamLeader']}
       },
@@ -55,11 +52,13 @@ const routes: Routes = [
         data: { title: 'Profile module', expectedRoles: ['User','Admin','Accountant']}
       },
       { path: 'forbidden', component: ForbiddenPage403Component,
-        data: { title: '', expectedRoles: ['User','Admin','TeamLeader','Accountant']}
+        data: { title: '', expectedRoles: ['User','Admin','TeamLeader','Accountant']},
+        canActivateChild:[]
       },
       {
         path: '404', component: NotFoundPage404Component,
-        data: { title: '', expectedRoles: ['User','Admin','TeamLeader','Accountant']}
+        data: { title: '', expectedRoles: ['User','Admin','TeamLeader','Accountant'],},
+        canActivateChild: []
       },
       {
         path: 'myGroups', loadChildren: () => GroupModule,

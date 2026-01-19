@@ -9,11 +9,11 @@ public partial class Course
 
     public string Name { get; set; } = null!;
 
-    public string Description { get; set; } = null!;
-
     public DateOnly Start_Date { get; set; }
 
     public DateOnly Finish_Date { get; set; }
+
+    public string? Description { get; set; }
 
     public virtual ICollection<Event> Events { get; set; } = new List<Event>();
 

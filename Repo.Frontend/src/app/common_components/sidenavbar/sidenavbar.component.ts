@@ -13,7 +13,7 @@ export class SidenavbarComponent {
     { link: '/tasks/gantt',icon: 'view_timeline'},
     { link: '/calendar', icon: 'today' },
     { link: '/grades',icon: 'analytics'},
-    { link: '/worktime',icon: 'next_week'}
+    { link: '/worktime',icon: 'next_week'},
     { link: '/myGroups',icon: 'group'}
   ];
 }

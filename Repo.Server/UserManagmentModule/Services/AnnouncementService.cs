@@ -93,7 +93,7 @@ public class AnnouncementService : IAnnoucementService
         {
             ID = announcement.ID,
             Title = announcement.Title ?? "",
-            Group_ID = announcement.Group_ID??0,
+            Group_ID = announcement.Group_ID,
             Text = announcement.Text?? "" , 
         };
     }

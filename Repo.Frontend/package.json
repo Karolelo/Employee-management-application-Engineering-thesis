@@ -24,7 +24,6 @@
     "bootstrap": "^5.3.8",
     "bootstrap-icons": "^1.13.1",
     "html2canvas": "^1.4.1",
-    "jest-editor-support": "*",
     "jspdf": "^3.0.4",
     "chart.js": "^4.5.1",
     "jest-editor-support": "*",

@@ -3,15 +3,11 @@ using System.Collections.Generic;
 
 namespace Repo.Core.Models;
 
-public partial class Announcement
+public partial class Group_image
 {
-    public int ID { get; set; }
-
-    public string Title { get; set; } = null!;
-
-    public string Text { get; set; } = null!;
-
     public int Group_ID { get; set; }
+
+    public string Path { get; set; } = null!;
 
     public virtual Group Group { get; set; } = null!;
 }

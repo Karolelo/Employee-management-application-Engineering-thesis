@@ -75,14 +75,9 @@ public class UserRepository : IUserRepository
 
     public async Task<User> UpdateUser(User user)
     {
-        _context.Entry(user).CurrentValues.SetValues(user);
-        
-        user.Roles.Clear();
-        foreach (var role in user.Roles)
-        {
-            user.Roles.Add(role);
-        }
-        
+
+         _context.Users.Update(user);
+
         await _context.SaveChangesAsync();
         return user;
     }

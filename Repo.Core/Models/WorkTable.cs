@@ -16,6 +16,8 @@ public partial class WorkTable
     public virtual ICollection<AbsenceDay> AbsenceDays { get; set; } = new List<AbsenceDay>();
 
     public virtual User User { get; set; } = null!;
-    
+
+    public virtual ICollection<WorkEntry> WorkEntries { get; set; } = new List<WorkEntry>();
+
     public virtual ICollection<WorkTask> WorkTasks { get; set; } = new List<WorkTask>();
 }

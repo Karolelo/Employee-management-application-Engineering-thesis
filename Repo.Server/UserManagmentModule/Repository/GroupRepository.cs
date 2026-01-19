@@ -102,25 +102,25 @@ public class GroupRepository : IGroupRepository
 
     public async Task<string> GetPathToImageFile(int groupId)
     {
-        var groupImage = await _context.GroupImages.FirstOrDefaultAsync(g => g.GROUP_ID == groupId);
+        var groupImage = await _context.Group_images.FirstOrDefaultAsync(g => g.Group_ID == groupId);
         return groupImage?.Path ?? EmptyImagePath;
     }
 
     public async Task<string> SavePathToImageFile(int groupId, string path)
     {
-        var groupImage = new GroupImage()
+        var groupImage = new Group_image()
         {
-            GROUP_ID = groupId,
+            Group_ID = groupId,
             Path = path
         };
-        await _context.GroupImages.AddAsync(groupImage);
+        await _context.Group_images.AddAsync(groupImage);
         await _context.SaveChangesAsync();
         return path;
     }
 
     public async Task<string> UpdateImageFile(int groupId, string path)
     {
-        var groupImage = await _context.GroupImages.FindAsync(groupId);
+        var groupImage = await _context.Group_images.FindAsync(groupId);
         if (groupImage == null) return EmptyImagePath;
         
         groupImage.Path = path;

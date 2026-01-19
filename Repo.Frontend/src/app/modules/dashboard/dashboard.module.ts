@@ -109,7 +109,6 @@ import { BaseChartDirective } from 'ng2-charts';
 })
 export class DashboardModule {
 
-  //TODO wynieść może do share module
   public static passwordMatchValidator(form: FormGroup) {
     const password = form.get('Password')?.value;
     const confirmed = form.get('ConfirmPassword')?.value;

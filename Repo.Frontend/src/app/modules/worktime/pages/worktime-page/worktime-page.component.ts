@@ -15,21 +15,7 @@ export class WorktimePageComponent implements OnInit {
   constructor(private userStore: UserStoreService) {}
 
   ngOnInit(): void {
-    this.userStore.getUserData().subscribe({
-      next: user => {
-        if (!user) {
-          this.isAdmin = false;
-          return;
-        }
-
-        const roles: string[] = user.roles ?? [];
-        this.isAdmin = roles.includes('Admin');
-      },
-      error: err => {
-        console.error('Error loading user data', err);
-        this.isAdmin = false;
-      }
-    });
+    this.isAdmin = this.userStore.hasRole('Admin');
   }
 
   onEditEntry(entry: WorkEntry): void {
