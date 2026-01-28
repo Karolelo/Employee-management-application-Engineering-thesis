@@ -131,9 +131,8 @@ export class TaskGanttComponent implements AfterViewInit, OnChanges {
   barClass(task: GanttTask): string {
     switch (task.status.toLowerCase()) {
       case 'finished':
-      case 'done':
         return 'bar done';
-      case 'pending':
+      case 'in-progress':
         return 'bar progress';
       default:
         return 'bar todo';
