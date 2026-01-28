@@ -165,22 +165,20 @@ export class TaskGanttComponent implements AfterViewInit, OnChanges {
     for (const task of this.tasks) {
       if (!task.dependencies || !task.dependencies.length) continue;
 
-      const parentBar = byId.get(task.id);
-      if (!parentBar) continue;
+      const childBar = byId.get(task.id);
+      if (!childBar) continue;
 
-      const parentRect = parentBar.getBoundingClientRect();
-      const parentCenterY =
-        parentRect.top - containerRect.top + parentRect.height / 2;
-      const parentXRight = parentRect.right - containerRect.left;
+      const childRect = childBar.getBoundingClientRect();
+      const childCenterY = childRect.top - containerRect.top + childRect.height / 2;
+      const childXLeft = childRect.left - containerRect.left;
 
-      for (const childId of task.dependencies) {
-        const childBar = byId.get(childId);
-        if (!childBar) continue;
+      for (const depId of task.dependencies) {
+        const parentBar = byId.get(depId);
+        if (!parentBar) continue;
 
-        const childRect = childBar.getBoundingClientRect();
-        const childCenterY =
-          childRect.top - containerRect.top + childRect.height / 2;
-        const childXLeft = childRect.left - containerRect.left;
+        const parentRect = parentBar.getBoundingClientRect();
+        const parentCenterY = parentRect.top - containerRect.top + parentRect.height / 2;
+        const parentXRight = parentRect.right - containerRect.left;
 
         const channelYOffset = 18;
         const channelY = Math.min(parentCenterY, childCenterY) - channelYOffset;
