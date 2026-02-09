@@ -1,9 +1,3 @@
-.gantt-toolbar {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 12px;
-}
-
 .gantt-with-arrows {
   position: relative;
 }

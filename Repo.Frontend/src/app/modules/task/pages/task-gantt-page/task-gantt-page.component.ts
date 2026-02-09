@@ -16,36 +16,50 @@ export class TaskGanttPageComponent implements OnInit {
   error: string | null = null;
 
   isAdminOrLeader = false;
-  selectedUserId?: number;
+
+  currentUserId!: number;
+  selectedUser: { id: number; name: string } | null = null;
+
+  userOverlayOpen = false;
+
+  viewCenterDate = new Date();
+
+  windowDays = 7;
 
   constructor(
     private taskService: TaskService,
     private userStore: UserStoreService
   ) {}
 
+  get effectiveUserId(): number {
+    return this.selectedUser?.id ?? this.currentUserId;
+  }
+
   ngOnInit(): void {
     this.isAdminOrLeader =
       this.userStore.hasRole('Admin') || this.userStore.hasRole('TeamLeader');
 
-    const currentUserId = this.userStore.getUserId();
-    if (!currentUserId) {
+    const id = this.userStore.getUserId();
+    if (!id) {
       this.loading = false;
       this.error = 'No user id';
       return;
     }
 
-    this.selectedUserId = currentUserId;
+    this.currentUserId = id;
     this.ganttTasks$ = this.taskService.ganttTasks$;
 
     this.reload();
   }
 
   reload(): void {
-    if (!this.selectedUserId) return;
+    const id = this.effectiveUserId;
+    if (!id) return;
+
     this.loading = true;
     this.error = null;
 
-    this.taskService.loadUserGanttTasks(this.selectedUserId).subscribe({
+    this.taskService.loadUserGanttTasks(id).subscribe({
       next: () => (this.loading = false),
       error: err => {
         console.error(err);
@@ -55,7 +69,19 @@ export class TaskGanttPageComponent implements OnInit {
     });
   }
 
-  userOverlayOpen = false;
+  setWindowDays(days: number): void {
+    this.windowDays = days;
+  }
+
+  shiftDay(delta: number): void {
+    const date = new Date(this.viewCenterDate);
+    date.setDate(date.getDate() + delta);
+    this.viewCenterDate = date;
+  }
+
+  centerToday(): void {
+    this.viewCenterDate = new Date();
+  }
 
   openUserOverlay(): void {
     this.userOverlayOpen = true;
@@ -66,7 +92,7 @@ export class TaskGanttPageComponent implements OnInit {
   }
 
   onUserChanged(user: { id: number; name: string }): void {
-    this.selectedUserId = user.id;
+    this.selectedUser = user.id === this.currentUserId ? null : user;
     this.userOverlayOpen = false;
     this.reload();
   }

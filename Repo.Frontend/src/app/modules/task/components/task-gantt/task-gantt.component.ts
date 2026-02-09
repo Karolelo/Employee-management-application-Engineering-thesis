@@ -5,7 +5,7 @@ import {
   ViewChild,
   AfterViewInit,
   OnChanges,
-  SimpleChanges,
+  SimpleChanges, HostListener,
 } from '@angular/core';
 import { GanttTask } from '../../interfaces/gantt-task';
 import { Router } from '@angular/router';
@@ -24,6 +24,8 @@ interface Arrow {
 })
 export class TaskGanttComponent implements AfterViewInit, OnChanges {
   @Input() tasks: GanttTask[] | null = [];
+  @Input() viewDate: Date | null = null;
+  @Input() windowDays = 7;
   @ViewChild('ganttWrapper') ganttWrapper!: ElementRef<HTMLDivElement>;
   @ViewChild('arrowsSvg') arrowsSvg!: ElementRef<SVGSVGElement>;
 
@@ -32,13 +34,28 @@ export class TaskGanttComponent implements AfterViewInit, OnChanges {
   arrows: Arrow[] = [];
 
   ngAfterViewInit(): void {
-    this.recalculateArrows();
+    this.scheduleRecalculateArrows();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['tasks']) {
-      setTimeout(() => this.recalculateArrows());
+    if (changes['tasks'] || changes['viewDate'] || changes['windowDays']) {
+      this.scheduleRecalculateArrows();
     }
+  }
+
+  @HostListener('window:resize')
+  onResize() {
+    this.scheduleRecalculateArrows();
+  }
+
+  private startOfDay(date: Date): Date {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  }
+
+  private addDays(date: Date, days: number): Date {
+    const x = new Date(date);
+    x.setDate(x.getDate() + days);
+    return x;
   }
 
   get minDate(): Date | null {
@@ -59,29 +76,37 @@ export class TaskGanttComponent implements AfterViewInit, OnChanges {
 
 
   get axisStart(): Date | null {
-    if (!this.minDate) return null;
-    return new Date(this.minDate.getFullYear(), this.minDate.getMonth(), this.minDate.getDate());
+    const center = this.viewDate ? this.startOfDay(this.viewDate) : this.startOfDay(new Date());
+    const backDays = Math.floor(this.windowDays / 2);
+    return this.addDays(center, -backDays);
   }
 
   get axisEnd(): Date | null {
-    if (!this.maxDate) return null;
-    const d = new Date(this.maxDate.getFullYear(), this.maxDate.getMonth(), this.maxDate.getDate());
-    d.setDate(d.getDate() + 1);
-    return d;
+    if (!this.axisStart) return null;
+    return this.addDays(this.axisStart, this.windowDays);
+  }
+
+  get axisEndInclusive(): Date | null {
+    if (!this.axisEnd) return null;
+    return this.addDays(this.axisEnd, -1);
   }
 
   getTotalDays(): number {
-    if (!this.axisStart || !this.axisEnd) return 1;
-    const diffMs = this.axisEnd.getTime() - this.axisStart.getTime();
-    return Math.max(1, diffMs / (1000 * 60 * 60 * 24));
+    return Math.max(1, this.windowDays || 7);
+  }
+
+  isInView(task: GanttTask): boolean {
+    if (!this.axisStart || !this.axisEnd) return false;
+    return task.end_Time > this.axisStart && task.start_Time < this.axisEnd;
   }
 
   getLeftPercent(task: GanttTask): number {
     if (!this.axisStart || !this.axisEnd) return 0;
 
     const totalMs = this.axisEnd.getTime() - this.axisStart.getTime();
-    const startMs = task.start_Time.getTime() - this.axisStart.getTime();
+    const clippedStart = new Date(Math.max(task.start_Time.getTime(), this.axisStart.getTime()));
 
+    const startMs = clippedStart.getTime() - this.axisStart.getTime();
     const startRatio = startMs / totalMs;
     return startRatio * 100;
   }
@@ -90,10 +115,11 @@ export class TaskGanttComponent implements AfterViewInit, OnChanges {
     if (!this.axisStart || !this.axisEnd) return 0;
 
     const totalMs = this.axisEnd.getTime() - this.axisStart.getTime();
-    const durationMs = task.end_Time.getTime() - task.start_Time.getTime();
+    const clippedStart = new Date(Math.max(task.start_Time.getTime(), this.axisStart.getTime()));
+    const clippedEnd = new Date(Math.min(task.end_Time.getTime(), this.axisEnd.getTime()));
 
-    const widthRatio = durationMs / totalMs;
-    return widthRatio * 100;
+    const durationMs = clippedEnd.getTime() - clippedStart.getTime();
+    return Math.max(0, (durationMs / totalMs) * 100);
   }
 
 
@@ -104,26 +130,12 @@ export class TaskGanttComponent implements AfterViewInit, OnChanges {
 
   getDaysArray(): Date[] {
     const days: Date[] = [];
-    if (!this.minDate || !this.maxDate || !this.tasks || this.tasks.length === 0) {
-      return days;
+    if (!this.axisStart) return days;
+
+    const n = this.getTotalDays();
+    for (let i = 0; i < n; i++) {
+      days.push(this.addDays(this.axisStart, i));
     }
-
-    const start = new Date(this.minDate.getFullYear(), this.minDate.getMonth(), this.minDate.getDate());
-    let end = new Date(this.maxDate.getFullYear(), this.maxDate.getMonth(), this.maxDate.getDate());
-
-    const realMaxEnd = this.tasks.reduce(
-      (max, t) => (t.end_Time > max ? t.end_Time : max),
-      this.tasks[0].end_Time
-    );
-
-    if (realMaxEnd > end) {
-      end = new Date(realMaxEnd.getFullYear(), realMaxEnd.getMonth(), realMaxEnd.getDate());
-    }
-
-    for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
-      days.push(new Date(d));
-    }
-
     return days;
   }
 
@@ -131,18 +143,48 @@ export class TaskGanttComponent implements AfterViewInit, OnChanges {
   barClass(task: GanttTask): string {
     switch (task.status.toLowerCase()) {
       case 'finished':
-      case 'done':
         return 'bar done';
-      case 'pending':
+      case 'in-progress':
         return 'bar progress';
       default:
         return 'bar todo';
     }
   }
 
+  private rafId: number | null = null;
+
+  private scheduleRecalculateArrows(): void {
+    if (this.rafId) cancelAnimationFrame(this.rafId);
+
+    this.rafId = requestAnimationFrame(() => {
+      this.rafId = requestAnimationFrame(() => {
+        this.recalculateArrows();
+        this.rafId = null;
+      });
+    });
+  }
+
+  private clamp(v: number, min: number, max: number): number {
+    return Math.max(min, Math.min(max, v));
+  }
+
+  private timeToX(date: Date, trackRect: DOMRect, containerRect: DOMRect): number {
+    if (!this.axisStart || !this.axisEnd) return trackRect.left - containerRect.left;
+
+    const totalMs = this.axisEnd.getTime() - this.axisStart.getTime();
+    const ratio = (date.getTime() - this.axisStart.getTime()) / totalMs;
+
+    const x = (trackRect.left - containerRect.left) + ratio * trackRect.width;
+    const left = trackRect.left - containerRect.left;
+    const right = trackRect.right - containerRect.left;
+
+    return this.clamp(x, left, right);
+  }
+
   private recalculateArrows(): void {
     this.arrows = [];
     if (!this.tasks || !this.tasks.length || !this.ganttWrapper || !this.arrowsSvg) return;
+    if (!this.axisStart || !this.axisEnd) return;
 
     const wrapperEl = this.ganttWrapper.nativeElement;
     const containerEl = wrapperEl.querySelector('.gantt-container') as HTMLDivElement;
@@ -151,53 +193,62 @@ export class TaskGanttComponent implements AfterViewInit, OnChanges {
     const svgEl = this.arrowsSvg.nativeElement;
     const containerRect = containerEl.getBoundingClientRect();
 
-    const barNodes = containerEl.querySelectorAll<HTMLElement>('.gantt-bar');
+    const trackNodes = containerEl.querySelectorAll<HTMLElement>('.gantt-row-track');
+    const trackById = new Map<number, HTMLElement>();
 
-    const byId = new Map<number, HTMLElement>();
-    barNodes.forEach(el => {
+    trackNodes.forEach(el => {
       const idAttr = el.getAttribute('data-task-id');
       if (!idAttr) return;
       const id = Number(idAttr);
-      if (!isNaN(id)) byId.set(id, el);
+      if (!isNaN(id)) trackById.set(id, el);
     });
+
+    const taskById = new Map<number, GanttTask>();
+    this.tasks.forEach(t => taskById.set(t.id, t));
 
     const arrows: Arrow[] = [];
 
-    for (const task of this.tasks) {
-      if (!task.dependencies || !task.dependencies.length) continue;
+    for (const childTask of this.tasks) {
+      if (!childTask.dependencies?.length) continue;
 
-      const parentBar = byId.get(task.id);
-      if (!parentBar) continue;
+      const childTrack = trackById.get(childTask.id);
+      if (!childTrack) continue;
 
-      const parentRect = parentBar.getBoundingClientRect();
-      const parentCenterY =
-        parentRect.top - containerRect.top + parentRect.height / 2;
-      const parentXRight = parentRect.right - containerRect.left;
+      const childTrackRect = childTrack.getBoundingClientRect();
+      const childCenterY = childTrackRect.top - containerRect.top + childTrackRect.height / 2;
 
-      for (const childId of task.dependencies) {
-        const childBar = byId.get(childId);
-        if (!childBar) continue;
+      const childX = this.timeToX(childTask.start_Time, childTrackRect, containerRect);
 
-        const childRect = childBar.getBoundingClientRect();
-        const childCenterY =
-          childRect.top - containerRect.top + childRect.height / 2;
-        const childXLeft = childRect.left - containerRect.left;
+      for (const parentId of childTask.dependencies) {
+        const parentTask = taskById.get(parentId);
+        const parentTrack = trackById.get(parentId);
+        if (!parentTask || !parentTrack) continue;
+
+        const childVisible = this.isInView(childTask);
+        const parentVisible = this.isInView(parentTask);
+        if (!childVisible && !parentVisible) continue;
+
+        const parentTrackRect = parentTrack.getBoundingClientRect();
+        const parentCenterY = parentTrackRect.top - containerRect.top + parentTrackRect.height / 2;
+
+        const parentX = this.timeToX(parentTask.end_Time, parentTrackRect, containerRect);
+
+        if (Math.abs(parentX - childX) < 2 && Math.abs(parentCenterY - childCenterY) < 2) {
+          continue;
+        }
 
         const channelYOffset = 18;
         const channelY = Math.min(parentCenterY, childCenterY) - channelYOffset;
-        const hOffset = 8;
 
-        const startX = parentXRight;
-        const startY = parentCenterY;
-        const endX = childXLeft;
-        const endY = childCenterY;
+        const dir = (childX - parentX) === 0 ? 1 : Math.sign(childX - parentX);
+        const hOffset = 8 * dir;
 
         const d = [
-          `M ${startX} ${startY}`,
+          `M ${parentX} ${parentCenterY}`,
           `V ${channelY}`,
-          `H ${endX - hOffset}`,
-          `V ${endY}`,
-          `H ${endX}`,
+          `H ${childX - hOffset}`,
+          `V ${childCenterY}`,
+          `H ${childX}`,
         ].join(' ');
 
         arrows.push({ d });
