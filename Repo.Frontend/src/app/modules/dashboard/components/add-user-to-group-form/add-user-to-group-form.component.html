@@ -5,13 +5,13 @@
     <button
       mat-raised-button
       color="primary"
-      [disabled]="loading || !userList ||userList.selectedIds.length === 0"
+      [disabled]="loading || !userList"
       (click)="onSubmit()">
       <mat-spinner
         diameter="20"
         *ngIf="loading">
       </mat-spinner>
-      <span>Add User</span>
+      <span>Set users</span>
     </button>
   </div>
 

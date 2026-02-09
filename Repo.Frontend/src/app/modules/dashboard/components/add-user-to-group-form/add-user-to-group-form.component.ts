@@ -42,11 +42,12 @@ export class AddUserToGroupFormComponent implements OnChanges {
 
     const selectedIds = this.userList.selectedIds;
 
-    if (selectedIds.length === 0) {
+    //We disable this feature because sometimes we just removing users
+    /*if (selectedIds.length === 0) {
       this.snackBar.open('Choose at least one user', 'OK', { duration: 3000 });
       this.loading = false;
       return;
-    }
+    }*/
 
     const toAdd = selectedIds.filter(id => !this.existingUserIds.includes(id));
 
