@@ -31,6 +31,10 @@ import { TaskGanttComponent } from './components/task-gantt/task-gantt.component
 import {UserSwitchOverlayComponent} from './components/user-switch-overlay/user-switch-overlay.component';
 
 import {MatFormField} from '@angular/material/form-field'
+import {MatChip} from '@angular/material/chips';
+import {MatIcon} from '@angular/material/icon';
+import {MatButton} from '@angular/material/button';
+import {MatTooltip} from '@angular/material/tooltip';
 
 @NgModule({
     declarations: [
@@ -70,7 +74,11 @@ import {MatFormField} from '@angular/material/form-field'
         MatCellDef,
         MatPaginator,
         InfoMessageComponent,
-        MatFormField
+        MatFormField,
+        MatChip,
+        MatIcon,
+        MatButton,
+        MatTooltip
     ],
   exports: [
     TaskFormComponent,
