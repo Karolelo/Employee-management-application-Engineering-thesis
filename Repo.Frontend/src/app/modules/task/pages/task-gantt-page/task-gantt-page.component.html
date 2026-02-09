@@ -3,14 +3,73 @@
   <div *ngIf="!loading && error" class="error">{{ error }}</div>
 
   <ng-container *ngIf="!loading && !error">
-    <section class="toolbar">
-      <span>Gantt – tasks</span>
+    <section class="gantt-toolbar mat-elevation-z1">
+      <div class="title">Gantt – tasks</div>
 
-      <ng-container *ngIf="isAdminOrLeader">
-        <button mat-stroked-button type="button" (click)="openUserOverlay()">
-          Select user
+      <button
+        mat-stroked-button
+        color="primary"
+        type="button"
+        class="user-btn"
+        [disabled]="!isAdminOrLeader"
+        (click)="openUserOverlay()"
+        [matTooltip]="isAdminOrLeader ? 'Select user' : 'No permission to change user'"
+        matTooltipPosition="above"
+      >
+        <mat-icon>person</mat-icon>
+
+      <span class="user-btn-text">
+        <span class="user-btn-main">
+          {{ selectedUser ? selectedUser.name : 'Select user' }}
+        </span>
+
+        <span class="user-btn-sub" *ngIf="selectedUser">
+          #{{ selectedUser.id }}
+        </span>
+      </span>
+
+        <mat-icon class="chev" *ngIf="isAdminOrLeader">expand_more</mat-icon>
+      </button>
+
+      <div class="day-nav">
+        <button mat-icon-button type="button" (click)="shiftDay(-1)" aria-label="Previous day">
+          <mat-icon>chevron_left</mat-icon>
         </button>
-      </ng-container>
+
+        <button mat-stroked-button type="button" (click)="centerToday()">
+          <mat-icon>my_location</mat-icon>
+          Today
+        </button>
+
+        <button mat-icon-button type="button" (click)="shiftDay(1)" aria-label="Next day">
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+
+        <span class="day-label">{{ viewCenterDate | date:'dd.MM.yyyy' }}</span>
+
+        <mat-form-field class="range-field" appearance="outline">
+          <mat-label>Range</mat-label>
+          <mat-select [value]="windowDays" (selectionChange)="setWindowDays($event.value)">
+            <mat-option [value]="7">7 days</mat-option>
+            <mat-option [value]="14">14 days</mat-option>
+            <mat-option [value]="21">21 days</mat-option>
+            <mat-option [value]="28">28 days</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <span class="spacer"></span>
+
+      <button
+        mat-flat-button
+        color="primary"
+        type="button"
+        [disabled]="loading || !(ganttTasks$ | async)?.length"
+        (click)="gantt.exportToPdf()"
+      >
+        <mat-icon>picture_as_pdf</mat-icon>
+        Export PDF
+      </button>
     </section>
 
     <app-user-switch-overlay
@@ -19,9 +78,8 @@
       (selected)="onUserChanged($event)"
     ></app-user-switch-overlay>
 
-
     <section class="gantt-wrapper">
-      <app-task-gantt [tasks]="ganttTasks$ | async"></app-task-gantt>
+      <app-task-gantt #gantt [tasks]="ganttTasks$ | async" [viewDate]="viewCenterDate" [windowDays]="windowDays"></app-task-gantt>
     </section>
   </ng-container>
 </main>

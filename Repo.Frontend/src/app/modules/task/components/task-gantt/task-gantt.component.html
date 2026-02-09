@@ -1,14 +1,8 @@
-<div class="gantt-toolbar">
-  <button mat-raised-button color="primary" type="button" (click)="exportToPdf()">
-    Export to PDF
-  </button>
-</div>
-
 <div #ganttWrapper class="gantt-with-arrows" *ngIf="tasks && tasks.length; else emptyTpl">
   <div class="gantt-container">
     <div class="gantt-header" *ngIf="minDate && maxDate">
-      <div class="range">
-        {{ minDate | date:'dd.MM.yyyy' }} – {{ maxDate | date:'dd.MM.yyyy' }}
+      <div class="range" *ngIf="axisStart && axisEndInclusive">
+        {{ axisStart | date:'dd.MM.yyyy' }} – {{ axisEndInclusive | date:'dd.MM.yyyy' }}
       </div>
       <div class="ticks">
         <div
@@ -42,8 +36,9 @@
           </div>
         </div>
 
-        <div class="gantt-row-track">
+        <div class="gantt-row-track" [attr.data-task-id]="t.id">
           <div
+            *ngIf="isInView(t)"
             class="gantt-bar"
             [attr.data-task-id]="t.id"
             [ngClass]="barClass(t)"

@@ -1,0 +1,60 @@
+.gantt-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+
+  padding: 10px 12px;
+  margin-bottom: 12px;
+
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,.08);
+}
+
+.range-field {
+  width: 220px;
+  margin: 0;
+}
+
+.range-field {
+  align-self: center;
+}
+
+.title {
+  font-weight: 800;
+  letter-spacing: .2px;
+  white-space: nowrap;
+}
+
+.spacer { flex: 1 1 auto; }
+
+.user-btn { display: inline-flex; align-items: center; gap: 8px; }
+
+.user-btn-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.05;
+  min-width: 120px;
+  text-align: left;
+}
+
+.user-btn-main { font-weight: 700; white-space: nowrap; }
+.user-btn-sub { font-size: 11px; opacity: .75; white-space: nowrap; }
+
+.day-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px;
+  border-radius: 12px;
+  background: rgba(148, 163, 184, 0.12);
+}
+
+.day-label {
+  margin-left: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  opacity: .85;
+  white-space: nowrap;
+}
