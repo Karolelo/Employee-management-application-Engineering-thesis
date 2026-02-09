@@ -5,8 +5,8 @@ import {UserService} from '../../services/user/user.service';
 import {User} from '../../interfaces/user';
 import {Group} from '../../interfaces/group';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import { switchMap } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { switchMap,map } from 'rxjs/operators';
+import { of,Observable } from 'rxjs';
 @Component({
   selector: 'app-group-form',
   standalone: false,
@@ -69,21 +69,26 @@ export class GroupFormComponent implements OnChanges{
 
   onSubmit() {
     if (this.group) {
+      const groupId = this.group.id;
       const adminId = this.groupForm.get('admin_ID')?.value;
 
       this.group_service
-        .updateGroup({ id: this.group.id, ...this.groupForm.getRawValue() })
+        .updateGroup({ id: groupId, ...this.groupForm.getRawValue() })
         .pipe(
           switchMap(() => {
-            if(this.group && adminId) {
-              return this.group_service.addUserToGroup(adminId, this.group.id);
-            }
-            return of(null);
+            if (!adminId) return of(null);
+
+            return this.userIsInGroup(adminId).pipe(
+              switchMap((isInGroup) => {
+                if (isInGroup) return of(null);
+                return this.group_service.addUserToGroup(adminId, groupId);
+              })
+            );
           })
         )
         .subscribe({
           next: () => {
-            this.snackBar.open('Group updated and admin added', 'Hide', { duration: 3000 });
+            this.snackBar.open('Group updated', 'Hide', { duration: 3000 });
           },
           error: (error) => {
             console.error('Error:', error);
@@ -92,6 +97,7 @@ export class GroupFormComponent implements OnChanges{
         });
       return;
     }
+
 
     const adminId = this.groupForm.get('admin_ID')?.value;
 
@@ -124,5 +130,14 @@ export class GroupFormComponent implements OnChanges{
     }else{
       ctrl.disable({emitEvent:false});
     }
+  }
+
+  private userIsInGroup(id: number): Observable<boolean> {
+    return this.group_service.getUserGroups(id).pipe(
+      map(groups => {
+        if (!groups) return false;
+        return groups.some(g => g.id === this.group?.id);
+      })
+    );
   }
 }

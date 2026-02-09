@@ -1,6 +1,7 @@
 import { Component,Input,OnChanges,SimpleChanges,inject} from '@angular/core';
 import {Group} from '../../interfaces/group';
 import {GroupService} from '../../services/group/group.service';
+import { environment} from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-group-short-info',
@@ -9,7 +10,6 @@ import {GroupService} from '../../services/group/group.service';
   styleUrl: './group-short-info.component.css'
 })
 export class GroupShortInfoComponent implements OnChanges {
-  private static readonly API_BASE_URL = 'http://localhost:5239';
   private static readonly DEFAULT_IMAGE_URL = '/images/default.png';
 
   @Input() group?: Group;
@@ -42,10 +42,10 @@ export class GroupShortInfoComponent implements OnChanges {
       console.error('Error during taking image:', error);
     }
   }
-
+  // Temporary changes
   getFullImageUrl(): string {
     return this.imageUrl
-      ? GroupShortInfoComponent.API_BASE_URL + this.imageUrl
+      ? environment.API_BASE_URL + this.imageUrl
       : GroupShortInfoComponent.DEFAULT_IMAGE_URL;
   }
 }

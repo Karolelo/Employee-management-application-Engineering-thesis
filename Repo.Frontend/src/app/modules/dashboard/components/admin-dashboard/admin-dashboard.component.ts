@@ -41,11 +41,16 @@ export class AdminDashboardComponent implements OnInit {
   private matSnackBar = inject(MatSnackBar);
 
   public userCount = 0;
-
+  public groupCount = 0;
   ngOnInit(): void {
     this.userService.getUsers().subscribe((data) => {
-      this.userCount = data.length;
+      if(data)
+        this.userCount = data.length
     });
+    this.groupService.getGroups().subscribe((data)=> {
+      if(data)
+        this.groupCount = data.length
+    })
   }
 
   /** Based on the screen size, switch from standard to one column per row */

@@ -3,6 +3,7 @@ import { FormGroup,FormBuilder } from '@angular/forms';
 import {GroupService} from '../../services/group/group.service';
 import {Group} from '../../interfaces/group';
 import { NgOptimizedImage } from '@angular/common';
+import {environment} from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-group-image-edit-form',
@@ -12,6 +13,7 @@ import { NgOptimizedImage } from '@angular/common';
 })
 export class GroupImageEditFormComponent implements OnChanges {
   private static readonly IMAGE_REFRESH_DELAY_MS = 1000;
+  private static readonly DEFAULT_IMAGE_URL = '/images/default.png';
 
   @Input() group?: Group;
   imageForm: FormGroup;
@@ -74,7 +76,7 @@ export class GroupImageEditFormComponent implements OnChanges {
 
   getFullImageUrl(): string {
     return this.imageUrl
-      ? 'http://localhost:5239' + this.imageUrl
-      : '/images/default.png';
+      ? environment.API_BASE_URL + this.imageUrl
+      : GroupImageEditFormComponent.DEFAULT_IMAGE_URL;
   }
 }
