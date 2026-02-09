@@ -19,7 +19,7 @@ export class GroupFormComponent implements OnChanges{
   @Input() transparentBackground: boolean = false;
   groupForm: FormGroup;
   teamLeaders: User[] = [];
-  @Output() groupCreatedId: EventEmitter<number> = new EventEmitter();
+  @Output() createdGroup: EventEmitter<Group> = new EventEmitter();
   constructor(private fb: FormBuilder
               ,private user_service: UserService
               ,private group_service: GroupService
@@ -105,7 +105,7 @@ export class GroupFormComponent implements OnChanges{
       .createGroup(this.groupForm.value)
       .pipe(
         switchMap(response => {
-          this.groupCreatedId.emit(response.id);
+          this.createdGroup.emit(response);
           if(adminId) {
             return this.group_service.addUserToGroup(adminId, response.id);
           }

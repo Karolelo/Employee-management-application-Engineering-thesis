@@ -25,6 +25,7 @@ export class UserListComponent implements AfterViewInit {
   selectedIds: number[] = [];
 
   @Input() activeEditing: boolean = true;
+  @Input() userIdToSkip: number | null = null;
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
   displayedColumns = ['Nickname','Name','Surname','Login','Email','Role','Select'];
@@ -40,12 +41,16 @@ export class UserListComponent implements AfterViewInit {
 
   applyFilter(event: Event) {
     const value = (event.target as HTMLInputElement).value;
-    console.log(value);
     this.dataSource.filter(value.trim().toLowerCase());
   }
 
   selectUser(id: number,event: Event) {
     const isChecked = (event.target as HTMLInputElement).checked;
+
+    if (this.userIdToSkip === id) {
+      (event.target as HTMLInputElement).checked = false;
+      return;
+    }
 
     if(isChecked) {
       if(!this.selectedIds.includes(id)) {

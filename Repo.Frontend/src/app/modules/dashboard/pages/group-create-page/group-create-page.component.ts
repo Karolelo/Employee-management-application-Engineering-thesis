@@ -5,6 +5,7 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {MatDialog} from '@angular/material/dialog';
 import {MatStepper} from '@angular/material/stepper';
 import {Router} from '@angular/router';
+import {Group} from '../../interfaces/group';
 @Component({
   selector: 'app-group-create-page',
   standalone: false,
@@ -14,6 +15,7 @@ import {Router} from '@angular/router';
 export class GroupCreatePageComponent implements CanDeactivate<boolean> {
   isLinear = true;
   createdGroupId: number  = 0;
+  createdAdminId: number = 0;
   isFirstStepCompleted = false;
   isSecondStepCompleted = false;
   @ViewChild('stepper') stepper!: MatStepper;
@@ -22,9 +24,9 @@ export class GroupCreatePageComponent implements CanDeactivate<boolean> {
     private router: Router
   ) {}
 
-  onGroupCreated(groupId: number) {
-    console.log("Group id :"+groupId);
-    this.createdGroupId = groupId;
+  onGroupCreated(group: Group) {
+    this.createdGroupId = group.id;
+    this.createdAdminId = group.admin_ID;
     this.isFirstStepCompleted = true;
     this.stepper.next();
   }

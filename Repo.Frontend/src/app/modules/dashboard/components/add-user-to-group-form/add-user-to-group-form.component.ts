@@ -5,7 +5,7 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {forkJoin} from 'rxjs';
 import {finalize} from 'rxjs/operators';
 import {UserService} from '../../services/user/user.service';
-import {pipe,map} from 'rxjs'
+import {pipe,map,filter} from 'rxjs'
 @Component({
   selector: 'app-add-user-to-group-form',
   standalone: false,
@@ -15,6 +15,7 @@ import {pipe,map} from 'rxjs'
 export class AddUserToGroupFormComponent implements OnChanges {
   @Input() group_id: number = 0;
   @Output() usersAdded: EventEmitter<boolean> = new EventEmitter<boolean>()
+  @Input() userIdToSkip!: number;
 
   @ViewChild(UserListComponent) userList!: UserListComponent;
   loading: boolean = false;
@@ -34,6 +35,7 @@ export class AddUserToGroupFormComponent implements OnChanges {
       ).subscribe((ids: number[]) => {
         this.existingUserIds = ids;
         this.userList.selectedIds = [...ids];
+        this.userList.userIdToSkip = this.userIdToSkip;
       });
     }
   }
@@ -42,7 +44,6 @@ export class AddUserToGroupFormComponent implements OnChanges {
 
     const selectedIds = this.userList.selectedIds;
 
-    //We disable this feature because sometimes we just removing users
     /*if (selectedIds.length === 0) {
       this.snackBar.open('Choose at least one user', 'OK', { duration: 3000 });
       this.loading = false;
