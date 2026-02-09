@@ -11,4 +11,4 @@ The backend of the application is implemented using **.NET**, while the frontend
 This project was created as part of an engineering thesis and demonstrates the practical application of modern web technologies, modular architecture, and best practices in software development.
 
 # System not working without up to date database
-If u consider using it, we recommend u create in memory database for test
+If you consider using it, we recommend you create in memory database for test
