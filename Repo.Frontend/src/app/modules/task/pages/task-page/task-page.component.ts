@@ -17,7 +17,7 @@ import {User} from '../../../dashboard/interfaces/user';
 export class TaskPageComponent implements OnInit,OnChanges {
   selectedTask?: Task;
 
-  //Variables for editing other users tasks from team leader group
+  //Variables for editing other users tasks from the team leader group
   groupUsers$!: Observable<User[]>;
   isTeamLead: boolean = false
   selectedUserId?:number;

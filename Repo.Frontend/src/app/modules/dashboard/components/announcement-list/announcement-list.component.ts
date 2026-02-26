@@ -13,7 +13,6 @@ export class AnnouncementListComponent {
   @Input() announcements$: Observable<Announcement[]> = new Observable<Announcement[]>();
   @Output() editAnnouncement: EventEmitter<Announcement> = new EventEmitter<Announcement>();
   @Output() deleteAnnouncement: EventEmitter<number> = new EventEmitter<number>();
-  constructor(private announcement_service: AnnouncementService) { }
   onEditAnnoucement(annoucement: Announcement) {
     this.editAnnouncement.emit(annoucement);
   }

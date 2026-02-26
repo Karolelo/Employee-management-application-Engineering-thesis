@@ -3,7 +3,7 @@
     <mat-label>Select User</mat-label>
     <mat-select class="selection" [(ngModel)]="selectedUserId">
       <mat-option *ngFor="let user of groupUsers$ | async" [value]="user.id">
-        {{ user.name }}
+        {{ user.name + ' ' + user.surname }}
       </mat-option>
     </mat-select>
     <p *ngIf="errorMessageUsers" class="error-message">

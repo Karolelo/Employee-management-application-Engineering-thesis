@@ -41,17 +41,18 @@ export class GroupCreatePageComponent implements CanDeactivate<boolean> {
     if (this.isSecondStepCompleted) {
       return true;
     }
-
-    return this.dialog.open(ConfirmDialogComponent, {
-      data: {
-        title: 'Waitt',
-        message: 'You sure you want to leave progress will be gone?',
-        closeBtn: 'Stay',
-        confirmBtn: 'Leave'
-      },
-      disableClose: true
-    }).afterClosed().toPromise().then(result => {
-      return !!result;
-    });
+    else {
+      return this.dialog.open(ConfirmDialogComponent, {
+        data: {
+          title: 'Waitt',
+          message: 'You sure you want to leave progress will be gone?',
+          closeBtn: 'Stay',
+          confirmBtn: 'Leave'
+        },
+        disableClose: true
+      }).afterClosed().toPromise().then(result => {
+        return !!result;
+      });
+    }
   }
 }

@@ -40,15 +40,11 @@ export class AddUserToGroupFormComponent implements OnChanges {
     }
   }
   onSubmit() {
+    this.usersAdded.emit(true);
+
     this.loading = true;
 
     const selectedIds = this.userList.selectedIds;
-
-    /*if (selectedIds.length === 0) {
-      this.snackBar.open('Choose at least one user', 'OK', { duration: 3000 });
-      this.loading = false;
-      return;
-    }*/
 
     const toAdd = selectedIds.filter(id => !this.existingUserIds.includes(id));
 
@@ -74,7 +70,6 @@ export class AddUserToGroupFormComponent implements OnChanges {
       .pipe(finalize(() => (this.loading = false)))
       .subscribe({
         next: () => {
-          this.usersAdded.emit(true);
         },
         error: (error) => {
           console.error('Error during updating group users:', error);

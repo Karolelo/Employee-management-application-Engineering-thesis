@@ -54,7 +54,6 @@ export class GroupsPageComponent {
 
     dialogRef.afterClosed().subscribe((result: boolean) => {
       if (result) {
-        console.log(`Deleted group: ${id}`);
         this.groups = this.groups.filter(group => group.id !== id);
         this.selectedGroups = this.groups.filter(group => group.id !== id);
         this.groupService.deleteGroup(id).subscribe({
