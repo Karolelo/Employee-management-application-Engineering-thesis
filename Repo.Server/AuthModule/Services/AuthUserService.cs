@@ -127,6 +127,7 @@ public class AuthUserService : IAuthUserService
 
     public async Task<Response<TokenModel>> RefreshToken(TokenModel tokenModel)
     {
+        _unityOfWork.CreateTransaction();
         try
         {
             var principals = _authenticationHelpers.GetPrincipalFromExpiredToken(tokenModel.AccessToken);
@@ -154,7 +155,10 @@ public class AuthUserService : IAuthUserService
 
             var roles = await _userRepository.GetUserRoles(userId);
             var newAccessToken = _authenticationHelpers.GenerateToken(userId, username, roles);
-
+            
+            _unityOfWork.Save();
+            _unityOfWork.Commit();
+            
             return Response<TokenModel>.Ok(new TokenModel
             {
                 AccessToken = newAccessToken,
@@ -163,6 +167,7 @@ public class AuthUserService : IAuthUserService
         }
         catch (Exception e)
         {
+            _unityOfWork.Rollback();
             return Response<TokenModel>.Fail("Error during refreshing token");
         }
     }
