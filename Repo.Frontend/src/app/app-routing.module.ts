@@ -14,7 +14,6 @@ import {ForbiddenPage403Component} from './common_components/forbidden-page403/f
 import {NotFoundPage404Component} from './common_components/not-found-page404/not-found-page404.component';
 import {ProfileModule} from './modules/profile/profile.module';
 import {GroupModule} from './modules/group/group.module';
-import {DebugComponent} from './debug_component/app-debug/app-debug.component';
 
 const routes: Routes = [
   {
@@ -42,16 +41,20 @@ const routes: Routes = [
         path: 'dashboard', loadChildren: () => DashboardModule,
         data: { title: 'Dashboard module', expectedRoles: ['Admin','TeamLeader']}
       },
-      { path: 'grades', loadChildren: () => GradeModule,
+      {
+        path: 'grades', loadChildren: () => GradeModule,
         data: { title: 'Grades module', expectedRoles: ['User','Admin','TeamLeader']}
       },
-      { path: 'worktime', loadChildren: () => WorktimeModule,
+      {
+        path: 'worktime', loadChildren: () => WorktimeModule,
         data: { title: 'Worktime module', expectedRoles: ['User','Admin','Accountant']}
       },
-      { path: 'profile', loadChildren: () => ProfileModule,
+      {
+        path: 'profile', loadChildren: () => ProfileModule,
         data: { title: 'Profile module', expectedRoles: ['User','Admin','Accountant']}
       },
-      { path: 'forbidden', component: ForbiddenPage403Component,
+      {
+        path: 'forbidden', component: ForbiddenPage403Component,
         data: { title: '', expectedRoles: ['User','Admin','TeamLeader','Accountant']},
         canActivateChild:[]
       },
@@ -63,13 +66,10 @@ const routes: Routes = [
       {
         path: 'myGroups', loadChildren: () => GroupModule,
         data: {title: 'My groups', expectedRoles: ['User','Admin','TeamLeader','Accountant']}
-      },
-      {
-        path:'tmpTest', component: DebugComponent, data: {expectedRoles: ['User','Admin','TeamLeader','Accountant']}
       }
     ]
   },
-  { path: '**', redirectTo: '/404' }
+    { path: '**', redirectTo: '/404' }
 ];
 
 @NgModule({

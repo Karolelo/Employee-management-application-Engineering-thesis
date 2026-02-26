@@ -20,13 +20,14 @@ import {Group} from '../../../dashboard/interfaces/group';
   providers: []
 })
 export class TaskListComponent implements OnInit{
-  enableEdit:boolean = true;
-  loading:boolean = false;
+  enableEdit: boolean = true;
+  loading: boolean = false;
   errorMessage: string | null = null;
   tasks$!: Observable<Task[]>;
   @Output() editTask = new EventEmitter<Task>();
   constructor(private taskService: TaskService,private userDataStore: UserStoreService, private dialog: MatDialog,
-              private router: Router){
+              private router: Router)
+  {
   }
   ngOnInit(): void {
     this.loading = true;
@@ -64,8 +65,8 @@ export class TaskListComponent implements OnInit{
   onDeleteTask(taskId: number): void {
     this.taskService.deleteTask(taskId).pipe(
       tap({
-        next: (response) => console.log('Odpowiedź z serwera:', response),
-        error: (error) => console.error('Błąd:', error)
+        next: (response) => console.log('Response from server:', response),
+        error: (error) => console.error('Error:', error)
       })
     ).subscribe({});
   }

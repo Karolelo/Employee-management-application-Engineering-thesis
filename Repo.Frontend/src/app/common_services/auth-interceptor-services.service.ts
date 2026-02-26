@@ -25,14 +25,16 @@ export class AuthInterceptorService implements HttpInterceptor {
     return next.handle(request).pipe(
       catchError(error => {
         if (error instanceof HttpErrorResponse) {
+
           if (error.status === 401) {
             return this.handle401Error(request, next);
-          } else if (error.status === 403) {
+          }
+          else if (error.status === 403) {
             // Manage not access
-            //this.authService.logout();
             return throwError(() => new Error('No access'));
           }
         }
+
         return throwError(() => error);
       })
     );
@@ -72,12 +74,13 @@ export class AuthInterceptorService implements HttpInterceptor {
           this.isRefreshing = false;
           const token = response.token || response;
           this.refreshTokenSubject.next(token);
+
           return next.handle(this.addTokenHeader(request, token.accessToken));
         }),
         catchError((error) => {
           this.isRefreshing = false;
-          console.log('Token refresh failed:', error);
           this.authService.logout();
+
           return throwError(() => new Error('Session expired. Please log in again'));
         }),
         finalize(() => {

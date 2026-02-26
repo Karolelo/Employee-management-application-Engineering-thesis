@@ -15,7 +15,6 @@ import {MatSnackBar} from'@angular/material/snack-bar'
 export class GroupTaskFormComponent implements OnChanges {
   @Input() taskToEdit?: Task;
   @Input() groupId!: number;
-  //@Input() groupMembers: Array<{id: number, name: string}> = []; // group users
   @Output() taskUpdated = new EventEmitter<void>();
 
   taskForm!: FormGroup;
