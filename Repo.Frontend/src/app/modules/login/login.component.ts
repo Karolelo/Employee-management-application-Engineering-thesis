@@ -37,7 +37,7 @@ export class LoginComponent {
         this.router.navigate(['']);
       },
       error: (error) => {
-        console.error('Error durring login:', error);
+
         this.snackBar.open('Error during login: ' + error.error.message, 'Close', {
           duration: 5000,
           panelClass: ['error-snackbar']

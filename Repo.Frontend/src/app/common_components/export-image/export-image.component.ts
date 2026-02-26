@@ -15,7 +15,6 @@ export class ExportImageComponent {
     if (files && files.length > 0) {
       this.file = files[0];
       this.fileName = this.file?.name;
-      console.log('File sent:', this.file);
       this.fileSent.emit(this.file);
     }
   }

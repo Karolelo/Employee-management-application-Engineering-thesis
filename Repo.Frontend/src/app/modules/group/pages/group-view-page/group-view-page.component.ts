@@ -19,7 +19,6 @@ export class GroupViewPageComponent {
    group!: Group;
    announcements$!: Observable<Announcement[]>;
    users: User[] = [];
-   usersDataSource!: MatTableDataSource<any>;
    @ViewChild(MatPaginator) paginator!: MatPaginator;
    constructor(private user_service: UserService,
                private group_service: GroupService,
