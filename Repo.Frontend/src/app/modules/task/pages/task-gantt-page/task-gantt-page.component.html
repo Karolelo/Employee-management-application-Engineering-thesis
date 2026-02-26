@@ -1,6 +1,6 @@
 <main class="task-gantt-page">
   <div *ngIf="loading" class="loading"><mat-spinner></mat-spinner></div>
-  <div *ngIf="!loading && error" class="error">{{ error }}</div>
+  <div class="error-message" *ngIf="!loading && error">{{ error }}</div>
 
   <ng-container *ngIf="!loading && !error">
     <section class="gantt-toolbar mat-elevation-z1">

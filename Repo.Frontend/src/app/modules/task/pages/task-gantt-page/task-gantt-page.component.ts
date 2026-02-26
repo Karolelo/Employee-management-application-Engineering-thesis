@@ -63,7 +63,7 @@ export class TaskGanttPageComponent implements OnInit {
       next: () => (this.loading = false),
       error: err => {
         console.error(err);
-        this.error = 'Failed to load gantt tasks.';
+        this.error = 'User has no task yet.';
         this.loading = false;
       },
     });

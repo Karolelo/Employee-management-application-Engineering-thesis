@@ -33,6 +33,7 @@ using Repo.Server.UserManagmentModule.Services;
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
 
+
 //adding services
 builder.Services.AddScoped<IAuthUserService,AuthUserService>();
 builder.Services.AddScoped<ITaskService, TaskService>();
@@ -86,7 +87,7 @@ builder.Services.Configure<RoleConfiguration>(
 
 // Ensure the ApplicationDbContext is registered as a service
 builder.Services.AddDbContext<MyDbContext>(conf =>
-    conf.UseSqlServer(builder.Configuration["DockerConnectionString"]) /*o => o.EnableRetryOnFailure(maxRetryCount: 10,
+    conf.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")) /*o => o.EnableRetryOnFailure(maxRetryCount: 10,
         maxRetryDelay: TimeSpan.FromSeconds(30),
         errorNumbersToAdd: null))*/);
 // builder.Services.AddDbContext<MyDbContext>(conf=> conf

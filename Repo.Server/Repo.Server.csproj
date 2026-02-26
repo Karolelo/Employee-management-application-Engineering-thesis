@@ -19,7 +19,6 @@
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.8" />
   </ItemGroup>
-
   <ItemGroup>
     <_ContentIncludedByDefault Remove="Views\Home\Index.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Home\Privacy.cshtml" />

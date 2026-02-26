@@ -72,6 +72,7 @@ public class AuthUserService : IAuthUserService
 
     public async Task<Response<TokenModel>> Login(LoginModel model)
     {
+        _unityOfWork.CreateTransaction();
         try
         {
             var user = await _userRepository.GetUserByLogin(model.Login);
@@ -108,6 +109,9 @@ public class AuthUserService : IAuthUserService
             var newRefreshToken = CreateRefreshToken(user.ID);
             await _refreshTokenRepository.Add(newRefreshToken);
             
+            _unityOfWork.Save();
+            _unityOfWork.Commit();
+            
             return Response<TokenModel>.Ok(new TokenModel
             {
                 AccessToken = _authenticationHelpers.GenerateToken(user.ID, user.Nickname, roles),
@@ -116,6 +120,7 @@ public class AuthUserService : IAuthUserService
         }
         catch (Exception e)
         {
+            _unityOfWork.Rollback();
             return Response<TokenModel>.Fail($"Error during login: {e.Message}");
         }
     }

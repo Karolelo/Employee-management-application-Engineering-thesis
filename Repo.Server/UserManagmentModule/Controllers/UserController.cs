@@ -7,7 +7,7 @@ namespace Repo.Server.UserManagmentModule.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(policy: "TeamLeaderOnly")]
+[Authorize]
 public class UserController : ControllerBase
 {
     private readonly IUserService _userService;

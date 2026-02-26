@@ -6,7 +6,7 @@ using Repo.Server.UserManagmentModule.Interfaces;
 namespace Repo.Server.UserManagmentModule.Controllers;
 [ApiController]
 [Route("api/[controller]/group")]
-[Authorize(policy:"TeamLeaderOnly")]
+[Authorize]
 public class AnnouncementController :ControllerBase
 {
     private readonly IAnnoucementService _annoucementService;
