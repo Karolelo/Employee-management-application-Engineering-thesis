@@ -30,7 +30,6 @@ export class GroupImageEditFormComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['group'] && this.group) {
-      console.log("Values of group " + this.group.description);
       this.initializeValues();
     }
   }
@@ -45,7 +44,6 @@ export class GroupImageEditFormComponent implements OnChanges {
       },
       error: (error) => {
         if (error.status === 404) {
-          console.log("Image not found");
           return;
         }
       }
@@ -56,14 +54,12 @@ export class GroupImageEditFormComponent implements OnChanges {
     const isUpdate = !!this.imageUrl;
     const groupId = this.group?.id ?? 0;
 
-    console.log(isUpdate ? "Image updating" : "Image creating");
     this.saveGroupImageWithRefresh(groupId, file, isUpdate);
   }
 
   private saveGroupImageWithRefresh(groupId: number, file: File, isUpdate: boolean): void {
     this.groupService.saveGroupImage(groupId, file, isUpdate).subscribe({
       next: (response) => {
-        console.log("Image save correctly " + response);
         setTimeout(() => {
           this.initializeValues();
         }, GroupImageEditFormComponent.IMAGE_REFRESH_DELAY_MS);

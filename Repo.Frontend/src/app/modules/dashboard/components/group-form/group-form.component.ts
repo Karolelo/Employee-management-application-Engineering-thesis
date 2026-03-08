@@ -91,7 +91,6 @@ export class GroupFormComponent implements OnChanges{
             this.snackBar.open('Group updated', 'Hide', { duration: 3000 });
           },
           error: (error) => {
-            console.error('Error:', error);
             this.snackBar.open('Error updating group', 'Hide', { duration: 3000 });
           }
         });
@@ -117,7 +116,6 @@ export class GroupFormComponent implements OnChanges{
           this.snackBar.open('Group created and admin added', 'Hide', { duration: 3000 });
         },
         error: (error) => {
-          console.error('Error:', error);
           this.snackBar.open('Error creating group', 'Hide', { duration: 3000 });
         }
       });

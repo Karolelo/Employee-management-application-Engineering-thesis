@@ -53,8 +53,6 @@ export class EditUserFormComponent implements OnInit{
             },
             error: (error) => console.log("Error during fetching user data: " + error)
           });
-        } else {
-          console.log("Error: User ID is null");
         }
       },
       error: (error) => {
@@ -64,7 +62,6 @@ export class EditUserFormComponent implements OnInit{
   }
 
   private updateFormWithUserData(user: User): void {
-    console.log("User data: ",user);
     if (!user) return;
 
     this.userEditForm.patchValue({
@@ -89,7 +86,6 @@ export class EditUserFormComponent implements OnInit{
       .updateUser(formData)
       .subscribe({
         next: () => {
-          console.log("User updated successfully");
           this.router.navigate(['/dashboard/users']);
         },
         error: (error) => {

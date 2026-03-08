@@ -8,9 +8,9 @@ import {GroupService} from '../services/group/group.service';
 @Injectable({
   providedIn: 'root'
 })
-//This is class for future development
+//This is a class for future development
 //Problem with it redirecting our request omitting
-//proxy soo it makes impossible on localhost to do it correcty
+//proxy soo it makes impossible on localhost to do it correctly
 export class GroupResolverService implements Resolve<Group[]>{
 
   constructor(private group_service: GroupService,router: Router) { }
@@ -18,7 +18,7 @@ export class GroupResolverService implements Resolve<Group[]>{
     return this.group_service.getGroups().pipe(
       catchError((error) => {
         console.error('Error in resolver:', error);
-        //this.router.navigate(['/error']); for now we not redirecting users
+        //this.router.navigate(['/error']); for now we're not redirecting users
         //Maybe we will think about it
         return of([]);
       })
